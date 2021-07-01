@@ -39,7 +39,7 @@ This app would be like Tinder but for restaurants. A user can filter for restaur
 * users can visit restaurants' websites or view their menus 
 * users can pull up a map view of restaurants on their bucket list 
 * users can get directions to restaurants in their bucket list 
-* users' swipes can help decide which restaurant they see next on their feed using an algorihtm on the backend 
+* users' swipes can help decide which restaurant they see next on their feed using an algorithm on the backend 
 * users can see popular restaurants near them- restaurants a certain percentage (ie: >= 70%) of users have seen and swiped right on 
 
 ### 2. Screen Archetypes
