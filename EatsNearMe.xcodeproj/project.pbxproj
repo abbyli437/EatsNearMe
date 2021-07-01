@@ -54,6 +54,7 @@
 		88B2430D268E272500089A35 /* EatsNearMeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EatsNearMeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		88B24311268E272500089A35 /* EatsNearMeUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EatsNearMeUITests.m; sourceTree = "<group>"; };
 		88B24313268E272500089A35 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		88B2431F268E273A00089A35 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,6 +85,7 @@
 		88B242DE268E272300089A35 = {
 			isa = PBXGroup;
 			children = (
+				88B2431F268E273A00089A35 /* README.md */,
 				88B242E9268E272300089A35 /* EatsNearMe */,
 				88B24305268E272500089A35 /* EatsNearMeTests */,
 				88B24310268E272500089A35 /* EatsNearMeUITests */,
