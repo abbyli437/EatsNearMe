@@ -79,7 +79,8 @@ This app would be like Tinder but for restaurants. A user can filter for restaur
 
 ## Wireframes
 [Add picture of your hand sketched wireframes in this section]
-<img src="YOUR_WIREFRAME_IMAGE_URL" width=600>
+https://photos.app.goo.gl/tT9qYcjq3Yds4C6H7
+<img src="https://photos.app.goo.gl/tT9qYcjq3Yds4C6H7" width=600>
 
 ### [BONUS] Digital Wireframes & Mockups
 
