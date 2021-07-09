@@ -88,8 +88,93 @@ This app would be like Tinder but for restaurants. A user can filter for restaur
 ## Schema 
 [This section will be completed in Unit 9]
 ### Models
-[Add table of models]
+
+User Model
+(for my algorithm I was thinking of using a priority queue structure but I'm not sure how I'd store my user's priority function or preferences)
+| Property Name       | Type        | Description |
+| :------------- |:-------------| :-----|
+| username  | String | string containing user's username |
+| password    | String | string containing user's password |
+| rightSwipes | Array | Array of Restaurants users swiped right on |
+| leftSwipes | Array | Array of Restaurants users swiped left on |
+| restaurantsVisited | Int | number of Restaurants user visited |
+| maxDistance | Int | max distance restaurants can be from User |
+| priceRangeLow | Int | minimum price of Restaurants user filters for |
+| priceRangeHigh | Int | max price of Restaurants user filters for |
+
+Restaurant Model 
+| Property Name | Type | Description |
+| :----------------- | :---- | :------------ | 
+| name | String | what the restaurant's name is |
+| description | String | what the restaurant servces (ie, sushi) |
+| address | String | restaurant's address |
+| phoneNumber | String | restaurants's phone number |
+| website | String | restaurant's website if they have one |
+| hasVisited | Bool | if the restaurant has been visited by a User |
+| image | File | picture of restaurant (ideally of food they serve) |
+
 ### Networking
 - [Add list of network requests by screen ]
 - [Create basic snippets for each Parse network request]
 - [OPTIONAL: List endpoints if using existing API such as Yelp]
+
+Network Request Outline
+* Home Feed Screen
+  * Update: change user’s leftSwipes and rightSwipes to reflect their swipes
+   ```
+   PFQuery *query = [PFQuery queryWithClassName:@"User"];
+
+    // Retrieve the object by id
+    [query getObjectInBackgroundWithId:@"xWMyZ4YEGZ"
+                               block:^(PFObject *user, NSError *error) {
+      [user[@"swipeRights"] insert:(restaurant swiped on)];
+      [user saveInBackground];
+    }];
+
+    ``
+* Saved Restaurants Screen 
+  * Get: query for user’s swipeRight array
+    ```
+    NSArray *savedRestaurants = [PF currentUser].swipeRights;
+    ```
+  * Update: user checks off a restaurant’s “visited” box
+    ```
+    PFQuery *query = [PFQuery queryWithClassName:@"User"];
+
+    // Retrieve the object by id
+    [query getObjectInBackgroundWithId:@"xWMyZ4YEGZ"
+                                 block:^(PFObject *user, NSError *error) {
+        Restaurant *restaurant = savedRestaurants[indexPath.row];
+        restaurant.hasVisited = !restaurant.hasVisited;
+        user[@"swipeRights"][indexPath.row] = restaurant;
+        [user saveInBackground];
+    }];
+
+    ```
+* User Profile Screen
+  * Get: user’s username and number of restaurants they visited 
+  ```
+  let query = PFQuery(className:"user");
+  
+  query.findObjectsInBackground { (user: [PFObject]?, error: Error?) in
+     if let error = error {
+        print(error.localizedDescription)
+     } else {
+       self.username = user.username;
+       self.restaurantsVisited = user.restaurantsVisited
+     }
+  }
+  ```
+* Settings Screen
+  * Update: user’s setting preferences 
+  ```
+  PFQuery *query = [PFQuery queryWithClassName:@"User"];
+
+  // Retrieve the object by id
+  [query getObjectInBackgroundWithId:@"xWMyZ4YEGZ"
+                               block:^(PFObject *user, NSError *error) {
+      user[@"maxDistance"] = (new max distance);
+  }];
+
+```
+
