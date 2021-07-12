@@ -107,10 +107,10 @@
             </objects>
             <point key="canvasLocation" x="893.84615384615381" y="114.45497630331754"/>
         </scene>
-        <!--Tab Bar Controller-->
+        <!--TabNavController-->
         <scene sceneID="4Lz-Cd-Kb3">
             <objects>
-                <tabBarController automaticallyAdjustsScrollViewInsets="NO" id="oMH-4c-QQ9" sceneMemberID="viewController">
+                <tabBarController title="TabNavController" automaticallyAdjustsScrollViewInsets="NO" id="oMH-4c-QQ9" sceneMemberID="viewController">
                     <toolbarItems/>
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="5xu-VR-awA">
                         <autoresizingMask key="autoresizingMask"/>
