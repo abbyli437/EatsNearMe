@@ -102,6 +102,7 @@ User Model
 | maxDistance | Int | max distance restaurants can be from User |
 | priceRangeLow | Int | minimum price of Restaurants user filters for |
 | priceRangeHigh | Int | max price of Restaurants user filters for |
+| pfp | File | user's profile picture |
 
 Restaurant Model 
 | Property Name | Type | Description |
