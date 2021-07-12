@@ -120,7 +120,7 @@
         <!--TabNavController-->
         <scene sceneID="4Lz-Cd-Kb3">
             <objects>
-                <tabBarController title="TabNavController" automaticallyAdjustsScrollViewInsets="NO" id="oMH-4c-QQ9" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="TabNavController" title="TabNavController" automaticallyAdjustsScrollViewInsets="NO" id="oMH-4c-QQ9" sceneMemberID="viewController">
                     <toolbarItems/>
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="5xu-VR-awA">
                         <autoresizingMask key="autoresizingMask"/>
