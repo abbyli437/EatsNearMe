@@ -9,8 +9,12 @@
 #import "Parse/Parse.h"
 #import "SceneDelegate.h"
 #import "LoginViewController.h"
+@import Parse;
 
 @interface ProfileViewController ()
+
+@property (weak, nonatomic) IBOutlet PFImageView *pfpImage;
+@property (weak, nonatomic) IBOutlet UILabel *nameLabel;
 
 @end
 
@@ -18,7 +22,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    
+    PFUser *user = [PFUser currentUser];
+    self.nameLabel.text = user.username;
 }
 
 - (IBAction)logoutTap:(id)sender {
