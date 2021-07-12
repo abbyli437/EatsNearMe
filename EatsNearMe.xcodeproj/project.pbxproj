@@ -14,6 +14,7 @@
 		88774A26269CD83A002A854A /* SignUpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 88774A25269CD83A002A854A /* SignUpViewController.m */; };
 		88774A29269CD852002A854A /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 88774A28269CD852002A854A /* HomeViewController.m */; };
 		88774A2C269CE1BE002A854A /* AlertUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 88774A2B269CE1BE002A854A /* AlertUtil.m */; };
+		88774A2F269CE9C4002A854A /* ProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 88774A2E269CE9C4002A854A /* ProfileViewController.m */; };
 		88B242EC268E272300089A35 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 88B242EB268E272300089A35 /* AppDelegate.m */; };
 		88B242EF268E272300089A35 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 88B242EE268E272300089A35 /* SceneDelegate.m */; };
 		88B242F5268E272300089A35 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 88B242F3268E272300089A35 /* Main.storyboard */; };
@@ -55,6 +56,8 @@
 		88774A28269CD852002A854A /* HomeViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
 		88774A2A269CE1BE002A854A /* AlertUtil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AlertUtil.h; sourceTree = "<group>"; };
 		88774A2B269CE1BE002A854A /* AlertUtil.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AlertUtil.m; sourceTree = "<group>"; };
+		88774A2D269CE9C4002A854A /* ProfileViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ProfileViewController.h; sourceTree = "<group>"; };
+		88774A2E269CE9C4002A854A /* ProfileViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ProfileViewController.m; sourceTree = "<group>"; };
 		88B242E7268E272300089A35 /* EatsNearMe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EatsNearMe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		88B242EA268E272300089A35 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		88B242EB268E272300089A35 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -138,6 +141,8 @@
 				88774A25269CD83A002A854A /* SignUpViewController.m */,
 				88774A27269CD852002A854A /* HomeViewController.h */,
 				88774A28269CD852002A854A /* HomeViewController.m */,
+				88774A2D269CE9C4002A854A /* ProfileViewController.h */,
+				88774A2E269CE9C4002A854A /* ProfileViewController.m */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -449,6 +454,7 @@
 			files = (
 				88774A23269CB17F002A854A /* LoginViewController.m in Sources */,
 				88774A26269CD83A002A854A /* SignUpViewController.m in Sources */,
+				88774A2F269CE9C4002A854A /* ProfileViewController.m in Sources */,
 				88B242EC268E272300089A35 /* AppDelegate.m in Sources */,
 				88774A2C269CE1BE002A854A /* AlertUtil.m in Sources */,
 				88B242FD268E272500089A35 /* main.m in Sources */,

@@ -11,7 +11,7 @@
         <!--Login View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="LoginViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LoginViewController" id="BYZ-38-t0r" customClass="LoginViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -191,10 +191,10 @@
                                 <state key="normal" title=" Settings" image="gearshape.fill" catalog="system">
                                     <color key="titleColor" red="0.27915560049999999" green="0.58123201329999996" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 </state>
+                                <connections>
+                                    <segue destination="jzu-Ck-eAk" kind="show" id="ELa-Cc-kOQ"/>
+                                </connections>
                             </button>
-                            <connections>
-                                <segue destination="jzu-Ck-eAk" kind="show" id="i4J-VC-EAv"/>
-                            </connections>
                         </barButtonItem>
                     </navigationItem>
                 </viewController>
@@ -221,7 +221,7 @@
         <!--Profile-->
         <scene sceneID="60T-OW-lBv">
             <objects>
-                <viewController id="4e5-tm-mnz" sceneMemberID="viewController">
+                <viewController id="4e5-tm-mnz" customClass="ProfileViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="nMo-qR-UKB">
                         <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -231,10 +231,13 @@
                     <navigationItem key="navigationItem" title="Profile" id="fiJ-et-ECN">
                         <barButtonItem key="rightBarButtonItem" style="plain" id="VJ9-7K-WNV">
                             <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" id="gL0-32-IeS">
-                                <rect key="frame" x="-23" y="-15" width="86" height="30"/>
+                                <rect key="frame" x="288" y="5" width="86" height="34"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                 <state key="normal" title="Logout"/>
+                                <connections>
+                                    <action selector="logoutTap:" destination="4e5-tm-mnz" eventType="touchUpInside" id="NRH-kO-Ib4"/>
+                                </connections>
                             </button>
                         </barButtonItem>
                     </navigationItem>
