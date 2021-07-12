@@ -41,7 +41,7 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <state key="normal" title="Sign Up"/>
                                 <connections>
-                                    <segue destination="f6i-Yu-3vD" kind="presentation" identifier="signUpSegue" modalPresentationStyle="fullScreen" id="J0G-aZ-eow"/>
+                                    <segue destination="f6i-Yu-3vD" kind="presentation" identifier="signUpSegue" id="J0G-aZ-eow"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HYS-4q-hW3">
@@ -49,12 +49,17 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <state key="normal" title="Log In"/>
+                                <connections>
+                                    <action selector="loginTap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="dvT-ZH-cHJ"/>
+                                </connections>
                             </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
                     <connections>
+                        <outlet property="passwordField" destination="iB8-yo-eVr" id="yjg-AC-8P4"/>
+                        <outlet property="usernameField" destination="BbG-jC-kJj" id="eOt-Nc-vAU"/>
                         <segue destination="oMH-4c-QQ9" kind="presentation" identifier="loginSegue" modalPresentationStyle="fullScreen" id="l52-nc-R05"/>
                     </connections>
                 </viewController>
@@ -67,7 +72,7 @@
             <objects>
                 <viewController id="f6i-Yu-3vD" customClass="SignUpViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="sOZ-ql-UTM">
-                        <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
+                        <rect key="frame" x="0.0" y="0.0" width="390" height="790"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Sign Up" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ATv-RC-WBQ">
@@ -94,12 +99,17 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <state key="normal" title="Create Account"/>
+                                <connections>
+                                    <action selector="signUpTap:" destination="f6i-Yu-3vD" eventType="touchUpInside" id="Z2C-CI-qge"/>
+                                </connections>
                             </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="1et-QT-DaQ"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
                     <connections>
+                        <outlet property="passwordField" destination="W8d-A9-m8d" id="ayJ-an-OJy"/>
+                        <outlet property="usernameField" destination="o6S-jX-H6b" id="BiM-IO-dvP"/>
                         <segue destination="oMH-4c-QQ9" kind="presentation" identifier="signUpToHomeSegue" modalPresentationStyle="fullScreen" id="8kW-RK-Nun"/>
                     </connections>
                 </viewController>
@@ -148,6 +158,15 @@
                     <view key="view" contentMode="scaleToFill" id="PH9-Y8-88B">
                         <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Home" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qKd-b0-ZIc">
+                                <rect key="frame" x="126" y="261" width="139" height="61"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" weight="thin" pointSize="40"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="i4i-xD-L99"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
@@ -173,13 +192,13 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ehe-QL-bfe" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2234" y="847"/>
+            <point key="canvasLocation" x="2233.8461538461538" y="846.6824644549763"/>
         </scene>
         <!--Home-->
         <scene sceneID="Wxf-td-w3l">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="JUS-77-CXH" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Home" selectedImage="house.fill" catalog="system" id="LXF-pW-MgL"/>
+                    <tabBarItem key="tabBarItem" title="Home" image="house.fill" catalog="system" id="LXF-pW-MgL"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="rRn-QY-XcW">
                         <rect key="frame" x="0.0" y="44" width="390" height="44"/>
