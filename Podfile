@@ -9,7 +9,8 @@ target 'EatsNearMe' do
   pod 'AFNetworking'
   pod 'Parse'
   pod 'Parse/UI' 
-  pod 'DateTools' 
+  pod 'DateTools'
+  pod 'TTRangeSlider'
 
   target 'EatsNearMeTests' do
     inherit! :search_paths

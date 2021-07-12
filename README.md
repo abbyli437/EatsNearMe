@@ -179,3 +179,5 @@ Network Request Outline
   }];
 
 
+## Credits
+- https://github.com/TomThorpe/TTRangeSlider
