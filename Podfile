@@ -11,6 +11,7 @@ target 'EatsNearMe' do
   pod 'Parse/UI' 
   pod 'DateTools'
   pod 'TTRangeSlider'
+  pod "YelpAPI" 
 
   target 'EatsNearMeTests' do
     inherit! :search_paths
