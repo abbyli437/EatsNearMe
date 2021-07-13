@@ -138,7 +138,7 @@
         <!--Saved Restaurants-->
         <scene sceneID="9O5-cn-7jq">
             <objects>
-                <viewController id="1Qy-Es-uC5" sceneMemberID="viewController">
+                <viewController id="1Qy-Es-uC5" customClass="SavedViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="zhr-bO-MYD">
                         <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -206,10 +206,10 @@
             </objects>
             <point key="canvasLocation" x="24.615384615384613" y="2390.7582938388623"/>
         </scene>
-        <!--View Controller-->
+        <!--Details View Controller-->
         <scene sceneID="Dkt-PG-m2v">
             <objects>
-                <viewController id="Qhg-yp-LTM" sceneMemberID="viewController">
+                <viewController id="Qhg-yp-LTM" customClass="DetailsViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Tpg-SV-cez">
                         <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -279,7 +279,7 @@
         <!--Home-->
         <scene sceneID="zty-YA-cj9">
             <objects>
-                <viewController id="LHv-F8-U7X" sceneMemberID="viewController">
+                <viewController id="LHv-F8-U7X" customClass="HomeViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="PH9-Y8-88B">
                         <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -503,7 +503,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="l52-nc-R05"/>
+        <segue reference="8kW-RK-Nun"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="bookmark.fill" catalog="system" width="112" height="128"/>
