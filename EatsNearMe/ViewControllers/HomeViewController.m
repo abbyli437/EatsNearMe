@@ -36,6 +36,7 @@
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateLocations:(NSArray *)locations
 {
+    //lastObject is the most recent location
     NSLog(@"%@", [locations lastObject]);
     self.curLocation = [locations lastObject];
 }
