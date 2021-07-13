@@ -43,8 +43,7 @@
     double latitude = (double) self.curLocation.coordinate.latitude;
     double longitude = (double) self.curLocation.coordinate.longitude;
     
-    //this is ugly code but the methods aren't public so I'll make do
-    //I tried changing the methods to be public but that cause  d something in the pod to break
+    //this is ugly code but the methods aren't public but it'll do
     YLPCoordinate *coord = [[YLPCoordinate alloc] init];
     coord = [coord initWithLatitude:latitude longitude:longitude];
     YLPQuery *query = [[YLPQuery alloc] init];
