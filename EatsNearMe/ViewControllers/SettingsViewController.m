@@ -7,7 +7,7 @@
 
 #import "SettingsViewController.h"
 #import "TTRangeSlider.h"
-#import "ParseManager.h"
+#import "ParseUtil.h"
 @import Parse;
 
 @interface SettingsViewController () <TTRangeSliderDelegate>
@@ -83,7 +83,7 @@
     //update info on Parse
     NSArray *vals = [NSArray arrayWithObjects:@(self.priceSlider.selectedMinimum), @(self.priceSlider.selectedMaximum), nil];
     NSArray *keys = [NSArray arrayWithObjects:@"priceRangeLow", @"priceRangeHigh", nil];
-    [ParseManager udpateValues:vals keys:keys];
+    [ParseUtil udpateValues:vals keys:keys];
 }
 
 - (IBAction)updateDistance:(id)sender {
@@ -95,7 +95,7 @@
     roundedDist = (int) (self.distanceSlider.value);
     NSArray *vals = [NSArray arrayWithObject:@(roundedDist)];
     NSArray *keys = [NSArray arrayWithObject:@"maxDistance"];
-    [ParseManager udpateValues:vals keys:keys];
+    [ParseUtil udpateValues:vals keys:keys];
 }
 
 /*

@@ -9,7 +9,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ParseManager : NSObject
+@interface ParseUtil : NSObject
 
 + (void)udpateValues:(NSArray *)vals keys:(NSArray *)keys;
 

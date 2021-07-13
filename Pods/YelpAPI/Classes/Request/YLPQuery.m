@@ -60,6 +60,9 @@
     if (self.term) {
         params[@"term"] = self.term;
     }
+    if (self.price) {
+            params[@"price"] = self.price;
+        }
     if (self.limit) {
         params[@"limit"] = @(self.limit);
     }

@@ -19,7 +19,8 @@
 		88774A39269D0693002A854A /* RestaurantCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 88774A38269D0693002A854A /* RestaurantCell.m */; };
 		88774A3C269DF186002A854A /* SavedViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 88774A3B269DF186002A854A /* SavedViewController.m */; };
 		88774A3F269DF1A8002A854A /* DetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 88774A3E269DF1A8002A854A /* DetailsViewController.m */; };
-		88774A42269DFF0D002A854A /* ParseManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 88774A41269DFF0D002A854A /* ParseManager.m */; };
+		88774A42269DFF0D002A854A /* ParseUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 88774A41269DFF0D002A854A /* ParseUtil.m */; };
+		88774A47269E30DE002A854A /* Keys.plist in Resources */ = {isa = PBXBuildFile; fileRef = 88774A46269E30DE002A854A /* Keys.plist */; };
 		88B242EC268E272300089A35 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 88B242EB268E272300089A35 /* AppDelegate.m */; };
 		88B242EF268E272300089A35 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 88B242EE268E272300089A35 /* SceneDelegate.m */; };
 		88B242F5268E272300089A35 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 88B242F3268E272300089A35 /* Main.storyboard */; };
@@ -71,8 +72,9 @@
 		88774A3B269DF186002A854A /* SavedViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SavedViewController.m; sourceTree = "<group>"; };
 		88774A3D269DF1A8002A854A /* DetailsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DetailsViewController.h; sourceTree = "<group>"; };
 		88774A3E269DF1A8002A854A /* DetailsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DetailsViewController.m; sourceTree = "<group>"; };
-		88774A40269DFF0D002A854A /* ParseManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ParseManager.h; sourceTree = "<group>"; };
-		88774A41269DFF0D002A854A /* ParseManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ParseManager.m; sourceTree = "<group>"; };
+		88774A40269DFF0D002A854A /* ParseUtil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ParseUtil.h; sourceTree = "<group>"; };
+		88774A41269DFF0D002A854A /* ParseUtil.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ParseUtil.m; sourceTree = "<group>"; };
+		88774A46269E30DE002A854A /* Keys.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Keys.plist; sourceTree = "<group>"; };
 		88B242E7268E272300089A35 /* EatsNearMe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EatsNearMe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		88B242EA268E272300089A35 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		88B242EB268E272300089A35 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -184,6 +186,17 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		88774A48269E31C4002A854A /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				88774A2A269CE1BE002A854A /* AlertUtil.h */,
+				88774A2B269CE1BE002A854A /* AlertUtil.m */,
+				88774A40269DFF0D002A854A /* ParseUtil.h */,
+				88774A41269DFF0D002A854A /* ParseUtil.m */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
 		88B242DE268E272300089A35 = {
 			isa = PBXGroup;
 			children = (
@@ -210,6 +223,7 @@
 		88B242E9268E272300089A35 /* EatsNearMe */ = {
 			isa = PBXGroup;
 			children = (
+				88774A48269E31C4002A854A /* Utils */,
 				88774A33269D047A002A854A /* Views */,
 				88774A20269CB167002A854A /* Models */,
 				88774A1F269CB160002A854A /* ViewControllers */,
@@ -222,10 +236,7 @@
 				88B242F8268E272500089A35 /* LaunchScreen.storyboard */,
 				88B242FB268E272500089A35 /* Info.plist */,
 				88B242FC268E272500089A35 /* main.m */,
-				88774A2A269CE1BE002A854A /* AlertUtil.h */,
-				88774A2B269CE1BE002A854A /* AlertUtil.m */,
-				88774A40269DFF0D002A854A /* ParseManager.h */,
-				88774A41269DFF0D002A854A /* ParseManager.m */,
+				88774A46269E30DE002A854A /* Keys.plist */,
 			);
 			path = EatsNearMe;
 			sourceTree = "<group>";
@@ -357,6 +368,7 @@
 			files = (
 				88B242FA268E272500089A35 /* LaunchScreen.storyboard in Resources */,
 				88B242F7268E272500089A35 /* Assets.xcassets in Resources */,
+				88774A47269E30DE002A854A /* Keys.plist in Resources */,
 				88B242F5268E272300089A35 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -497,7 +509,7 @@
 				88B242FD268E272500089A35 /* main.m in Sources */,
 				88B242EF268E272300089A35 /* SceneDelegate.m in Sources */,
 				88774A29269CD852002A854A /* HomeViewController.m in Sources */,
-				88774A42269DFF0D002A854A /* ParseManager.m in Sources */,
+				88774A42269DFF0D002A854A /* ParseUtil.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

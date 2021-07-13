@@ -33,6 +33,11 @@ NS_ASSUME_NONNULL_BEGIN
 @property (copy, nonatomic, nullable) NSString *term;
 
 /**
+ Search price ("1", "2", "3", or "4"). If term is nil, everything will be searched.
+ */
+@property (copy, nonatomic, nullable) NSString *price;
+
+/**
  Number of business results to return. If 0, the API maximum of 20 results will be returned.
  */
 @property (assign, nonatomic) NSUInteger limit;

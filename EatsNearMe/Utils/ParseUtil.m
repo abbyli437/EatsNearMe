@@ -5,10 +5,10 @@
 //  Created by Abby Li on 7/13/21.
 //
 
-#import "ParseManager.h"
+#import "ParseUtil.h"
 #import "Parse/Parse.h"
 
-@implementation ParseManager
+@implementation ParseUtil
 
 + (void)udpateValues:(NSArray *)vals keys:(NSArray *)keys {
     //key array should be string array

@@ -7,13 +7,18 @@
 
 #import "AppDelegate.h"
 #import "Parse/Parse.h"
+@import YelpAPI;
 
 @interface AppDelegate ()
-
+@property (strong, nonatomic) YLPClient *client;
 @end
 
 @implementation AppDelegate
 
++ (YLPClient *)sharedClient {
+    AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
+    return appDelegate.client;
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Sets up parse backend
@@ -25,6 +30,12 @@
 
     [Parse initializeWithConfiguration:config];
     
+    //Sets up Yelp API
+    NSString *filePath = [[NSBundle mainBundle] pathForResource: @"Keys" ofType: @"plist"];
+    NSDictionary *plistData = [NSDictionary dictionaryWithContentsOfFile:filePath];
+    NSString *clientId = plistData[@"clientId"];
+    NSString *apiKey = plistData[@"apiKey"];
+    self.client = [[YLPClient alloc] initWithAPIKey:apiKey];
     return YES;
 }
 

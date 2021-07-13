@@ -6,9 +6,11 @@
 //
 
 #import <UIKit/UIKit.h>
+@import YelpAPI;
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
++ (YLPClient *)sharedClient;
 
 @end
 
