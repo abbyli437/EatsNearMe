@@ -21,6 +21,8 @@
 		88774A3F269DF1A8002A854A /* DetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 88774A3E269DF1A8002A854A /* DetailsViewController.m */; };
 		88774A42269DFF0D002A854A /* ParseUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 88774A41269DFF0D002A854A /* ParseUtil.m */; };
 		88774A47269E30DE002A854A /* Keys.plist in Resources */ = {isa = PBXBuildFile; fileRef = 88774A46269E30DE002A854A /* Keys.plist */; };
+		88774A4E269F3772002A854A /* Restaurant.m in Sources */ = {isa = PBXBuildFile; fileRef = 88774A4D269F3772002A854A /* Restaurant.m */; };
+		88774A51269F3A17002A854A /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 88774A50269F3A17002A854A /* User.m */; };
 		88B242EC268E272300089A35 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 88B242EB268E272300089A35 /* AppDelegate.m */; };
 		88B242EF268E272300089A35 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 88B242EE268E272300089A35 /* SceneDelegate.m */; };
 		88B242F5268E272300089A35 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 88B242F3268E272300089A35 /* Main.storyboard */; };
@@ -75,6 +77,10 @@
 		88774A40269DFF0D002A854A /* ParseUtil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ParseUtil.h; sourceTree = "<group>"; };
 		88774A41269DFF0D002A854A /* ParseUtil.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ParseUtil.m; sourceTree = "<group>"; };
 		88774A46269E30DE002A854A /* Keys.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Keys.plist; sourceTree = "<group>"; };
+		88774A4C269F3772002A854A /* Restaurant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Restaurant.h; sourceTree = "<group>"; };
+		88774A4D269F3772002A854A /* Restaurant.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Restaurant.m; sourceTree = "<group>"; };
+		88774A4F269F3A17002A854A /* User.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = User.h; sourceTree = "<group>"; };
+		88774A50269F3A17002A854A /* User.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
 		88B242E7268E272300089A35 /* EatsNearMe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EatsNearMe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		88B242EA268E272300089A35 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		88B242EB268E272300089A35 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -173,6 +179,10 @@
 		88774A20269CB167002A854A /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				88774A4C269F3772002A854A /* Restaurant.h */,
+				88774A4D269F3772002A854A /* Restaurant.m */,
+				88774A4F269F3A17002A854A /* User.h */,
+				88774A50269F3A17002A854A /* User.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -502,9 +512,11 @@
 				88774A26269CD83A002A854A /* SignUpViewController.m in Sources */,
 				88774A3F269DF1A8002A854A /* DetailsViewController.m in Sources */,
 				88774A2F269CE9C4002A854A /* ProfileViewController.m in Sources */,
+				88774A51269F3A17002A854A /* User.m in Sources */,
 				88774A32269CF34F002A854A /* SettingsViewController.m in Sources */,
 				88774A3C269DF186002A854A /* SavedViewController.m in Sources */,
 				88B242EC268E272300089A35 /* AppDelegate.m in Sources */,
+				88774A4E269F3772002A854A /* Restaurant.m in Sources */,
 				88774A2C269CE1BE002A854A /* AlertUtil.m in Sources */,
 				88B242FD268E272500089A35 /* main.m in Sources */,
 				88B242EF268E272300089A35 /* SceneDelegate.m in Sources */,

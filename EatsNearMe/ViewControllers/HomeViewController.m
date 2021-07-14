@@ -28,14 +28,6 @@
     
     [self setUpLocation];
     self.firstTime = true;
-    /*[[AppDelegate sharedClient] searchWithLocation:@"San Francisco, CA" term:nil limit:5 offset:0 sort:YLPSortTypeDistance completionHandler:^
-        (YLPSearch *search, NSError* error) {
-        self.search = search;
-        NSLog(@"successfully called api");
-        dispatch_async(dispatch_get_main_queue(), ^{
-            //[self.tableView reloadData];
-        });
-    }];*/
 }
 
 - (void)fetchRestaurants {
@@ -53,6 +45,7 @@
     query.radiusFilter = [user[@"maxDistance"] doubleValue] * 1609.0;
     int low = [user[@"priceRangeLow"] intValue];
     int high = [user[@"priceRangeHigh"] intValue];
+    
     NSString *priceQuery = [NSString stringWithFormat:@"%d", low];
     for (int i = low + 1; i <= high; i++) {
         priceQuery = [priceQuery stringByAppendingString:@", "];

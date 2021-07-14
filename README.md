@@ -109,6 +109,7 @@ Restaurant Model
 | :----------------- | :---- | :------------ | 
 | name | String | what the restaurant's name is |
 | description | String | what the restaurant servces (ie, sushi) |
+| price | String | restaurant's price range |
 | address | String | restaurant's address |
 | phoneNumber | String | restaurants's phone number |
 | website | String | restaurant's website if they have one |
