@@ -19,6 +19,10 @@
 @property (nonatomic) YLPSearch *search; //what is this lol
 @property (nonatomic) bool firstTime;
 
+@property (weak, nonatomic) IBOutlet UIView *restaurantView;
+@property (strong, nonatomic) IBOutlet UIView *contentView; //maybe delete this later, don't think I need it
+@property (weak, nonatomic) IBOutlet UIImageView *checkMarkImage;
+
 @end
 
 @implementation HomeViewController
@@ -28,6 +32,51 @@
     
     [self setUpLocation];
     self.firstTime = true;
+}
+
+- (IBAction)swipeRestaurant:(UIPanGestureRecognizer *)sender {
+    if (sender.view == nil) {
+        return;
+    }
+    
+    UIView *restaurantCard = sender.view; //swift had a ! at the end, not sure how to get that in objecitve-c
+    CGPoint point = [sender translationInView:self.view];
+    restaurantCard.center = CGPointMake(self.view.center.x + point.x, self.view.center.y + point.y);
+    float xFromCenter = restaurantCard.center.x - self.view.center.x;
+    
+    //sets up image for swipe left/right
+    if (xFromCenter < 0) {
+        self.checkMarkImage.image = [UIImage systemImageNamed:@"xmark.circle.fill"];
+        self.checkMarkImage.tintColor = [UIColor redColor];
+    }
+    else {
+        self.checkMarkImage.image = [UIImage systemImageNamed:@"checkmark.circle.fill"];
+        self.checkMarkImage.tintColor = [UIColor greenColor];
+    }
+    
+    self.checkMarkImage.alpha = fabsf(xFromCenter) / self.view.center.x;
+    
+    //to make view bounce back after I let go
+    if (sender.state == UIGestureRecognizerStateEnded) {
+        if (restaurantCard.center.x < 75) {
+            //move card off to the left
+            [UIView animateWithDuration:0.3 animations:^{
+                restaurantCard.center = CGPointMake(restaurantCard.center.x - 200, restaurantCard.center.y);
+            }];
+            return;
+        }
+        else if (restaurantCard.center.x > self.view.frame.size.width - 75) {
+            //move card off to the right
+            [UIView animateWithDuration:0.3 animations:^{
+                restaurantCard.center = CGPointMake(restaurantCard.center.x + 200, restaurantCard.center.y);
+            }];
+            return;
+        }
+        [UIView animateWithDuration:0.2 animations:^{
+            restaurantCard.center = self.view.center;
+            self.checkMarkImage.alpha = 0;
+        }];
+    }
 }
 
 - (void)fetchRestaurants {
@@ -55,13 +104,13 @@
     
     //finally, the actual query
     [[AppDelegate sharedClient] searchWithQuery:query completionHandler:^(YLPSearch * _Nullable search, NSError * _Nullable error) {
-        if (error) {
-            NSLog(error.debugDescription);
-        }
-        else {
+        if (search != nil) {
             //note: I might not need self.search
             self.search = search;
             self.restaurants = search.businesses;
+        }
+        else {
+            NSLog(@"%@", error.localizedDescription);
         }
     }];
 }
@@ -87,7 +136,7 @@
     //this is so I get the location first before I call the API
     if (self.firstTime) {
         self.firstTime = false;
-        [self fetchRestaurants];
+        //[self fetchRestaurants];
     }
 }
 

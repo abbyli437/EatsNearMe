@@ -7,15 +7,15 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "8466C161-A5B0-4647-8EC1-51A7185A2DF2"
-            shouldBeEnabled = "Yes"
+            uuid = "99C2883F-C9A2-472A-A8D8-5F1CD40D888F"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "EatsNearMe/ViewControllers/HomeViewController.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "64"
-            endingLineNumber = "64"
+            startingLineNumber = "110"
+            endingLineNumber = "110"
             landmarkName = "-fetchRestaurants"
             landmarkType = "7">
          </BreakpointContent>

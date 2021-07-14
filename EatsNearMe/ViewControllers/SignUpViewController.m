@@ -42,7 +42,12 @@
         // set user properties
         newUser.username = self.usernameField.text;
         newUser.password = self.passwordField.text;
-           
+        
+        //default settings
+        [newUser setObject:@(2) forKey:@"maxDistance"];
+        [newUser setObject:@(1) forKey:@"priceRangeLow"];
+        [newUser setObject:@(4) forKey:@"priceRangeHigh"];
+        
         // call sign up function on the object
         [newUser signUpInBackgroundWithBlock:^(BOOL succeeded, NSError * error) {
             if (error != nil) {
