@@ -24,6 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) NSUInteger reviewCount;
 
 @property (nonatomic, readonly, copy) NSString *name;
+@property (nonatomic, readonly, copy) NSString *price;
 @property (nonatomic, readonly, nullable, copy) NSString *phone;
 @property (nonatomic, readonly, copy) NSString *identifier;
 

@@ -16,8 +16,8 @@
 @property (strong, nonatomic) CLLocationManager *locationManager;
 @property (strong, nonatomic) CLLocation *curLocation;
 @property (strong, nonatomic) NSArray *restaurants;
-@property (nonatomic) YLPSearch *search; //what is this lol
 @property (nonatomic) bool firstTime;
+@property (nonatomic) CGPoint cardCenter;
 
 @property (weak, nonatomic) IBOutlet UIView *restaurantView;
 @property (strong, nonatomic) IBOutlet UIView *contentView; //maybe delete this later, don't think I need it
@@ -32,6 +32,10 @@
     
     [self setUpLocation];
     self.firstTime = true;
+    
+    self.restaurantView.layer.cornerRadius = 10;
+    self.restaurantView.layer.masksToBounds = true;
+    self.cardCenter = self.restaurantView.center;
 }
 
 - (IBAction)swipeRestaurant:(UIPanGestureRecognizer *)sender {
@@ -63,6 +67,7 @@
             [UIView animateWithDuration:0.3 animations:^{
                 restaurantCard.center = CGPointMake(restaurantCard.center.x - 200, restaurantCard.center.y);
             }];
+            [self loadNextRestaurant];
             return;
         }
         else if (restaurantCard.center.x > self.view.frame.size.width - 75) {
@@ -70,13 +75,23 @@
             [UIView animateWithDuration:0.3 animations:^{
                 restaurantCard.center = CGPointMake(restaurantCard.center.x + 200, restaurantCard.center.y);
             }];
+            [self loadNextRestaurant];
             return;
         }
         [UIView animateWithDuration:0.2 animations:^{
-            restaurantCard.center = self.view.center;
+            restaurantCard.center = self.cardCenter;
             self.checkMarkImage.alpha = 0;
         }];
     }
+}
+
+- (void)loadNextRestaurant {
+    sleep(1);
+    [UIView animateWithDuration:0.3 animations:^{
+        self.restaurantView.center = self.cardCenter;
+        self.restaurantView.alpha = 1;
+        self.checkMarkImage.alpha = 0;
+    }];
 }
 
 - (void)fetchRestaurants {
@@ -105,9 +120,8 @@
     //finally, the actual query
     [[AppDelegate sharedClient] searchWithQuery:query completionHandler:^(YLPSearch * _Nullable search, NSError * _Nullable error) {
         if (search != nil) {
-            //note: I might not need self.search
-            self.search = search;
             self.restaurants = search.businesses;
+            NSLog(@"successfully fetched restaurants");
         }
         else {
             NSLog(@"%@", error.localizedDescription);
@@ -136,7 +150,7 @@
     //this is so I get the location first before I call the API
     if (self.firstTime) {
         self.firstTime = false;
-        //[self fetchRestaurants];
+        [self fetchRestaurants];
     }
 }
 
