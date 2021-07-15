@@ -20,7 +20,7 @@
 @property (nonatomic) bool firstTime;
 @property (nonatomic) CGPoint cardCenter;
 @property (strong, nonatomic) NSMutableArray *loadedCards;
-@property (nonatomic) NSInteger *cardsLoadedIndex;
+@property (nonatomic) int cardsLoadedIndex;
 @property (strong, nonatomic) NSMutableArray *allCards; //github version had retain instead of strong
 
 @property (weak, nonatomic) IBOutlet UIView *restaurantView;
@@ -49,7 +49,6 @@ static const float CARD_WIDTH = 340; //%%% width of the draggable card
 }
 
 - (IBAction)swipeRestaurant:(UIPanGestureRecognizer *)sender {
-    /* (don't need this for now)
     if (sender.view == nil) {
         return;
     }
@@ -93,7 +92,7 @@ static const float CARD_WIDTH = 340; //%%% width of the draggable card
             restaurantCard.center = self.cardCenter;
             self.checkMarkImage.alpha = 0;
         }];
-    }*/
+    }
 }
 
 //%%% creates a card and returns it.  This should be customized to fit your needs.
@@ -101,10 +100,10 @@ static const float CARD_WIDTH = 340; //%%% width of the draggable card
 // to get rid of it (eg: if you are building cards from data from the internet)
 -(RestaurantCardView *)makeRestaurantCard:(NSInteger)index
 {
-    RestaurantCardView *card = [[RestaurantCardView alloc] initWithFrame:CGRectMake(25, 127, CARD_WIDTH, CARD_HEIGHT)];
-    card.curLocation = self.curLocation;
+    RestaurantCardView *card = [[RestaurantCardView alloc] initWithFrame:CGRectMake(25, 127, CARD_WIDTH, CARD_HEIGHT) restaurant:self.restaurants[index] loc:self.curLocation];
+    //card.curLocation = self.curLocation;
     card.delegate = self;
-    card.restaurant = self.restaurants[index];
+    //card.restaurant = self.restaurants[index];
     return card;
 }
 
@@ -126,17 +125,19 @@ static const float CARD_WIDTH = 340; //%%% width of the draggable card
             }
         }
         
-        //%%% displays the small number of loaded cards dictated by MAX_BUFFER_SIZE so that not all the cards
-        // are showing at once and clogging a ton of data
-        for (int i = 0; i<[self.loadedCards count]; i++) {
-            if (i>0) {
-                [self.view insertSubview:[self.loadedCards objectAtIndex:i] belowSubview:[self.loadedCards objectAtIndex:i-1]];
-            } else {
-                RestaurantCardView *cur = self.loadedCards[i];
-                [self.view addSubview:cur]; //this is buggy!!
+        dispatch_async(dispatch_get_main_queue(), ^{
+            //%%% displays the small number of loaded cards dictated by MAX_BUFFER_SIZE so that not all the cards
+            // are showing at once and clogging a ton of data
+            for (int i = 0; i<[self.loadedCards count]; i++) {
+                if (i>0) {
+                    [self.view insertSubview:[self.loadedCards objectAtIndex:i] belowSubview:[self.loadedCards objectAtIndex:i-1]];
+                } else {
+                    RestaurantCardView *cur = self.loadedCards[i];
+                    [self.view addSubview:cur];
+                }
+                self.cardsLoadedIndex++; //%%% we loaded a card into loaded cards, so we have to increment
             }
-            self.cardsLoadedIndex++; //%%% we loaded a card into loaded cards, so we have to increment
-        }
+        });
     }
 }
 
@@ -162,20 +163,20 @@ static const float CARD_WIDTH = 340; //%%% width of the draggable card
 }
 
 - (void)loadNextRestaurant {
-    /*sleep(1);
+    sleep(1);
     [UIView animateWithDuration:0.3 animations:^{
         self.restaurantView.center = self.cardCenter;
         self.restaurantView.alpha = 1;
         self.checkMarkImage.alpha = 0;
-    }];*/
+    }];
     
+    /*
     [self.loadedCards removeObjectAtIndex:0]; //%%% card was swiped, so it's no longer a "loaded card"
-    
     if (self.cardsLoadedIndex < [self.restaurants count]) { //%%% if we haven't reached the end of all cards, put another into the loaded cards
         [self.loadedCards addObject:[self.restaurants objectAtIndex:self.cardsLoadedIndex]];
         self.cardsLoadedIndex++;//%%% loaded a card, so have to increment count
-        [self.view insertSubview:[self.loadedCards objectAtIndex:(MAX_BUFFER_SIZE-1)] belowSubview:[self.loadedCards objectAtIndex:(MAX_BUFFER_SIZE-2)]];
-    }
+        [self.view insertSubview:[self.loadedCards objectAtIndex:(MAX_BUFFER_SIZE-1)] belowSubview:[self.loadedCards objectAtIndex:(MAX_BUFFER_SIZE-2)]]; //buggy
+    }*/
 }
 
 - (void)fetchRestaurants {
@@ -183,7 +184,7 @@ static const float CARD_WIDTH = 340; //%%% width of the draggable card
     double latitude = (double) self.curLocation.coordinate.latitude;
     double longitude = (double) self.curLocation.coordinate.longitude;
     
-    //this is ugly code but the methods aren't public but it'll do
+    //set up query
     YLPCoordinate *coord = [[YLPCoordinate alloc] init];
     coord = [coord initWithLatitude:latitude longitude:longitude];
     YLPQuery *query = [[YLPQuery alloc] init];
@@ -207,7 +208,7 @@ static const float CARD_WIDTH = 340; //%%% width of the draggable card
         if (search != nil) {
             self.restaurants = search.businesses;
             NSLog(@"successfully fetched restaurants");
-            [self loadCards]; //new!!
+            //[self loadCards]; //new!!
         }
         else {
             NSLog(@"%@", error.localizedDescription);

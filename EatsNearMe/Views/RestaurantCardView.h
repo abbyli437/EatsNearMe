@@ -34,8 +34,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (strong, nonatomic) UIPanGestureRecognizer *panGestureRecognizer;
 @property (nonatomic) CGPoint originalPoint;
-@property (strong, nonatomic) YLPBusiness *restaurant;
-@property (strong, nonatomic) CLLocation *curLocation;
+//@property (strong, nonatomic) YLPBusiness *restaurant;
+//@property (strong, nonatomic) CLLocation *curLocation;
+
+- (id)initWithFrame:(CGRect)frame restaurant:(YLPBusiness *)restaurant loc:(CLLocation *)location;
 
 @end
 
