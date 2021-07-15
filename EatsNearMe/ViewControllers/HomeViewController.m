@@ -16,16 +16,26 @@
 
 @property (strong, nonatomic) CLLocationManager *locationManager;
 @property (strong, nonatomic) CLLocation *curLocation;
-@property (strong, nonatomic) NSArray *restaurants;
+@property (strong, nonatomic) NSMutableArray *restaurants;
 @property (nonatomic) bool firstTime;
 @property (nonatomic) CGPoint cardCenter;
+@property (strong, nonatomic) NSMutableArray *rightSwipes;
+@property (strong, nonatomic) NSMutableArray *leftSwipes;
+
+//from dynamic views, delete later
 @property (strong, nonatomic) NSMutableArray *loadedCards;
 @property (nonatomic) int cardsLoadedIndex;
 @property (strong, nonatomic) NSMutableArray *allCards; //github version had retain instead of strong
 
+//card view props
 @property (weak, nonatomic) IBOutlet UIView *restaurantView;
-@property (strong, nonatomic) IBOutlet UIView *contentView; //maybe delete this later, don't think I need it
 @property (weak, nonatomic) IBOutlet UIImageView *checkMarkImage;
+@property (weak, nonatomic) IBOutlet UIImageView *restaurantImage;
+@property (weak, nonatomic) IBOutlet UILabel *nameLabel;
+@property (weak, nonatomic) IBOutlet UILabel *descriptionLabel;
+@property (weak, nonatomic) IBOutlet UILabel *distanceLabel;
+@property (weak, nonatomic) IBOutlet UILabel *priceLabel;
+@property (nonatomic) int currentIndex;
 
 @end
 
@@ -43,7 +53,14 @@ static const float CARD_WIDTH = 340; //%%% width of the draggable card
     
     self.restaurantView.layer.cornerRadius = 10;
     self.restaurantView.layer.masksToBounds = true;
+    self.restaurantView.alpha = 0;
+    
     self.cardCenter = self.restaurantView.center;
+    self.currentIndex = 0;
+    self.leftSwipes = [[NSMutableArray alloc] init];
+    self.rightSwipes = [[NSMutableArray alloc] init];
+    
+    //old code for buggy dynamic allocation
     self.loadedCards = [[NSMutableArray alloc] init];
     self.allCards = [[NSMutableArray alloc] init];
 }
@@ -71,21 +88,26 @@ static const float CARD_WIDTH = 340; //%%% width of the draggable card
     self.checkMarkImage.alpha = fabsf(xFromCenter) / self.view.center.x;
     
     //to make view bounce back after I let go
+    //note to self: maybe make helper method because this code is almost identical
     if (sender.state == UIGestureRecognizerStateEnded) {
         if (restaurantCard.center.x < 75) {
             //move card off to the left
             [UIView animateWithDuration:0.3 animations:^{
                 restaurantCard.center = CGPointMake(restaurantCard.center.x - 200, restaurantCard.center.y);
+            } completion:^(BOOL finished) {
+                [self.leftSwipes addObject:self.restaurants[self.currentIndex - 1]];
+                [self loadNextRestaurant];
             }];
-            [self loadNextRestaurant]; //laggy
             return;
         }
         else if (restaurantCard.center.x > self.view.frame.size.width - 75) {
             //move card off to the right
             [UIView animateWithDuration:0.3 animations:^{
                 restaurantCard.center = CGPointMake(restaurantCard.center.x + 200, restaurantCard.center.y);
+            } completion:^(BOOL finished) {
+                [self.rightSwipes addObject:self.restaurants[self.currentIndex - 1]];
+                [self loadNextRestaurant];
             }];
-            [self loadNextRestaurant]; //laggy
             return;
         }
         [UIView animateWithDuration:0.2 animations:^{
@@ -101,9 +123,7 @@ static const float CARD_WIDTH = 340; //%%% width of the draggable card
 -(RestaurantCardView *)makeRestaurantCard:(NSInteger)index
 {
     RestaurantCardView *card = [[RestaurantCardView alloc] initWithFrame:CGRectMake(25, 127, CARD_WIDTH, CARD_HEIGHT) restaurant:self.restaurants[index] loc:self.curLocation];
-    //card.curLocation = self.curLocation;
     card.delegate = self;
-    //card.restaurant = self.restaurants[index];
     return card;
 }
 
@@ -163,11 +183,42 @@ static const float CARD_WIDTH = 340; //%%% width of the draggable card
 }
 
 - (void)loadNextRestaurant {
-    sleep(1);
+    sleep(0.25);
+    
+    if (self.currentIndex >= [self.restaurants count]) {
+        return; //make sure things are in bounds, might add alert here later if I have time
+    }
+    YLPBusiness *restaurant = self.restaurants[self.currentIndex];
+    self.currentIndex++;
+    
+    //restaurant image
+    if (restaurant.imageURL != nil) {
+        NSData *data = [[NSData alloc] initWithContentsOfURL:restaurant.imageURL];
+        UIImage *imageData = [[UIImage alloc] initWithData:data];
+        self.restaurantImage.image = imageData;
+    }
+    else {
+        self.restaurantImage.image = [UIImage imageNamed:@"comingSoon.png"];
+    }
+    
+    self.nameLabel.text = restaurant.name;
+    self.descriptionLabel.text = restaurant.categories[0].name;
+    self.priceLabel.text = restaurant.price;
+    
+    //distance label
+    CLLocation *restaurantLoc = [[CLLocation alloc] initWithLatitude:restaurant.location.coordinate.latitude longitude:restaurant.location.coordinate.longitude];
+    //this is in meters
+    CLLocationDistance dist = [self.curLocation distanceFromLocation:restaurantLoc];
+    double distMiles = dist / 1609.0;
+    NSString *distStr = [NSString stringWithFormat:@"%.2f", distMiles];
+    distStr = [distStr stringByAppendingString:@" miles away"];
+    self.distanceLabel.text = distStr;
+    
+    self.restaurantView.center = self.cardCenter;
+    self.restaurantView.alpha = 1;
+    self.checkMarkImage.alpha = 0;
     [UIView animateWithDuration:0.3 animations:^{
-        self.restaurantView.center = self.cardCenter;
         self.restaurantView.alpha = 1;
-        self.checkMarkImage.alpha = 0;
     }];
     
     /*
@@ -189,7 +240,7 @@ static const float CARD_WIDTH = 340; //%%% width of the draggable card
     coord = [coord initWithLatitude:latitude longitude:longitude];
     YLPQuery *query = [[YLPQuery alloc] init];
     query = [query initWithCoordinate:coord];
-    query.limit = 3; //for testing, change back to 50 later
+    query.limit = 50; //for testing, change back to 50 later
     //convert miles to meters
     query.radiusFilter = [user[@"maxDistance"] doubleValue] * 1609.0;
     int low = [user[@"priceRangeLow"] intValue];
@@ -206,8 +257,10 @@ static const float CARD_WIDTH = 340; //%%% width of the draggable card
     //finally, the actual query
     [[AppDelegate sharedClient] searchWithQuery:query completionHandler:^(YLPSearch * _Nullable search, NSError * _Nullable error) {
         if (search != nil) {
-            self.restaurants = search.businesses;
+            self.restaurants = [NSMutableArray arrayWithArray:search.businesses];
             NSLog(@"successfully fetched restaurants");
+            [self loadNextRestaurant];
+            [self.restaurantView setNeedsDisplay];
             //[self loadCards]; //new!!
         }
         else {
