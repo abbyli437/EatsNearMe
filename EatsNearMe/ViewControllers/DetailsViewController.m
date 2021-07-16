@@ -42,6 +42,7 @@
     self.priceLabel.text = self.restaurant.price;
     self.distanceLabel.text = self.distString;
     
+    //open or closed setup
     if (self.restaurant.closed) {
         self.openLabel.text = @"Closed";
         self.openLabel.textColor = [UIColor redColor];
@@ -53,7 +54,13 @@
     
     self.websiteLabel.text = self.restaurant.URL.absoluteString;
     self.phoneLabel.text = self.restaurant.phone;
-    //self.addressLabel.text = self.restaurant.location.address;
+    
+    //address setup
+    NSString *address = self.restaurant.location.address[0];
+    address = [[address stringByAppendingString:@", "] stringByAppendingString:self.restaurant.location.city];
+    address = [[address stringByAppendingString:@", "] stringByAppendingString:self.restaurant.location.stateCode];
+    address = [[address stringByAppendingString:@" "] stringByAppendingString:self.restaurant.location.postalCode];
+    self.addressLabel.text = address;
 }
 
 /*

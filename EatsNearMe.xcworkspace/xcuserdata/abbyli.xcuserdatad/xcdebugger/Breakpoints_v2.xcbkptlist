@@ -71,8 +71,8 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "72443A03-62F2-4A46-9E66-7FF8DAA17544"
-            shouldBeEnabled = "Yes"
+            uuid = "E007E565-2288-452D-9AD9-A1AA427D3887"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "EatsNearMe/ViewControllers/SavedViewController.m"
