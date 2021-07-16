@@ -23,65 +23,17 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "82134CF2-60D5-4D67-88E7-08440EDC4F23"
+            uuid = "C2FE15CD-A8F9-4A7F-AB70-D99817EAD8AB"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "EatsNearMe/ViewControllers/HomeViewController.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "149"
-            endingLineNumber = "149"
-            landmarkName = "-loadNextRestaurant"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "1A7D0B35-79D6-424F-BAE7-BA8E530BCB3B"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "EatsNearMe/ViewControllers/HomeViewController.m"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "218"
-            endingLineNumber = "218"
+            startingLineNumber = "235"
+            endingLineNumber = "235"
             landmarkName = "-fetchRestaurants"
             landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "1A7D0B35-79D6-424F-BAE7-BA8E530BCB3B - 92ddc331ea42475c"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[HomeViewController fetchRestaurants]"
-                  moduleName = "EatsNearMe"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/abbyli/Desktop/Projects/EatsNearMe/EatsNearMe/ViewControllers/HomeViewController.m"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "218"
-                  endingLineNumber = "218"
-                  offsetFromSymbolStart = "1537">
-               </Location>
-               <Location
-                  uuid = "1A7D0B35-79D6-424F-BAE7-BA8E530BCB3B - fee1c23798485c8c"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "__38-[HomeViewController fetchRestaurants]_block_invoke"
-                  moduleName = "EatsNearMe"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/abbyli/Desktop/Projects/EatsNearMe/EatsNearMe/ViewControllers/HomeViewController.m"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "219"
-                  endingLineNumber = "219"
-                  offsetFromSymbolStart = "122">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

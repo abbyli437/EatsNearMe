@@ -20,11 +20,11 @@
 @property (strong, nonatomic) CLLocationManager *locationManager;
 @property (strong, nonatomic) CLLocation *curLocation;
 @property (strong, nonatomic) SavedViewController *secondTab;
-@property (strong, nonatomic) NSMutableArray *restaurants;
 @property (nonatomic) bool firstTime;
 @property (nonatomic) CGPoint cardCenter;
 @property (nonatomic) int offset;
 
+@property (strong, nonatomic) NSMutableArray *restaurants;
 @property (strong, nonatomic) NSMutableDictionary *swipes;
 @property (strong, nonatomic) NSMutableArray *rightSwipes;
 
@@ -48,6 +48,7 @@
     [super viewDidLoad];
     
     self.user = [[PFUser currentUser] fetch];
+    self.offset = [self.user[@"offset"] intValue];
     
     [self setUpLocation];
     self.firstTime = true;
@@ -129,13 +130,12 @@
         else {
             NSMutableDictionary *rightSwipes = [self.swipes objectForKey:@"rightSwipes"];
             [rightSwipes setValue:restaurant.name forKey:restaurant.name];
-            //[rightSwipes addObject:restaurant.name];
             [self.rightSwipes addObject:restaurant];
         }
         
         NSArray *vals = [NSArray arrayWithObject:self.swipes];
         NSArray *keys = [NSArray arrayWithObject:@"swipes"];
-        //this updates parse but I don't want to do it yet for testing
+   
         [ParseUtil udpateValues:vals keys:keys];
         
         [self loadNextRestaurant];
@@ -147,8 +147,12 @@
     sleep(0.25);
     
     if (self.currentIndex >= self.restaurants.count) {
+        UIAlertController *alert = [self makeAlert];
+        [self presentViewController:alert animated:YES completion:^{
+        }];
         return; //makes sure things are in bounds, might add alert here later if I have time
     }
+    
     YLPBusiness *restaurant = self.restaurants[self.currentIndex];
     self.currentIndex++;
     
@@ -184,6 +188,34 @@
     }];
 }
 
+- (UIAlertController *)makeAlert {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Load more restaurants?"
+        message:@"Load more restaurants?"
+        preferredStyle:(UIAlertControllerStyleAlert)];
+    
+    UIAlertAction *yesAction = [UIAlertAction actionWithTitle:@"Yes"
+        style:UIAlertActionStyleDefault
+        handler:^(UIAlertAction * _Nonnull action) {
+            self.offset += 3; //TODO: change this back to 50
+            self.currentIndex = 0;
+        
+            NSArray *vals = [NSArray arrayWithObject:@(self.offset)];
+            NSArray *keys = [NSArray arrayWithObject:@"offset"];
+            [ParseUtil udpateValues:vals keys:keys];
+        
+            [self fetchRestaurants];
+        }];
+    [alert addAction:yesAction];
+    
+    UIAlertAction *noAction = [UIAlertAction actionWithTitle:@"No"
+        style:UIAlertActionStyleDefault
+        handler:^(UIAlertAction * _Nonnull action) {
+        }];
+    [alert addAction:noAction];
+    
+    return alert;
+}
+
 - (void)fetchRestaurants {
     //PFUser *user = [[PFUser currentUser] fetch];
     
@@ -199,8 +231,8 @@
     coord = [coord initWithLatitude:latitude longitude:longitude];
     YLPQuery *query = [[YLPQuery alloc] init];
     query = [query initWithCoordinate:coord];
-    query.limit = 50;
-    query.offset = [self.user[@"offset"] intValue];
+    query.limit = 3; //TODO: change this back to 50
+    query.offset = self.offset;
     query.radiusFilter = [self.user[@"maxDistance"] doubleValue] * 1609.0;
     int low = [self.user[@"priceRangeLow"] intValue];
     int high = [self.user[@"priceRangeHigh"] intValue];
@@ -218,6 +250,7 @@
     [[AppDelegate sharedClient] searchWithQuery:query completionHandler:^(YLPSearch * _Nullable search, NSError * _Nullable error) {
         if (search != nil) {
             //self.restaurants = [NSMutableArray arrayWithArray:search.businesses]; //delete this later
+            self.restaurants = [[NSMutableArray alloc] init]; //reset restaurants to save space
             NSLog(@"successfully fetched restaurants");
             
             for (YLPBusiness *restaurant in search.businesses) {
