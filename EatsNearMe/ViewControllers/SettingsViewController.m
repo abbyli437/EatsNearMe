@@ -83,7 +83,7 @@
     //update info on Parse
     NSArray *vals = [NSArray arrayWithObjects:@(self.priceSlider.selectedMinimum), @(self.priceSlider.selectedMaximum), nil];
     NSArray *keys = [NSArray arrayWithObjects:@"priceRangeLow", @"priceRangeHigh", nil];
-    [ParseUtil udpateValues:vals keys:keys];
+    [ParseUtil updateValues:vals keys:keys];
 }
 
 - (IBAction)updateDistance:(id)sender {
@@ -93,9 +93,7 @@
     
     //store new value on parse in miles
     roundedDist = (int) (self.distanceSlider.value);
-    NSArray *vals = [NSArray arrayWithObject:@(roundedDist)];
-    NSArray *keys = [NSArray arrayWithObject:@"maxDistance"];
-    [ParseUtil udpateValues:vals keys:keys];
+    [ParseUtil updateValue:@(roundedDist) key:@"maxDistance"];
 }
 
 /*

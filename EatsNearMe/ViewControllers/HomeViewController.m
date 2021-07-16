@@ -132,11 +132,8 @@
             [rightSwipes setValue:restaurant.name forKey:restaurant.name];
             [self.rightSwipes addObject:restaurant];
         }
-        
-        NSArray *vals = [NSArray arrayWithObject:self.swipes];
-        NSArray *keys = [NSArray arrayWithObject:@"swipes"];
    
-        [ParseUtil udpateValues:vals keys:keys];
+        [ParseUtil updateValue:self.swipes key:@"swipes"];
         
         [self loadNextRestaurant];
     }];
@@ -196,12 +193,10 @@
     UIAlertAction *yesAction = [UIAlertAction actionWithTitle:@"Yes"
         style:UIAlertActionStyleDefault
         handler:^(UIAlertAction * _Nonnull action) {
-            self.offset += 3; //TODO: change this back to 50
+            self.offset += 50;
             self.currentIndex = 0;
         
-            NSArray *vals = [NSArray arrayWithObject:@(self.offset)];
-            NSArray *keys = [NSArray arrayWithObject:@"offset"];
-            [ParseUtil udpateValues:vals keys:keys];
+            [ParseUtil updateValue:@(self.offset) key:@"offset"];
         
             [self fetchRestaurants];
         }];
@@ -231,7 +226,7 @@
     coord = [coord initWithLatitude:latitude longitude:longitude];
     YLPQuery *query = [[YLPQuery alloc] init];
     query = [query initWithCoordinate:coord];
-    query.limit = 3; //TODO: change this back to 50
+    query.limit = 50;
     query.offset = self.offset;
     query.radiusFilter = [self.user[@"maxDistance"] doubleValue] * 1609.0;
     int low = [self.user[@"priceRangeLow"] intValue];

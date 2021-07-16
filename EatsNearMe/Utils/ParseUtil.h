@@ -11,7 +11,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface ParseUtil : NSObject
 
-+ (void)udpateValues:(NSArray *)vals keys:(NSArray *)keys;
++ (void)updateValues:(NSArray *)vals keys:(NSArray *)keys;
++ (void)updateValue:(NSObject *)val key:(NSString *)key;
 
 @end
 

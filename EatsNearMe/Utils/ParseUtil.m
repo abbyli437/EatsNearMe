@@ -10,7 +10,7 @@
 
 @implementation ParseUtil
 
-+ (void)udpateValues:(NSArray *)vals keys:(NSArray *)keys {
++ (void)updateValues:(NSArray *)vals keys:(NSArray *)keys {
     //key array should be string array
     if (vals.count != keys.count) {
         return;
@@ -24,6 +24,20 @@
         for (int i = 0; i < vals.count; i++) {
             [user setObject:vals[i] forKey:keys[i]];
         }
+        [user saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+            NSLog(@"successfully updated info");
+        }];
+    }];
+}
+
++ (void)updateValue:(NSObject *)val key:(NSString *)key {
+    PFQuery *query = [PFQuery queryWithClassName:@"_User"];
+    PFUser *user = [PFUser currentUser];
+
+    // Retrieve the object by id
+    [query getObjectInBackgroundWithId:user.objectId
+                                block:^(PFObject *user, NSError *error) {
+        [user setObject:val forKey:key];
         [user saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
             NSLog(@"successfully updated info");
         }];
