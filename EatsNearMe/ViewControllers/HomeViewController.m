@@ -25,7 +25,6 @@
 
 @property (strong, nonatomic) NSMutableDictionary *swipes;
 @property (strong, nonatomic) NSMutableArray *rightSwipes;
-@property (strong, nonatomic) NSMutableArray *leftSwipes;
 
 //card view props
 @property (weak, nonatomic) IBOutlet UIView *restaurantView;
@@ -61,8 +60,7 @@
     [self.swipes setObject:[[NSMutableDictionary alloc] init] forKey:@"leftSwipes"];
     [self.swipes setObject:[[NSMutableDictionary alloc] init] forKey:@"rightSwipes"];
     
-    //keep track of these locally (do I even need left swipes?)
-    self.leftSwipes = [[NSMutableArray alloc] init];
+    //keep track of swipes locally
     self.rightSwipes = [[NSMutableArray alloc] init];
     
     self.restaurants = [[NSMutableArray alloc] init];
@@ -123,8 +121,6 @@
         if (isLeft) {
             NSMutableDictionary *leftSwipes = [self.swipes objectForKey:@"leftSwipes"];
             [leftSwipes setValue:restaurant.name forKey:restaurant.name];
-            //[leftSwipes addObject:restaurant.name];
-            [self.leftSwipes addObject:restaurant];
         }
         else {
             NSMutableDictionary *rightSwipes = [self.swipes objectForKey:@"rightSwipes"];
@@ -224,10 +220,8 @@
                 if ([rightSwipes objectForKey:restaurant.name] != nil) {
                     [self.rightSwipes addObject:restaurant];
                 }
-                else if ([leftSwipes objectForKey:restaurant.name] != nil) {
-                    [self.leftSwipes addObject:restaurant];
-                }
-                else {
+                else if ([leftSwipes objectForKey:restaurant.name] == nil) {
+                    //restuarant hasn't been seen before
                     [self.restaurants addObject:restaurant];
                 }
             }
