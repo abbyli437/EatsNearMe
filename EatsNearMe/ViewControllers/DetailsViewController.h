@@ -6,10 +6,14 @@
 //
 
 #import <UIKit/UIKit.h>
+@import YelpAPI;
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface DetailsViewController : UIViewController
+
+@property (strong, nonatomic) YLPBusiness *restaurant;
+@property (strong, nonatomic) NSString *distString;
 
 @end
 

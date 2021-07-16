@@ -149,45 +149,62 @@
                                 <rect key="frame" x="0.0" y="88" width="390" height="673"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="120" id="RWj-RX-xIl" customClass="RestaurantCell">
-                                        <rect key="frame" x="0.0" y="24.333333969116211" width="390" height="120"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="RestaurantCell" id="RWj-RX-xIl" customClass="RestaurantCell">
+                                        <rect key="frame" x="0.0" y="24.333333969116211" width="390" height="107.33333587646484"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="RWj-RX-xIl" id="osn-IU-Jtf">
-                                            <rect key="frame" x="0.0" y="0.0" width="390" height="120"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="390" height="107.33333587646484"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rhe-44-YUb">
+                                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="rhe-44-YUb">
                                                     <rect key="frame" x="16" y="16" width="75" height="75"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="75" id="pRm-b1-xJL"/>
+                                                        <constraint firstAttribute="height" constant="75" id="sWC-E6-IW4"/>
+                                                    </constraints>
                                                 </imageView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Restaurant Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ave-fl-LtA">
-                                                    <rect key="frame" x="99" y="16" width="177" height="21"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Restaurant Name" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ave-fl-LtA">
+                                                    <rect key="frame" x="99" y="16" width="201" height="23"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="19"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <button opaque="NO" contentMode="scaleAspectFit" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yPX-iM-BeR">
-                                                    <rect key="frame" x="321" y="16" width="57" height="55"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <button opaque="NO" contentMode="scaleAspectFit" ambiguous="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yPX-iM-BeR">
+                                                    <rect key="frame" x="308" y="16" width="50" height="50"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="50" id="QLw-uO-flG"/>
+                                                        <constraint firstAttribute="width" constant="50" id="qOf-Nc-xpx"/>
+                                                    </constraints>
                                                     <state key="normal" title="Button" image="rectangle" catalog="system"/>
                                                     <state key="selected" image="checkmark.rectangle.fill" catalog="system"/>
                                                 </button>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="1 mile away" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IPL-AW-hVz">
-                                                    <rect key="frame" x="99" y="43" width="156" height="21"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="1 mile away" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IPL-AW-hVz">
+                                                    <rect key="frame" x="99" y="47" width="201" height="21"/>
                                                     <fontDescription key="fontDescription" type="system" weight="light" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
+                                            <constraints>
+                                                <constraint firstItem="Ave-fl-LtA" firstAttribute="leading" secondItem="rhe-44-YUb" secondAttribute="trailing" constant="8" id="1uQ-QY-fMD"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="yPX-iM-BeR" secondAttribute="trailing" constant="12" id="HbU-Wv-tiZ"/>
+                                                <constraint firstItem="IPL-AW-hVz" firstAttribute="leading" secondItem="Ave-fl-LtA" secondAttribute="leading" id="HwI-0h-DTs"/>
+                                                <constraint firstItem="Ave-fl-LtA" firstAttribute="top" secondItem="rhe-44-YUb" secondAttribute="top" id="Rn7-3v-Hsf"/>
+                                                <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="rhe-44-YUb" secondAttribute="bottom" constant="16" id="SsS-Qm-fUS"/>
+                                                <constraint firstItem="yPX-iM-BeR" firstAttribute="leading" secondItem="IPL-AW-hVz" secondAttribute="trailing" constant="8" id="WDa-hq-L0f"/>
+                                                <constraint firstAttribute="bottomMargin" relation="greaterThanOrEqual" secondItem="IPL-AW-hVz" secondAttribute="bottom" constant="8" id="abi-mN-IXy"/>
+                                                <constraint firstItem="yPX-iM-BeR" firstAttribute="leading" secondItem="Ave-fl-LtA" secondAttribute="trailing" constant="8" id="fvy-ZA-ITB"/>
+                                                <constraint firstItem="IPL-AW-hVz" firstAttribute="top" secondItem="Ave-fl-LtA" secondAttribute="bottom" constant="8" id="lzq-cY-Tdz"/>
+                                                <constraint firstItem="rhe-44-YUb" firstAttribute="top" secondItem="osn-IU-Jtf" secondAttribute="top" constant="16" id="uS2-gF-nJM"/>
+                                                <constraint firstItem="rhe-44-YUb" firstAttribute="leading" secondItem="osn-IU-Jtf" secondAttribute="leading" constant="16" id="zGy-ft-D68"/>
+                                            </constraints>
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="distanceLabel" destination="IPL-AW-hVz" id="zol-pT-376"/>
                                             <outlet property="hasVisitedButton" destination="yPX-iM-BeR" id="nEi-YF-Him"/>
                                             <outlet property="nameLabel" destination="Ave-fl-LtA" id="L8L-1T-RPS"/>
                                             <outlet property="restaurantImage" destination="rhe-44-YUb" id="2ZE-zF-YEE"/>
-                                            <segue destination="Qhg-yp-LTM" kind="show" id="RSv-WA-Xbh"/>
+                                            <segue destination="Qhg-yp-LTM" kind="show" identifier="detailsSegue" id="RSv-WA-Xbh"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -222,7 +239,7 @@
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2oc-38-LPK">
                                 <rect key="frame" x="0.0" y="88" width="390" height="673"/>
                                 <subviews>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="a2v-bo-dqu">
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="a2v-bo-dqu">
                                         <rect key="frame" x="0.0" y="0.0" width="390" height="197"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     </imageView>
@@ -333,6 +350,17 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="tA1-7y-mtX"/>
+                    <connections>
+                        <outlet property="addressLabel" destination="Hc6-ii-QQh" id="ypx-DQ-4RA"/>
+                        <outlet property="descriptionLabel" destination="fxm-yA-8J4" id="4Bo-UQ-3S9"/>
+                        <outlet property="distanceLabel" destination="7gX-qd-uaH" id="i1M-nU-rnS"/>
+                        <outlet property="nameLabel" destination="Kbm-Ss-w1i" id="G9c-2h-QD6"/>
+                        <outlet property="openLabel" destination="KJc-dE-hvV" id="zn1-0Q-Sd4"/>
+                        <outlet property="phoneLabel" destination="K9f-gU-i81" id="SJi-bE-aK7"/>
+                        <outlet property="priceLabel" destination="9eJ-WN-hLt" id="3IB-XI-apD"/>
+                        <outlet property="restaurantImage" destination="a2v-bo-dqu" id="0d0-Ph-osA"/>
+                        <outlet property="websiteLabel" destination="N6p-OS-ckw" id="T1k-Ny-V4Y"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Jw9-Kd-Ufn" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

@@ -17,13 +17,14 @@
 
 @property (strong, nonatomic) CLLocationManager *locationManager;
 @property (strong, nonatomic) CLLocation *curLocation;
+@property (strong, nonatomic) SavedViewController *secondTab;
 @property (strong, nonatomic) NSMutableArray *restaurants;
 @property (nonatomic) bool firstTime;
 @property (nonatomic) CGPoint cardCenter;
 
 @property (strong, nonatomic) NSMutableDictionary *swipes;
-@property (strong, nonatomic) NSMutableDictionary *rightSwipes;
-@property (strong, nonatomic) NSMutableDictionary *leftSwipes;
+@property (strong, nonatomic) NSMutableArray *rightSwipes;
+@property (strong, nonatomic) NSMutableArray *leftSwipes;
 
 //card view props
 @property (weak, nonatomic) IBOutlet UIView *restaurantView;
@@ -60,8 +61,12 @@
     [self.swipes setObject:[[NSMutableDictionary alloc] init] forKey:@"rightSwipes"];
     
     //keep track of these locally (do I even need left swipes?)
-    self.leftSwipes = [[NSMutableDictionary alloc] initWithCapacity:10];
-    self.rightSwipes = [[NSMutableDictionary alloc] initWithCapacity:10];
+    self.leftSwipes = [[NSMutableArray alloc] init];
+    self.rightSwipes = [[NSMutableArray alloc] init];
+    
+    UINavigationController *secondController = self.tabBarController.viewControllers[1];
+    self.secondTab = secondController.viewControllers.firstObject;
+    self.secondTab.restaurants = self.rightSwipes;
 }
 
 - (IBAction)swipeRestaurant:(UIPanGestureRecognizer *)sender {
@@ -114,21 +119,20 @@
         if (isLeft) {
             NSMutableDictionary *leftSwipes = [self.swipes objectForKey:@"leftSwipes"];
             [leftSwipes setValue:restaurant.name forKey:restaurant.name];
-            [self.leftSwipes setObject:restaurant forKey:restaurant.name];
             //[leftSwipes addObject:restaurant.name];
-            //[self.leftSwipes addObject:restaurant];
+            [self.leftSwipes addObject:restaurant];
         }
         else {
             NSMutableDictionary *rightSwipes = [self.swipes objectForKey:@"rightSwipes"];
             [rightSwipes setValue:restaurant.name forKey:restaurant.name];
-            [self.rightSwipes setObject:restaurant forKey:restaurant.name];
             //[rightSwipes addObject:restaurant.name];
-            //[self.rightSwipes addObject:restaurant];
+            [self.rightSwipes addObject:restaurant];
         }
         
         NSArray *vals = [NSArray arrayWithObject:self.swipes];
         NSArray *keys = [NSArray arrayWithObject:@"swipes"];
-        [ParseUtil udpateValues:vals keys:keys];
+        //this updates parse but I don't want to do it yet for testing
+        //[ParseUtil udpateValues:vals keys:keys];
         
         [self loadNextRestaurant];
     }];
@@ -232,6 +236,7 @@
     //lastObject is the most recent location
     NSLog(@"%@", [locations lastObject]);
     self.curLocation = [locations lastObject];
+    self.secondTab.curLocation = self.curLocation;
     
     //this is so I get the location first before I call the API
     if (self.firstTime) {

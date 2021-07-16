@@ -11,9 +11,6 @@
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
-@property (strong, nonatomic) NSMutableArray *savedRestaurants;
-@property (nonatomic) CLLocation *curLocation;
-
 + (YLPClient *)sharedClient;
 
 @end
