@@ -21,6 +21,7 @@
 @property (strong, nonatomic) NSMutableArray *restaurants;
 @property (nonatomic) bool firstTime;
 @property (nonatomic) CGPoint cardCenter;
+@property (nonatomic) int offset;
 
 @property (strong, nonatomic) NSMutableDictionary *swipes;
 @property (strong, nonatomic) NSMutableArray *rightSwipes;
@@ -207,7 +208,7 @@
     NSString *priceQuery = [NSString stringWithFormat:@"%d", low];
     for (int i = low + 1; i <= high; i++) {
         priceQuery = [priceQuery stringByAppendingString:@", "];
-        priceQuery = [priceQuery stringByAppendingString:[NSString stringWithFormat:@"%d", high]];
+        priceQuery = [priceQuery stringByAppendingString:[NSString stringWithFormat:@"%d", i]];
     }
     query.price = priceQuery;
     
@@ -265,20 +266,14 @@
     }
 }
 
-
+/*
 #pragma mark - Navigation
 
-//note: this doesn't work between tabs so I might delete later
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
-    if ([[segue identifier] isEqualToString:@"savedSegue"]) {
-        SavedViewController *savedViewController = [segue destinationViewController];
-        savedViewController.curLocation = self.curLocation;
-        savedViewController.restaurants = self.rightSwipes;
-    }
 }
-
+*/
 
 @end

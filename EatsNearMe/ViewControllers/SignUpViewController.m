@@ -48,6 +48,15 @@
         [newUser setObject:@(1) forKey:@"priceRangeLow"];
         [newUser setObject:@(4) forKey:@"priceRangeHigh"];
         
+        //initialize empty dictionary of left/right swipes
+        NSMutableDictionary *swipes = [[NSMutableDictionary alloc] initWithCapacity:10];
+        [swipes setObject:[[NSMutableDictionary alloc] init] forKey:@"leftSwipes"];
+        [swipes setObject:[[NSMutableDictionary alloc] init] forKey:@"rightSwipes"];
+        [newUser setObject:swipes forKey:@"swipes"];
+        
+        //default offset of 0
+        [newUser setValue:@(0) forKey:@"offset"];
+        
         // call sign up function on the object
         [newUser signUpInBackgroundWithBlock:^(BOOL succeeded, NSError * error) {
             if (error != nil) {
