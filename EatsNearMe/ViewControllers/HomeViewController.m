@@ -15,6 +15,8 @@
 
 @interface HomeViewController ()  <CLLocationManagerDelegate>
 
+@property (strong, nonatomic) PFUser *user;
+
 @property (strong, nonatomic) CLLocationManager *locationManager;
 @property (strong, nonatomic) CLLocation *curLocation;
 @property (strong, nonatomic) SavedViewController *secondTab;
@@ -44,6 +46,8 @@
 //or just fetch 20 restaurants and get more later to make fetch faster
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.user = [[PFUser currentUser] fetch];
     
     [self setUpLocation];
     self.firstTime = true;
@@ -181,11 +185,11 @@
 }
 
 - (void)fetchRestaurants {
-    PFUser *user = [[PFUser currentUser] fetch];
+    //PFUser *user = [[PFUser currentUser] fetch];
     
     //set the swipe arrays
-    if (user[@"swipes"] != nil) {
-        self.swipes = user[@"swipes"];
+    if (self.user[@"swipes"] != nil) {
+        self.swipes = self.user[@"swipes"];
     }
     
     //set up query
@@ -196,9 +200,11 @@
     YLPQuery *query = [[YLPQuery alloc] init];
     query = [query initWithCoordinate:coord];
     query.limit = 50;
-    query.radiusFilter = [user[@"maxDistance"] doubleValue] * 1609.0;
-    int low = [user[@"priceRangeLow"] intValue];
-    int high = [user[@"priceRangeHigh"] intValue];
+    query.offset = [self.user[@"offset"] intValue];
+    query.radiusFilter = [self.user[@"maxDistance"] doubleValue] * 1609.0;
+    int low = [self.user[@"priceRangeLow"] intValue];
+    int high = [self.user[@"priceRangeHigh"] intValue];
+    
     
     //set up price parameter
     NSString *priceQuery = [NSString stringWithFormat:@"%d", low];
