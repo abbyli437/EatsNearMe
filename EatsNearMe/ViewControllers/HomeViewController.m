@@ -64,6 +64,9 @@
     self.leftSwipes = [[NSMutableArray alloc] init];
     self.rightSwipes = [[NSMutableArray alloc] init];
     
+    self.restaurants = [[NSMutableArray alloc] init];
+    
+    //to pass right swipes to Saved Tab
     UINavigationController *secondController = self.tabBarController.viewControllers[1];
     self.secondTab = secondController.viewControllers.firstObject;
     self.secondTab.restaurants = self.rightSwipes;
@@ -132,7 +135,7 @@
         NSArray *vals = [NSArray arrayWithObject:self.swipes];
         NSArray *keys = [NSArray arrayWithObject:@"swipes"];
         //this updates parse but I don't want to do it yet for testing
-        //[ParseUtil udpateValues:vals keys:keys];
+        [ParseUtil udpateValues:vals keys:keys];
         
         [self loadNextRestaurant];
     }];
@@ -182,10 +185,15 @@
 
 - (void)fetchRestaurants {
     PFUser *user = [[PFUser currentUser] fetch];
-    double latitude = (double) self.curLocation.coordinate.latitude;
-    double longitude = (double) self.curLocation.coordinate.longitude;
+    
+    //set the swipe arrays
+    if (user[@"swipes"] != nil) {
+        self.swipes = user[@"swipes"];
+    }
     
     //set up query
+    double latitude = (double) self.curLocation.coordinate.latitude;
+    double longitude = (double) self.curLocation.coordinate.longitude;
     YLPCoordinate *coord = [[YLPCoordinate alloc] init];
     coord = [coord initWithLatitude:latitude longitude:longitude];
     YLPQuery *query = [[YLPQuery alloc] init];
@@ -206,10 +214,22 @@
     //finally, the actual query
     [[AppDelegate sharedClient] searchWithQuery:query completionHandler:^(YLPSearch * _Nullable search, NSError * _Nullable error) {
         if (search != nil) {
-            self.restaurants = [NSMutableArray arrayWithArray:search.businesses];
+            //self.restaurants = [NSMutableArray arrayWithArray:search.businesses]; //delete this later
             NSLog(@"successfully fetched restaurants");
-            //TODO: set leftSwipes and rightSwipes locally- loop thru self.restaurants.
-            //TODO: update loadNextRestaurant to check if the restaurant hasn't already been seen (contains)- maybe change local left/rightSwipes to dictionaries with name as key? Then I can do a Contains check
+            
+            for (YLPBusiness *restaurant in search.businesses) {
+                NSMutableDictionary *leftSwipes = [self.swipes objectForKey:@"leftSwipes"];
+                NSMutableDictionary *rightSwipes = [self.swipes objectForKey:@"rightSwipes"];
+                if ([rightSwipes objectForKey:restaurant.name] != nil) {
+                    [self.rightSwipes addObject:restaurant];
+                }
+                else if ([leftSwipes objectForKey:restaurant.name] != nil) {
+                    [self.leftSwipes addObject:restaurant];
+                }
+                else {
+                    [self.restaurants addObject:restaurant];
+                }
+            }
             [self loadNextRestaurant];
             [self.restaurantView setNeedsDisplay];
         }
