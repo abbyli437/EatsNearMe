@@ -181,4 +181,4 @@ Network Request Outline
 
 
 ## Credits
-- https://github.com/TomThorpe/TTRangeSlider
+- 3rd party UI library: https://github.com/TomThorpe/TTRangeSlider

@@ -8,24 +8,22 @@
 #import "HomeViewController.h"
 #import <CoreLocation/CoreLocation.h>
 #import "Parse/Parse.h"
+#import "ParseUtil.h"
 #import "AppDelegate.h"
-#import "RestaurantCardView.h"
+#import "SavedViewController.h"
 @import YelpAPI;
 
-@interface HomeViewController ()  <CLLocationManagerDelegate, RestaurantCardViewDelegate>
+@interface HomeViewController ()  <CLLocationManagerDelegate>
 
 @property (strong, nonatomic) CLLocationManager *locationManager;
 @property (strong, nonatomic) CLLocation *curLocation;
 @property (strong, nonatomic) NSMutableArray *restaurants;
 @property (nonatomic) bool firstTime;
 @property (nonatomic) CGPoint cardCenter;
-@property (strong, nonatomic) NSMutableArray *rightSwipes;
-@property (strong, nonatomic) NSMutableArray *leftSwipes;
 
-//from dynamic views, delete later
-@property (strong, nonatomic) NSMutableArray *loadedCards;
-@property (nonatomic) int cardsLoadedIndex;
-@property (strong, nonatomic) NSMutableArray *allCards; //github version had retain instead of strong
+@property (strong, nonatomic) NSMutableDictionary *swipes;
+@property (strong, nonatomic) NSMutableDictionary *rightSwipes;
+@property (strong, nonatomic) NSMutableDictionary *leftSwipes;
 
 //card view props
 @property (weak, nonatomic) IBOutlet UIView *restaurantView;
@@ -41,10 +39,8 @@
 
 @implementation HomeViewController
 
-static const int MAX_BUFFER_SIZE = 2; //%%% max number of cards loaded at any given time, must be greater than 1
-static const float CARD_HEIGHT = 500; //%%% height of the draggable card
-static const float CARD_WIDTH = 340; //%%% width of the draggable card
-
+//TODO: add spinner for loading
+//or just fetch 20 restaurants and get more later to make fetch faster
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -53,16 +49,19 @@ static const float CARD_WIDTH = 340; //%%% width of the draggable card
     
     self.restaurantView.layer.cornerRadius = 10;
     self.restaurantView.layer.masksToBounds = true;
-    self.restaurantView.alpha = 0;
+    //self.restaurantView.alpha = 0;
     
     self.cardCenter = self.restaurantView.center;
     self.currentIndex = 0;
-    self.leftSwipes = [[NSMutableArray alloc] init];
-    self.rightSwipes = [[NSMutableArray alloc] init];
     
-    //old code for buggy dynamic allocation
-    self.loadedCards = [[NSMutableArray alloc] init];
-    self.allCards = [[NSMutableArray alloc] init];
+    //might use swipes to only store restaurant names because Parse can't store YLPBusiness objects
+    self.swipes = [[NSMutableDictionary alloc] initWithCapacity:10];
+    [self.swipes setObject:[[NSMutableDictionary alloc] init] forKey:@"leftSwipes"];
+    [self.swipes setObject:[[NSMutableDictionary alloc] init] forKey:@"rightSwipes"];
+    
+    //keep track of these locally (do I even need left swipes?)
+    self.leftSwipes = [[NSMutableDictionary alloc] initWithCapacity:10];
+    self.rightSwipes = [[NSMutableDictionary alloc] initWithCapacity:10];
 }
 
 - (IBAction)swipeRestaurant:(UIPanGestureRecognizer *)sender {
@@ -70,7 +69,7 @@ static const float CARD_WIDTH = 340; //%%% width of the draggable card
         return;
     }
     
-    UIView *restaurantCard = sender.view; //swift had a ! at the end, not sure how to get that in objecitve-c
+    UIView *restaurantCard = sender.view;
     CGPoint point = [sender translationInView:self.view];
     restaurantCard.center = CGPointMake(self.view.center.x + point.x, self.view.center.y + point.y);
     float xFromCenter = restaurantCard.center.x - self.view.center.x;
@@ -88,26 +87,15 @@ static const float CARD_WIDTH = 340; //%%% width of the draggable card
     self.checkMarkImage.alpha = fabsf(xFromCenter) / self.view.center.x;
     
     //to make view bounce back after I let go
-    //note to self: maybe make helper method because this code is almost identical
     if (sender.state == UIGestureRecognizerStateEnded) {
         if (restaurantCard.center.x < 75) {
             //move card off to the left
-            [UIView animateWithDuration:0.3 animations:^{
-                restaurantCard.center = CGPointMake(restaurantCard.center.x - 200, restaurantCard.center.y);
-            } completion:^(BOOL finished) {
-                [self.leftSwipes addObject:self.restaurants[self.currentIndex - 1]];
-                [self loadNextRestaurant];
-            }];
+            [self afterSwipeAction:-200 isLeft:true];
             return;
         }
         else if (restaurantCard.center.x > self.view.frame.size.width - 75) {
             //move card off to the right
-            [UIView animateWithDuration:0.3 animations:^{
-                restaurantCard.center = CGPointMake(restaurantCard.center.x + 200, restaurantCard.center.y);
-            } completion:^(BOOL finished) {
-                [self.rightSwipes addObject:self.restaurants[self.currentIndex - 1]];
-                [self loadNextRestaurant];
-            }];
+            [self afterSwipeAction:200 isLeft:false];
             return;
         }
         [UIView animateWithDuration:0.2 animations:^{
@@ -117,76 +105,41 @@ static const float CARD_WIDTH = 340; //%%% width of the draggable card
     }
 }
 
-//%%% creates a card and returns it.  This should be customized to fit your needs.
-// use "index" to indicate where the information should be pulled.  If this doesn't apply to you, feel free
-// to get rid of it (eg: if you are building cards from data from the internet)
--(RestaurantCardView *)makeRestaurantCard:(NSInteger)index
-{
-    RestaurantCardView *card = [[RestaurantCardView alloc] initWithFrame:CGRectMake(25, 127, CARD_WIDTH, CARD_HEIGHT) restaurant:self.restaurants[index] loc:self.curLocation];
-    card.delegate = self;
-    return card;
-}
-
-//%%% loads all the cards and puts the first x in the "loaded cards" array
--(void)loadCards
-{
-    if([self.restaurants count] > 0) {
-        NSInteger numLoadedCardsCap =(([self.restaurants count] > MAX_BUFFER_SIZE)?MAX_BUFFER_SIZE:[self.restaurants count]);
-        //%%% if the buffer size is greater than the data size, there will be an array error, so this makes sure that doesn't happen
-        
-        //%%% loops through the exampleCardsLabels array to create a card for each label.  This should be customized by removing "exampleCardLabels" with your own array of data
-        for (int i = 0; i<[self.restaurants count]; i++) {
-            RestaurantCardView* newCard = [self makeRestaurantCard:i];
-            [self.allCards addObject:newCard];
-            
-            if (i<numLoadedCardsCap) {
-                //%%% adds a small number of cards to be loaded
-                [self.loadedCards addObject:newCard];
-            }
+- (void)afterSwipeAction:(int)swipeDir isLeft:(bool)isLeft {
+    //move card off to the right
+    [UIView animateWithDuration:0.3 animations:^{
+        self.restaurantView.center = CGPointMake(self.restaurantView.center.x + swipeDir, self.restaurantView.center.y);
+    } completion:^(BOOL finished) {
+        YLPBusiness *restaurant = self.restaurants[self.currentIndex - 1];
+        if (isLeft) {
+            NSMutableDictionary *leftSwipes = [self.swipes objectForKey:@"leftSwipes"];
+            [leftSwipes setValue:restaurant.name forKey:restaurant.name];
+            [self.leftSwipes setObject:restaurant forKey:restaurant.name];
+            //[leftSwipes addObject:restaurant.name];
+            //[self.leftSwipes addObject:restaurant];
+        }
+        else {
+            NSMutableDictionary *rightSwipes = [self.swipes objectForKey:@"rightSwipes"];
+            [rightSwipes setValue:restaurant.name forKey:restaurant.name];
+            [self.rightSwipes setObject:restaurant forKey:restaurant.name];
+            //[rightSwipes addObject:restaurant.name];
+            //[self.rightSwipes addObject:restaurant];
         }
         
-        dispatch_async(dispatch_get_main_queue(), ^{
-            //%%% displays the small number of loaded cards dictated by MAX_BUFFER_SIZE so that not all the cards
-            // are showing at once and clogging a ton of data
-            for (int i = 0; i<[self.loadedCards count]; i++) {
-                if (i>0) {
-                    [self.view insertSubview:[self.loadedCards objectAtIndex:i] belowSubview:[self.loadedCards objectAtIndex:i-1]];
-                } else {
-                    RestaurantCardView *cur = self.loadedCards[i];
-                    [self.view addSubview:cur];
-                }
-                self.cardsLoadedIndex++; //%%% we loaded a card into loaded cards, so we have to increment
-            }
-        });
-    }
-}
-
-#warning include own action here!
-//%%% action called when the card goes to the left.
-// This should be customized with your own action
--(void)cardSwipedLeft:(UIView *)card;
-{
-    //do whatever you want with the card that was swiped
-    //    DraggableView *c = (DraggableView *)card;
-    
-    [self loadNextRestaurant];
-}
-
-#warning include own action here!
-//%%% action called when the card goes to the right.
-// This should be customized with your own action
--(void)cardSwipedRight:(UIView *)card
-{
-    //do whatever you want with the card that was swiped
-    //    DraggableView *c = (DraggableView *)card;
-    [self loadNextRestaurant];
+        NSArray *vals = [NSArray arrayWithObject:self.swipes];
+        NSArray *keys = [NSArray arrayWithObject:@"swipes"];
+        [ParseUtil udpateValues:vals keys:keys];
+        
+        [self loadNextRestaurant];
+    }];
+    return;
 }
 
 - (void)loadNextRestaurant {
     sleep(0.25);
     
-    if (self.currentIndex >= [self.restaurants count]) {
-        return; //make sure things are in bounds, might add alert here later if I have time
+    if (self.currentIndex >= self.restaurants.count) {
+        return; //makes sure things are in bounds, might add alert here later if I have time
     }
     YLPBusiness *restaurant = self.restaurants[self.currentIndex];
     self.currentIndex++;
@@ -209,6 +162,7 @@ static const float CARD_WIDTH = 340; //%%% width of the draggable card
     CLLocation *restaurantLoc = [[CLLocation alloc] initWithLatitude:restaurant.location.coordinate.latitude longitude:restaurant.location.coordinate.longitude];
     //this is in meters
     CLLocationDistance dist = [self.curLocation distanceFromLocation:restaurantLoc];
+    //convert meters to miles
     double distMiles = dist / 1609.0;
     NSString *distStr = [NSString stringWithFormat:@"%.2f", distMiles];
     distStr = [distStr stringByAppendingString:@" miles away"];
@@ -220,14 +174,6 @@ static const float CARD_WIDTH = 340; //%%% width of the draggable card
     [UIView animateWithDuration:0.3 animations:^{
         self.restaurantView.alpha = 1;
     }];
-    
-    /*
-    [self.loadedCards removeObjectAtIndex:0]; //%%% card was swiped, so it's no longer a "loaded card"
-    if (self.cardsLoadedIndex < [self.restaurants count]) { //%%% if we haven't reached the end of all cards, put another into the loaded cards
-        [self.loadedCards addObject:[self.restaurants objectAtIndex:self.cardsLoadedIndex]];
-        self.cardsLoadedIndex++;//%%% loaded a card, so have to increment count
-        [self.view insertSubview:[self.loadedCards objectAtIndex:(MAX_BUFFER_SIZE-1)] belowSubview:[self.loadedCards objectAtIndex:(MAX_BUFFER_SIZE-2)]]; //buggy
-    }*/
 }
 
 - (void)fetchRestaurants {
@@ -240,8 +186,7 @@ static const float CARD_WIDTH = 340; //%%% width of the draggable card
     coord = [coord initWithLatitude:latitude longitude:longitude];
     YLPQuery *query = [[YLPQuery alloc] init];
     query = [query initWithCoordinate:coord];
-    query.limit = 50; //for testing, change back to 50 later
-    //convert miles to meters
+    query.limit = 50;
     query.radiusFilter = [user[@"maxDistance"] doubleValue] * 1609.0;
     int low = [user[@"priceRangeLow"] intValue];
     int high = [user[@"priceRangeHigh"] intValue];
@@ -259,9 +204,10 @@ static const float CARD_WIDTH = 340; //%%% width of the draggable card
         if (search != nil) {
             self.restaurants = [NSMutableArray arrayWithArray:search.businesses];
             NSLog(@"successfully fetched restaurants");
+            //TODO: set leftSwipes and rightSwipes locally- loop thru self.restaurants.
+            //TODO: update loadNextRestaurant to check if the restaurant hasn't already been seen (contains)- maybe change local left/rightSwipes to dictionaries with name as key? Then I can do a Contains check
             [self loadNextRestaurant];
             [self.restaurantView setNeedsDisplay];
-            //[self loadCards]; //new!!
         }
         else {
             NSLog(@"%@", error.localizedDescription);
@@ -294,14 +240,20 @@ static const float CARD_WIDTH = 340; //%%% width of the draggable card
     }
 }
 
-/*
+
 #pragma mark - Navigation
 
+//note: this doesn't work between tabs so I might delete later
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
+    if ([[segue identifier] isEqualToString:@"savedSegue"]) {
+        SavedViewController *savedViewController = [segue destinationViewController];
+        savedViewController.curLocation = self.curLocation;
+        savedViewController.restaurants = self.rightSwipes;
+    }
 }
-*/
+
 
 @end

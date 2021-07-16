@@ -6,8 +6,11 @@
 //
 
 #import "SavedViewController.h"
+#import "RestaurantCell.h"
 
-@interface SavedViewController ()
+@interface SavedViewController () <UITableViewDelegate, UITableViewDataSource>
+
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
 
 @end
 
@@ -15,7 +18,24 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+    
+    self.tableView.delegate = self;
+    self.tableView.dataSource = self;
+}
+
+//table view methods
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return self.restaurants.count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    RestaurantCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"RestaurantCell" forIndexPath:indexPath];
+    
+    YLPBusiness *restaurant = [self.restaurants objectAtIndex:indexPath.row];
+    cell.curLocation = self.curLocation;
+    cell.restaurant = restaurant;
+    
+    return cell;
 }
 
 /*

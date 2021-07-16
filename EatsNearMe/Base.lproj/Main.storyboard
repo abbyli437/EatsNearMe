@@ -130,7 +130,7 @@
                     </tabBar>
                     <connections>
                         <segue destination="JUS-77-CXH" kind="relationship" relationship="viewControllers" id="yfX-6Z-ibd"/>
-                        <segue destination="rQs-8E-8yq" kind="relationship" relationship="viewControllers" id="2ee-nB-CEc"/>
+                        <segue destination="rQs-8E-8yq" kind="relationship" relationship="viewControllers" destinationCreationSelector="savedSegue" id="2ee-nB-CEc"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="g41-4K-tWo" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -183,10 +183,10 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <outlet property="coverImage" destination="rhe-44-YUb" id="2ZE-zF-YEE"/>
                                             <outlet property="distanceLabel" destination="IPL-AW-hVz" id="zol-pT-376"/>
                                             <outlet property="hasVisitedButton" destination="yPX-iM-BeR" id="nEi-YF-Him"/>
                                             <outlet property="nameLabel" destination="Ave-fl-LtA" id="L8L-1T-RPS"/>
+                                            <outlet property="restaurantImage" destination="rhe-44-YUb" id="2ZE-zF-YEE"/>
                                             <segue destination="Qhg-yp-LTM" kind="show" id="RSv-WA-Xbh"/>
                                         </connections>
                                     </tableViewCell>
@@ -203,6 +203,9 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Saved Restaurants" id="pWn-CU-Amf"/>
+                    <connections>
+                        <outlet property="tableView" destination="icE-rQ-ZRV" id="p0E-p4-o5O"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6dK-Vs-Gkr" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -344,7 +347,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view tag="1" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="AAm-9D-6l2">
-                                <rect key="frame" x="25" y="134" width="340" height="500"/>
+                                <rect key="frame" x="25" y="121" width="340" height="500"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="GOv-yB-M7r">
@@ -418,7 +421,7 @@
                                     <color key="titleColor" red="0.27915560049999999" green="0.58123201329999996" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 </state>
                                 <connections>
-                                    <segue destination="jzu-Ck-eAk" kind="show" id="ELa-Cc-kOQ"/>
+                                    <segue destination="jzu-Ck-eAk" kind="show" identifier="settingsSegue" id="ELa-Cc-kOQ"/>
                                 </connections>
                             </button>
                         </barButtonItem>
