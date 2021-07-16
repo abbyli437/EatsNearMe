@@ -29,6 +29,7 @@
     
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
+    [self.tableView reloadData];
 }
 //table view methods
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -44,7 +45,6 @@
     
     return cell;
 }
-
 
 #pragma mark - Navigation
 

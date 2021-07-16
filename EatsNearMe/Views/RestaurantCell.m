@@ -34,6 +34,8 @@
     else {
         self.restaurantImage.image = [UIImage imageNamed:@"comingSoon.png"];
     }
+    self.restaurantImage.layer.cornerRadius = 10;
+    self.restaurantImage.clipsToBounds = YES;
     
     self.nameLabel.text = restaurant.name;
     //maybe add description label here?
@@ -50,5 +52,10 @@
     distStr = [distStr stringByAppendingString:@" miles away"];
     self.distanceLabel.text = distStr;
 }
+
+- (IBAction)tapSave:(id)sender {
+    self.hasVisitedButton.selected = !self.hasVisitedButton.selected;
+}
+
 
 @end
