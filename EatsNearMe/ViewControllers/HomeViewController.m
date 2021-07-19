@@ -27,6 +27,7 @@
 @property (strong, nonatomic) NSMutableArray *restaurants;
 @property (strong, nonatomic) NSMutableDictionary *swipes;
 @property (strong, nonatomic) NSMutableArray *rightSwipes;
+@property (nonatomic) int totalSwipes;
 
 //card view props
 @property (weak, nonatomic) IBOutlet UIView *restaurantView;
@@ -118,7 +119,9 @@
 }
 
 - (void)afterSwipeAction:(int)swipeDir isLeft:(bool)isLeft {
-    //move card off to the right
+    //increment total swipes
+    self.totalSwipes = self.totalSwipes + 1;
+    //move card off to the correct direction
     [UIView animateWithDuration:0.3 animations:^{
         self.restaurantView.center = CGPointMake(self.restaurantView.center.x + swipeDir, self.restaurantView.center.y);
     } completion:^(BOOL finished) {
@@ -143,11 +146,12 @@
 - (void)loadNextRestaurant {
     sleep(0.25);
     
+    //this makes sure my code is in bounds
     if (self.currentIndex >= self.restaurants.count) {
         UIAlertController *alert = [self makeAlert];
         [self presentViewController:alert animated:YES completion:^{
         }];
-        return; //makes sure things are in bounds, might add alert here later if I have time
+        return;
     }
     
     YLPBusiness *restaurant = self.restaurants[self.currentIndex];
@@ -248,9 +252,11 @@
             self.restaurants = [[NSMutableArray alloc] init]; //reset restaurants to save space
             NSLog(@"successfully fetched restaurants");
             
+            NSMutableDictionary *leftSwipes = [self.swipes objectForKey:@"leftSwipes"];
+            NSMutableDictionary *rightSwipes = [self.swipes objectForKey:@"rightSwipes"];
+            self.totalSwipes = ((int) leftSwipes.count) + ((int) rightSwipes.count); //keep track of total swipes
+            
             for (YLPBusiness *restaurant in search.businesses) {
-                NSMutableDictionary *leftSwipes = [self.swipes objectForKey:@"leftSwipes"];
-                NSMutableDictionary *rightSwipes = [self.swipes objectForKey:@"rightSwipes"];
                 if ([rightSwipes objectForKey:restaurant.name] != nil) {
                     [self.rightSwipes addObject:restaurant];
                 }

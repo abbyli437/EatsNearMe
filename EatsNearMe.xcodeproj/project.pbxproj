@@ -25,6 +25,7 @@
 		88774A51269F3A17002A854A /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 88774A50269F3A17002A854A /* User.m */; };
 		88774A6326A08A8D002A854A /* RestaurantCardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 88774A6226A08A8D002A854A /* RestaurantCardView.m */; };
 		88774A6626A5D6EE002A854A /* ImageUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 88774A6526A5D6EE002A854A /* ImageUtil.m */; };
+		88774A6C26A5F9E5002A854A /* PriorityQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 88774A6A26A5F9E5002A854A /* PriorityQueue.m */; };
 		88B242EC268E272300089A35 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 88B242EB268E272300089A35 /* AppDelegate.m */; };
 		88B242EF268E272300089A35 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 88B242EE268E272300089A35 /* SceneDelegate.m */; };
 		88B242F5268E272300089A35 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 88B242F3268E272300089A35 /* Main.storyboard */; };
@@ -87,6 +88,8 @@
 		88774A6226A08A8D002A854A /* RestaurantCardView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RestaurantCardView.m; sourceTree = "<group>"; };
 		88774A6426A5D6EE002A854A /* ImageUtil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImageUtil.h; sourceTree = "<group>"; };
 		88774A6526A5D6EE002A854A /* ImageUtil.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ImageUtil.m; sourceTree = "<group>"; };
+		88774A6A26A5F9E5002A854A /* PriorityQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PriorityQueue.m; path = "../../../fbu_twitter_starter/PriorityQueue-ObjC/PriorityQueue/PriorityQueue.m"; sourceTree = "<group>"; };
+		88774A6B26A5F9E5002A854A /* PriorityQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PriorityQueue.h; path = "../../../fbu_twitter_starter/PriorityQueue-ObjC/PriorityQueue/PriorityQueue.h"; sourceTree = "<group>"; };
 		88B242E7268E272300089A35 /* EatsNearMe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EatsNearMe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		88B242EA268E272300089A35 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		88B242EB268E272300089A35 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -207,6 +210,8 @@
 		88774A48269E31C4002A854A /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				88774A6B26A5F9E5002A854A /* PriorityQueue.h */,
+				88774A6A26A5F9E5002A854A /* PriorityQueue.m */,
 				88774A2A269CE1BE002A854A /* AlertUtil.h */,
 				88774A2B269CE1BE002A854A /* AlertUtil.m */,
 				88774A40269DFF0D002A854A /* ParseUtil.h */,
@@ -524,6 +529,7 @@
 				88774A2F269CE9C4002A854A /* ProfileViewController.m in Sources */,
 				88774A51269F3A17002A854A /* User.m in Sources */,
 				88774A32269CF34F002A854A /* SettingsViewController.m in Sources */,
+				88774A6C26A5F9E5002A854A /* PriorityQueue.m in Sources */,
 				88774A3C269DF186002A854A /* SavedViewController.m in Sources */,
 				88B242EC268E272300089A35 /* AppDelegate.m in Sources */,
 				88774A4E269F3772002A854A /* Restaurant.m in Sources */,

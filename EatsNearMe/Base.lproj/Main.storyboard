@@ -614,7 +614,7 @@
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dzP-Hk-iZg">
                                 <rect key="frame" x="122.66666666666669" y="191" width="145" height="30"/>
-                                <state key="normal" title="Choose Profile Photo"/>
+                                <state key="normal" title="Change Profile Photo"/>
                                 <connections>
                                     <action selector="changePfp:" destination="4e5-tm-mnz" eventType="touchUpInside" id="PUM-0Q-w6e"/>
                                 </connections>

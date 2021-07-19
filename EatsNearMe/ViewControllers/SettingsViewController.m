@@ -25,14 +25,14 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view
+    
+    //note: I can use the synchronous fetch because I'd be doing everything below in the completion block anyways so it's basically the same thing
     self.user = [[PFUser currentUser] fetch];
     [self setUpPriceSlider];
     [self setUpDistanceSlider];
     
     [self getPriceText];
     [self updateDistance:self];
-    //[self getUser];
 }
 
 - (void)setUpPriceSlider {
