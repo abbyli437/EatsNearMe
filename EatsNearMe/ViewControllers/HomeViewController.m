@@ -11,6 +11,7 @@
 #import "ParseUtil.h"
 #import "AppDelegate.h"
 #import "SavedViewController.h"
+#import "PriorityQueue.h"
 @import YelpAPI;
 
 @interface HomeViewController ()  <CLLocationManagerDelegate>
@@ -25,6 +26,8 @@
 @property (nonatomic) int offset;
 
 @property (strong, nonatomic) NSMutableArray *restaurants;
+@property (nonatomic) int currentIndex;
+@property (strong, nonatomic) PriorityQueue *queue;
 @property (strong, nonatomic) NSMutableDictionary *swipes;
 @property (strong, nonatomic) NSMutableArray *rightSwipes;
 @property (strong, nonatomic) NSMutableDictionary *categoryDict;
@@ -38,7 +41,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *descriptionLabel;
 @property (weak, nonatomic) IBOutlet UILabel *distanceLabel;
 @property (weak, nonatomic) IBOutlet UILabel *priceLabel;
-@property (nonatomic) int currentIndex;
 
 @end
 
@@ -53,6 +55,7 @@
     self.offset = [self.user[@"offset"] intValue];
     
     [self setUpLocation];
+    
     self.firstTime = true;
     
     self.restaurantView.layer.cornerRadius = 10;
@@ -60,6 +63,7 @@
     //self.restaurantView.alpha = 0;
     
     self.cardCenter = self.restaurantView.center;
+    
     self.currentIndex = 0;
     
     //might use swipes to only store restaurant names because Parse can't store YLPBusiness objects
@@ -80,14 +84,57 @@
         self.categoryDict = [[NSMutableDictionary alloc] initWithCapacity:10];
     }
     
+    NSMutableDictionary *leftSwipes = [self.swipes objectForKey:@"leftSwipes"];
+    NSMutableDictionary *rightSwipes = [self.swipes objectForKey:@"rightSwipes"];
+    self.totalSwipes = ((int) leftSwipes.count) + ((int) rightSwipes.count);
+    
     //keep track of swipes locally
     self.rightSwipes = [[NSMutableArray alloc] init];
     self.restaurants = [[NSMutableArray alloc] init];
+    [self setUpQueue];
     
     //to pass right swipes to Saved Tab
     UINavigationController *secondController = self.tabBarController.viewControllers[1];
     self.secondTab = secondController.viewControllers.firstObject;
     self.secondTab.restaurants = self.rightSwipes;
+}
+
+- (void)setUpQueue {
+    self.queue = [PriorityQueue new];
+    self.queue.comparator = ^NSComparisonResult(YLPBusiness *obj1, YLPBusiness *obj2) {
+        //if user is brand-new then everything is the same
+        if (self.totalSwipes == 0) {
+            return NSOrderedSame;
+        }
+        double maxPercent1 = 0.0;
+        double maxPercent2 = 0.0;
+        
+        //max percent for restaurant 1
+        for (YLPCategory *category in obj1.categories) {
+            double numSwipes = [[self.categoryDict valueForKey:category.name] doubleValue]; //this is giving me a weird warning
+            double percent = numSwipes / self.totalSwipes;
+            if (percent > maxPercent1) {
+                maxPercent1 = percent;
+            }
+        }
+        
+        //max percent for restaurant 2
+        for (YLPCategory *category in obj2.categories) {
+            double numSwipes = [[self.categoryDict valueForKey:category.name] doubleValue];
+            double percent = numSwipes / self.totalSwipes;
+            if (percent > maxPercent2) {
+                maxPercent2 = percent;
+            }
+        }
+        
+        if (maxPercent1 == maxPercent2) {
+            return NSOrderedSame;
+        }
+        else if (maxPercent1 < maxPercent2) {
+            return NSOrderedAscending;
+        }
+        return NSOrderedDescending;
+    };
 }
 
 - (IBAction)swipeRestaurant:(UIPanGestureRecognizer *)sender {
@@ -139,6 +186,7 @@
     [UIView animateWithDuration:0.3 animations:^{
         self.restaurantView.center = CGPointMake(self.restaurantView.center.x + swipeDir, self.restaurantView.center.y);
     } completion:^(BOOL finished) {
+        //TODO: poll here, peek earlier
         YLPBusiness *restaurant = self.restaurants[self.currentIndex - 1];
         if (isLeft) {
             NSMutableDictionary *leftSwipes = [self.swipes objectForKey:@"leftSwipes"];
@@ -173,14 +221,15 @@
     sleep(0.25);
     
     //this makes sure my code is in bounds
-    if (self.currentIndex >= self.restaurants.count) {
+    if ([self.queue isEmpty]) {//(self.currentIndex >= self.restaurants.count) {
         UIAlertController *alert = [self makeAlert];
         [self presentViewController:alert animated:YES completion:^{
         }];
         return;
     }
     
-    YLPBusiness *restaurant = self.restaurants[self.currentIndex];
+    //YLPBusiness *restaurant = self.restaurants[self.currentIndex];
+    YLPBusiness *restaurant = [self.queue poll];
     self.currentIndex++;
     
     //restaurant image
@@ -270,6 +319,7 @@
     [[AppDelegate sharedClient] searchWithQuery:query completionHandler:^(YLPSearch * _Nullable search, NSError * _Nullable error) {
         if (search != nil) {
             self.restaurants = [[NSMutableArray alloc] init]; //reset restaurants to save space
+            //TODO: reinit queue here
             NSLog(@"successfully fetched restaurants");
             
             NSMutableDictionary *leftSwipes = [self.swipes objectForKey:@"leftSwipes"];
@@ -283,6 +333,7 @@
                 else if ([leftSwipes objectForKey:restaurant.name] == nil) {
                     //restuarant hasn't been seen before
                     [self.restaurants addObject:restaurant];
+                    [self.queue add:restaurant];
                 }
             }
             [self loadNextRestaurant];
