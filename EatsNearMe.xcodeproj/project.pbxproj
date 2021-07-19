@@ -24,6 +24,7 @@
 		88774A4E269F3772002A854A /* Restaurant.m in Sources */ = {isa = PBXBuildFile; fileRef = 88774A4D269F3772002A854A /* Restaurant.m */; };
 		88774A51269F3A17002A854A /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 88774A50269F3A17002A854A /* User.m */; };
 		88774A6326A08A8D002A854A /* RestaurantCardView.m in Sources */ = {isa = PBXBuildFile; fileRef = 88774A6226A08A8D002A854A /* RestaurantCardView.m */; };
+		88774A6626A5D6EE002A854A /* ImageUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 88774A6526A5D6EE002A854A /* ImageUtil.m */; };
 		88B242EC268E272300089A35 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 88B242EB268E272300089A35 /* AppDelegate.m */; };
 		88B242EF268E272300089A35 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 88B242EE268E272300089A35 /* SceneDelegate.m */; };
 		88B242F5268E272300089A35 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 88B242F3268E272300089A35 /* Main.storyboard */; };
@@ -84,6 +85,8 @@
 		88774A50269F3A17002A854A /* User.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
 		88774A6126A08A8D002A854A /* RestaurantCardView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RestaurantCardView.h; sourceTree = "<group>"; };
 		88774A6226A08A8D002A854A /* RestaurantCardView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RestaurantCardView.m; sourceTree = "<group>"; };
+		88774A6426A5D6EE002A854A /* ImageUtil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImageUtil.h; sourceTree = "<group>"; };
+		88774A6526A5D6EE002A854A /* ImageUtil.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ImageUtil.m; sourceTree = "<group>"; };
 		88B242E7268E272300089A35 /* EatsNearMe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EatsNearMe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		88B242EA268E272300089A35 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		88B242EB268E272300089A35 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -208,6 +211,8 @@
 				88774A2B269CE1BE002A854A /* AlertUtil.m */,
 				88774A40269DFF0D002A854A /* ParseUtil.h */,
 				88774A41269DFF0D002A854A /* ParseUtil.m */,
+				88774A6426A5D6EE002A854A /* ImageUtil.h */,
+				88774A6526A5D6EE002A854A /* ImageUtil.m */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -527,6 +532,7 @@
 				88B242EF268E272300089A35 /* SceneDelegate.m in Sources */,
 				88774A6326A08A8D002A854A /* RestaurantCardView.m in Sources */,
 				88774A29269CD852002A854A /* HomeViewController.m in Sources */,
+				88774A6626A5D6EE002A854A /* ImageUtil.m in Sources */,
 				88774A42269DFF0D002A854A /* ParseUtil.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
