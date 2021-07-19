@@ -27,6 +27,7 @@
 @property (strong, nonatomic) NSMutableArray *restaurants;
 @property (strong, nonatomic) NSMutableDictionary *swipes;
 @property (strong, nonatomic) NSMutableArray *rightSwipes;
+@property (strong, nonatomic) NSMutableDictionary *categoryDict;
 @property (nonatomic) int totalSwipes;
 
 //card view props
@@ -62,13 +63,25 @@
     self.currentIndex = 0;
     
     //might use swipes to only store restaurant names because Parse can't store YLPBusiness objects
-    self.swipes = [[NSMutableDictionary alloc] initWithCapacity:10];
-    [self.swipes setObject:[[NSMutableDictionary alloc] init] forKey:@"leftSwipes"];
-    [self.swipes setObject:[[NSMutableDictionary alloc] init] forKey:@"rightSwipes"];
+    if (self.user[@"swipes"] != nil) {
+        self.swipes = self.user[@"swipes"];
+    }
+    else {
+        self.swipes = [[NSMutableDictionary alloc] initWithCapacity:10];
+        [self.swipes setObject:[[NSMutableDictionary alloc] init] forKey:@"leftSwipes"];
+        [self.swipes setObject:[[NSMutableDictionary alloc] init] forKey:@"rightSwipes"];
+        self.categoryDict = [[NSMutableDictionary alloc] initWithCapacity:10];
+    }
+    
+    if (self.user[@"categoryDict"] != nil) {
+        self.categoryDict = self.user[@"categoryDict"];
+    }
+    else {
+        self.categoryDict = [[NSMutableDictionary alloc] initWithCapacity:10];
+    }
     
     //keep track of swipes locally
     self.rightSwipes = [[NSMutableArray alloc] init];
-    
     self.restaurants = [[NSMutableArray alloc] init];
     
     //to pass right swipes to Saved Tab
@@ -121,6 +134,7 @@
 - (void)afterSwipeAction:(int)swipeDir isLeft:(bool)isLeft {
     //increment total swipes
     self.totalSwipes = self.totalSwipes + 1;
+    
     //move card off to the correct direction
     [UIView animateWithDuration:0.3 animations:^{
         self.restaurantView.center = CGPointMake(self.restaurantView.center.x + swipeDir, self.restaurantView.center.y);
@@ -134,6 +148,18 @@
             NSMutableDictionary *rightSwipes = [self.swipes objectForKey:@"rightSwipes"];
             [rightSwipes setValue:restaurant.name forKey:restaurant.name];
             [self.rightSwipes addObject:restaurant];
+            
+            //update category count
+            for (YLPCategory *category in restaurant.categories) {
+                if ([self.categoryDict objectForKey:category.name] == nil) {
+                    [self.categoryDict setValue:@(1) forKey:category.name];
+                }
+                else {
+                    int catCount = [[self.categoryDict valueForKey:category.name] intValue] + 1;
+                    [self.categoryDict setValue:@(catCount) forKey:category.name];
+                }
+            }
+            [ParseUtil updateValue:self.categoryDict key:@"categoryDict"];
         }
    
         [ParseUtil updateValue:self.swipes key:@"swipes"];
@@ -218,11 +244,6 @@
 - (void)fetchRestaurants {
     //PFUser *user = [[PFUser currentUser] fetch];
     
-    //set the swipe arrays
-    if (self.user[@"swipes"] != nil) {
-        self.swipes = self.user[@"swipes"];
-    }
-    
     //set up query
     double latitude = (double) self.curLocation.coordinate.latitude;
     double longitude = (double) self.curLocation.coordinate.longitude;
@@ -248,7 +269,6 @@
     //finally, the actual query
     [[AppDelegate sharedClient] searchWithQuery:query completionHandler:^(YLPSearch * _Nullable search, NSError * _Nullable error) {
         if (search != nil) {
-            //self.restaurants = [NSMutableArray arrayWithArray:search.businesses]; //delete this later
             self.restaurants = [[NSMutableArray alloc] init]; //reset restaurants to save space
             NSLog(@"successfully fetched restaurants");
             

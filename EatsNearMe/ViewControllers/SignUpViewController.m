@@ -54,6 +54,10 @@
         [swipes setObject:[[NSMutableDictionary alloc] init] forKey:@"rightSwipes"];
         [newUser setObject:swipes forKey:@"swipes"];
         
+        //category dict
+        NSMutableDictionary *categoryDict = [[NSMutableDictionary alloc] initWithCapacity:10];
+        [newUser setObject:categoryDict forKey:@"categoryDict"];
+        
         //default offset of 0
         [newUser setValue:@(0) forKey:@"offset"];
         

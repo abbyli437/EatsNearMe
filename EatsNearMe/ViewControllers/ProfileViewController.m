@@ -51,9 +51,10 @@
     // Retrieve the object by id
     [query getObjectInBackgroundWithId:[PFUser currentUser].objectId
                                block:^(PFObject *user, NSError *error) {
-        self.pfpImage.file = user[@"pfp"];
-        [self.pfpImage loadInBackground];
-        
+        if (user[@"pfp"] != nil) {
+            self.pfpImage.file = user[@"pfp"];
+            [self.pfpImage loadInBackground];
+        }
         self.pfpImage.layer.cornerRadius  = self.pfpImage.frame.size.width/2;
         self.pfpImage.clipsToBounds = YES;
         
