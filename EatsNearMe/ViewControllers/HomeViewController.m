@@ -14,7 +14,7 @@
 #import "PriorityQueue.h"
 @import YelpAPI;
 
-@interface HomeViewController ()  <CLLocationManagerDelegate>
+@interface HomeViewController ()  <CLLocationManagerDelegate, PriorityQueueDelegate>
 
 @property (strong, nonatomic) PFUser *user;
 
@@ -92,7 +92,8 @@
     //keep track of swipes locally
     self.rightSwipes = [[NSMutableArray alloc] init];
     self.restaurants = [[NSMutableArray alloc] init];
-    [self setUpQueue];
+    self.queue = [[PriorityQueue alloc] initWithCapacity:50];
+    self.queue.delegate = self;
     
     //to pass right swipes to Saved Tab
     UINavigationController *secondController = self.tabBarController.viewControllers[1];
@@ -105,6 +106,8 @@
     int priceRangeLow = [self.user[@"priceRangeLow"] intValue];
     int priceRangeHigh = [self.user[@"priceRangeHigh"] intValue];
     self.user = [[PFUser currentUser] fetch];
+    
+    //update query and re-fetch if settings have changed
     if ([self.user[@"maxDistance"] intValue] != maxDist
         || [self.user[@"priceRangeHigh"] intValue] != priceRangeHigh
         || [self.user[@"priceRangeLow"] intValue] != priceRangeLow) {
@@ -128,7 +131,39 @@
     }
 }
 
-- (void)setUpQueue {
+- (NSComparisonResult)compare:(YLPBusiness *)obj1 obj2:(YLPBusiness *)obj2 {
+    if (self.totalSwipes == 0) {
+        return (NSComparisonResult) NSOrderedSame;
+    }
+            
+    double maxPercent1 = 0.0;
+    double maxPercent2 = 0.0;
+    
+    //max percent for restaurant 1
+    for (YLPCategory *category in obj1.categories) {
+        double numSwipes = [[self.categoryDict valueForKey:category.name] doubleValue]; //this is giving me a weird warning
+        double percent = numSwipes / self.totalSwipes;
+        if (percent > maxPercent1) {
+            maxPercent1 = percent;
+         }
+    }
+            
+    //max percent for restaurant 2
+    for (YLPCategory *category in obj2.categories) {
+        double numSwipes = [[self.categoryDict valueForKey:category.name] doubleValue];
+        double percent = numSwipes / self.totalSwipes;
+        if (percent > maxPercent2) {
+            maxPercent2 = percent;
+        }
+    }
+             
+    if (maxPercent1 == maxPercent2) {
+        return (NSComparisonResult) NSOrderedSame;
+    }
+    else if (maxPercent1 < maxPercent2) {
+        return (NSComparisonResult) NSOrderedAscending;
+    }
+    return (NSComparisonResult) NSOrderedDescending;
 }
 
 - (IBAction)swipeRestaurant:(UIPanGestureRecognizer *)sender {
@@ -182,7 +217,8 @@
         self.restaurantView.center = CGPointMake(self.restaurantView.center.x + swipeDir, self.restaurantView.center.y);
     } completion:^(BOOL finished) {
         //TODO: poll here, peek earlier
-        YLPBusiness *restaurant = self.restaurants[self.currentIndex - 1];
+        YLPBusiness *restaurant = [self.queue poll];
+        //YLPBusiness *restaurant = self.restaurants[self.currentIndex - 1];
         if (isLeft) {
             NSMutableDictionary *leftSwipes = [self.swipes objectForKey:@"leftSwipes"];
             [leftSwipes setValue:restaurant.name forKey:restaurant.name];
@@ -215,14 +251,14 @@
     sleep(0.25);
     
     //this makes sure my code is in bounds
-    if (self.currentIndex >= self.restaurants.count) {
+    if ([self.queue isEmpty]) { //(self.currentIndex >= self.restaurants.count) {
         UIAlertController *alert = [self makeAlert];
         [self presentViewController:alert animated:YES completion:nil];
         return;
     }
     
-    YLPBusiness *restaurant = self.restaurants[self.currentIndex];
-    //YLPBusiness *restaurant = [self.queue peek];
+    //YLPBusiness *restaurant = self.restaurants[self.currentIndex];
+    YLPBusiness *restaurant = [self.queue peek];
     self.currentIndex++;
     
     //restaurant image
@@ -288,7 +324,7 @@
     
     __weak HomeViewController *const weakSelf = self;
     HomeViewController *const strongSelf = weakSelf;
-    __block PriorityQueue *pq = self.queue;
+    
     //finally, the actual query
     [[AppDelegate sharedClient] searchWithQuery:self.query completionHandler:^(YLPSearch * _Nullable search, NSError * _Nullable error) {
         if (search != nil) {
@@ -307,8 +343,7 @@
                 else if ([leftSwipes objectForKey:restaurant.name] == nil) {
                     //restuarant hasn't been seen before
                     [strongSelf.restaurants addObject:restaurant];
-                    //[pq add:restaurant];
-                    //[strongSelf.queue add:restaurant];
+                    [strongSelf.queue add:restaurant];
                 }
             }
             [strongSelf loadNextRestaurant];
