@@ -24,15 +24,16 @@
 @property (strong, nonatomic) SavedViewController *secondTab;
 @property (nonatomic) bool firstTime;
 @property (nonatomic) CGPoint cardCenter;
-@property (nonatomic) int offset;
 
 @property (strong, nonatomic) NSMutableArray *restaurants;
-@property (nonatomic) int currentIndex;
-@property (strong, nonatomic) PriorityQueue *queue; //delete this later?
+@property (nonatomic) int counter;
+@property (strong, nonatomic) PriorityQueue *queue;
 @property (strong, nonatomic) NSMutableDictionary *swipes;
 @property (strong, nonatomic) NSMutableArray *rightSwipes;
 @property (strong, nonatomic) NSMutableDictionary *categoryDict;
 @property (nonatomic) int totalSwipes;
+@property (nonatomic) int offset;
+@property (nonatomic) int limit;
 
 //card view props
 @property (weak, nonatomic) IBOutlet UIView *restaurantView;
@@ -54,6 +55,7 @@
     
     self.user = [[PFUser currentUser] fetch];
     self.offset = [self.user[@"offset"] intValue];
+    self.limit = 50;
     
     [self setUpLocation];
     
@@ -65,7 +67,7 @@
     
     self.cardCenter = self.restaurantView.center;
     
-    self.currentIndex = 0;
+    self.counter = 0;
     
     //might use swipes to only store restaurant names because Parse can't store YLPBusiness objects
     if (self.user[@"swipes"] != nil) {
@@ -92,7 +94,7 @@
     //keep track of swipes locally
     self.rightSwipes = [[NSMutableArray alloc] init];
     self.restaurants = [[NSMutableArray alloc] init];
-    self.queue = [[PriorityQueue alloc] initWithCapacity:50];
+    self.queue = [[PriorityQueue alloc] initWithCapacity:self.limit]; //might make bigger depending on
     self.queue.delegate = self;
     
     //to pass right swipes to Saved Tab
@@ -161,9 +163,10 @@
         return (NSComparisonResult) NSOrderedSame;
     }
     else if (maxPercent1 < maxPercent2) {
-        return (NSComparisonResult) NSOrderedAscending;
+        return (NSComparisonResult) NSOrderedDescending;
     }
-    return (NSComparisonResult) NSOrderedDescending;
+    //bigger percentage is "smaller" because the queue takes the smallest priority first!
+    return (NSComparisonResult) NSOrderedAscending;
 }
 
 - (IBAction)swipeRestaurant:(UIPanGestureRecognizer *)sender {
@@ -252,14 +255,27 @@
     
     //this makes sure my code is in bounds
     if ([self.queue isEmpty]) { //(self.currentIndex >= self.restaurants.count) {
+        self.counter = 0;
         UIAlertController *alert = [self makeAlert];
         [self presentViewController:alert animated:YES completion:nil];
         return;
     }
     
+    if (self.offset >= 50 && self.counter == 10) {
+        //after the first 50 (to train the PQ) increment by 10's
+        self.counter = 0;
+        
+        self.offset = self.offset + 10;
+        [ParseUtil updateValue:@(self.offset) key:@"offset"];
+        self.query.offset = self.offset;
+        self.limit = 10;
+        self.query.limit = 10;
+        [self fetchRestaurants];
+    }
+    
     //YLPBusiness *restaurant = self.restaurants[self.currentIndex];
     YLPBusiness *restaurant = [self.queue peek];
-    self.currentIndex++;
+    self.counter++;
     
     //restaurant image
     if (restaurant.imageURL != nil) {
@@ -301,9 +317,9 @@
     UIAlertAction *yesAction = [UIAlertAction actionWithTitle:@"Yes"
         style:UIAlertActionStyleDefault
         handler:^(UIAlertAction * _Nonnull action) {
-            self.offset += 50;
-            self.query.offset += 50; //probably need this bc int is not pointer
-            self.currentIndex = 0;
+            self.offset += self.limit;
+            self.query.offset += self.limit; //probably need this bc int is not pointer
+            self.counter = 0;
         
             [ParseUtil updateValue:@(self.offset) key:@"offset"];
         
@@ -379,7 +395,7 @@
     double longitude = (double) self.curLocation.coordinate.longitude;
     YLPCoordinate *coord = [[YLPCoordinate alloc] initWithLatitude:latitude longitude:longitude];
     self.query = [[YLPQuery alloc] initWithCoordinate:coord];
-    self.query.limit = 50;
+    self.query.limit = self.limit;
     self.query.offset = self.offset;
     self.query.radiusFilter = [self.user[@"maxDistance"] doubleValue] * 1609.0;
     
