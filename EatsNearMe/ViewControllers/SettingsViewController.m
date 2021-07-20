@@ -60,7 +60,7 @@
 
 - (void)setUpDistanceSlider {
     self.distanceSlider.minimumValue = 0;
-    self.distanceSlider.maximumValue = 25;
+    self.distanceSlider.maximumValue = 24;
     
     self.distanceSlider.value = [self.user[@"maxDistance"] intValue];
 }

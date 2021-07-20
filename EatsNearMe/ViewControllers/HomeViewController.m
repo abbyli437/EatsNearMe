@@ -20,6 +20,7 @@
 
 @property (strong, nonatomic) CLLocationManager *locationManager;
 @property (strong, nonatomic) CLLocation *curLocation;
+@property (strong, nonatomic) YLPQuery *query;
 @property (strong, nonatomic) SavedViewController *secondTab;
 @property (nonatomic) bool firstTime;
 @property (nonatomic) CGPoint cardCenter;
@@ -108,6 +109,21 @@
         || [self.user[@"priceRangeHigh"] intValue] != priceRangeHigh
         || [self.user[@"priceRangeLow"] intValue] != priceRangeLow) {
         self.offset = 0; //not sure if I should update this on backend too
+        
+        //update query
+        self.query.radiusFilter = [self.user[@"maxDistance"] doubleValue] * 1609.0;
+        self.query.offset = 0;
+        
+        //set up price parameter
+        int low = [self.user[@"priceRangeLow"] intValue];
+        int high = [self.user[@"priceRangeHigh"] intValue];
+        NSString *priceQuery = [NSString stringWithFormat:@"%d", low];
+        for (int i = low + 1; i <= high; i++) {
+            priceQuery = [priceQuery stringByAppendingString:@", "];
+            priceQuery = [priceQuery stringByAppendingString:[NSString stringWithFormat:@"%d", i]];
+        }
+        self.query.price = priceQuery;
+        
         [self fetchRestaurants];
     }
 }
@@ -250,6 +266,7 @@
         style:UIAlertActionStyleDefault
         handler:^(UIAlertAction * _Nonnull action) {
             self.offset += 50;
+            self.query.offset += 50; //probably need this bc int is not pointer
             self.currentIndex = 0;
         
             [ParseUtil updateValue:@(self.offset) key:@"offset"];
@@ -269,32 +286,11 @@
 - (void)fetchRestaurants {
     //PFUser *user = [[PFUser currentUser] fetch];
     
-    //set up query
-    double latitude = (double) self.curLocation.coordinate.latitude;
-    double longitude = (double) self.curLocation.coordinate.longitude;
-    YLPCoordinate *coord = [[YLPCoordinate alloc] initWithLatitude:latitude longitude:longitude];
-    YLPQuery *query = [[YLPQuery alloc] initWithCoordinate:coord];
-    query.limit = 50;
-    query.offset = self.offset;
-    query.radiusFilter = [self.user[@"maxDistance"] doubleValue] * 1609.0;
-    int low = [self.user[@"priceRangeLow"] intValue];
-    int high = [self.user[@"priceRangeHigh"] intValue];
-    
-    
-    //set up price parameter
-    NSString *priceQuery = [NSString stringWithFormat:@"%d", low];
-    for (int i = low + 1; i <= high; i++) {
-        priceQuery = [priceQuery stringByAppendingString:@", "];
-        priceQuery = [priceQuery stringByAppendingString:[NSString stringWithFormat:@"%d", i]];
-    }
-    query.price = priceQuery;
-    
-    
     __weak HomeViewController *const weakSelf = self;
     HomeViewController *const strongSelf = weakSelf;
     __block PriorityQueue *pq = self.queue;
     //finally, the actual query
-    [[AppDelegate sharedClient] searchWithQuery:query completionHandler:^(YLPSearch * _Nullable search, NSError * _Nullable error) {
+    [[AppDelegate sharedClient] searchWithQuery:self.query completionHandler:^(YLPSearch * _Nullable search, NSError * _Nullable error) {
         if (search != nil) {
             strongSelf.restaurants = [[NSMutableArray alloc] init]; //reset restaurants to save space
             //TODO: reinit queue here
@@ -342,6 +338,25 @@
     NSLog(@"%@", [locations lastObject]);
     self.curLocation = [locations lastObject];
     self.secondTab.curLocation = self.curLocation;
+
+    //set up/update query and store it
+    double latitude = (double) self.curLocation.coordinate.latitude;
+    double longitude = (double) self.curLocation.coordinate.longitude;
+    YLPCoordinate *coord = [[YLPCoordinate alloc] initWithLatitude:latitude longitude:longitude];
+    self.query = [[YLPQuery alloc] initWithCoordinate:coord];
+    self.query.limit = 50;
+    self.query.offset = self.offset;
+    self.query.radiusFilter = [self.user[@"maxDistance"] doubleValue] * 1609.0;
+    
+    //set up price parameter
+    int low = [self.user[@"priceRangeLow"] intValue];
+    int high = [self.user[@"priceRangeHigh"] intValue];
+    NSString *priceQuery = [NSString stringWithFormat:@"%d", low];
+    for (int i = low + 1; i <= high; i++) {
+        priceQuery = [priceQuery stringByAppendingString:@", "];
+        priceQuery = [priceQuery stringByAppendingString:[NSString stringWithFormat:@"%d", i]];
+    }
+    self.query.price = priceQuery;
     
     //this is so I get the location first before I call the API
     if (self.firstTime) {
