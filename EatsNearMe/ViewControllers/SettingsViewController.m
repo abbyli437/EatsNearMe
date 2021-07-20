@@ -87,7 +87,7 @@
 }
 
 - (IBAction)updateDistance:(id)sender {
-    int roundedDist = (int) (self.distanceSlider.value + 0.5);
+    int roundedDist = (int) (self.distanceSlider.value + 0.5); //0.5 because (int) always rounds down
     NSString *distString = [NSString stringWithFormat:@"%d", roundedDist];
     self.distanceLabel.text = [distString stringByAppendingString:@" miles"];
     

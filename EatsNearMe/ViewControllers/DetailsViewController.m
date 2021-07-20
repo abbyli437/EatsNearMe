@@ -56,10 +56,14 @@
     self.phoneLabel.text = self.restaurant.phone;
     
     //address setup
-    NSString *address = self.restaurant.location.address[0];
-    address = [[address stringByAppendingString:@", "] stringByAppendingString:self.restaurant.location.city];
-    address = [[address stringByAppendingString:@", "] stringByAppendingString:self.restaurant.location.stateCode];
-    address = [[address stringByAppendingString:@" "] stringByAppendingString:self.restaurant.location.postalCode];
+    NSMutableString *address = [self.restaurant.location.address[0] mutableCopy];
+    [address appendString:@", "];
+    [address appendString:self.restaurant.location.city];
+    [address appendString:@", "];
+    [address appendString:self.restaurant.location.stateCode];
+    [address appendString:@", "];
+    [address appendString:self.restaurant.location.postalCode];
+    
     self.addressLabel.text = address;
 }
 

@@ -27,7 +27,7 @@
 
 @property (strong, nonatomic) NSMutableArray *restaurants;
 @property (nonatomic) int currentIndex;
-@property (strong, nonatomic) PriorityQueue *queue;
+@property (strong, nonatomic) PriorityQueue *queue; //delete this later?
 @property (strong, nonatomic) NSMutableDictionary *swipes;
 @property (strong, nonatomic) NSMutableArray *rightSwipes;
 @property (strong, nonatomic) NSMutableDictionary *categoryDict;
@@ -99,42 +99,20 @@
     self.secondTab.restaurants = self.rightSwipes;
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    int maxDist = [self.user[@"maxDistance"] intValue];
+    int priceRangeLow = [self.user[@"priceRangeLow"] intValue];
+    int priceRangeHigh = [self.user[@"priceRangeHigh"] intValue];
+    self.user = [[PFUser currentUser] fetch];
+    if ([self.user[@"maxDistance"] intValue] != maxDist
+        || [self.user[@"priceRangeHigh"] intValue] != priceRangeHigh
+        || [self.user[@"priceRangeLow"] intValue] != priceRangeLow) {
+        self.offset = 0; //not sure if I should update this on backend too
+        [self fetchRestaurants];
+    }
+}
+
 - (void)setUpQueue {
-    self.queue = [PriorityQueue new];
-    self.queue.comparator = ^NSComparisonResult(YLPBusiness *obj1, YLPBusiness *obj2) {
-        //if user is brand-new then everything is the same
-        if (self.totalSwipes == 0) {
-            return NSOrderedSame;
-        }
-        double maxPercent1 = 0.0;
-        double maxPercent2 = 0.0;
-        
-        //max percent for restaurant 1
-        for (YLPCategory *category in obj1.categories) {
-            double numSwipes = [[self.categoryDict valueForKey:category.name] doubleValue]; //this is giving me a weird warning
-            double percent = numSwipes / self.totalSwipes;
-            if (percent > maxPercent1) {
-                maxPercent1 = percent;
-            }
-        }
-        
-        //max percent for restaurant 2
-        for (YLPCategory *category in obj2.categories) {
-            double numSwipes = [[self.categoryDict valueForKey:category.name] doubleValue];
-            double percent = numSwipes / self.totalSwipes;
-            if (percent > maxPercent2) {
-                maxPercent2 = percent;
-            }
-        }
-        
-        if (maxPercent1 == maxPercent2) {
-            return NSOrderedSame;
-        }
-        else if (maxPercent1 < maxPercent2) {
-            return NSOrderedAscending;
-        }
-        return NSOrderedDescending;
-    };
 }
 
 - (IBAction)swipeRestaurant:(UIPanGestureRecognizer *)sender {
@@ -144,8 +122,9 @@
     
     UIView *restaurantCard = sender.view;
     CGPoint point = [sender translationInView:self.view];
-    restaurantCard.center = CGPointMake(self.view.center.x + point.x, self.view.center.y + point.y);
-    float xFromCenter = restaurantCard.center.x - self.view.center.x;
+    float centerX = self.view.center.x;
+    restaurantCard.center = CGPointMake(centerX + point.x, self.view.center.y + point.y);
+    float xFromCenter = restaurantCard.center.x - centerX;
     
     //sets up image for swipe left/right
     if (xFromCenter < 0) {
@@ -157,7 +136,7 @@
         self.checkMarkImage.tintColor = [UIColor greenColor];
     }
     
-    self.checkMarkImage.alpha = fabsf(xFromCenter) / self.view.center.x;
+    self.checkMarkImage.alpha = fabsf(xFromCenter) / centerX;
     
     //to make view bounce back after I let go
     if (sender.state == UIGestureRecognizerStateEnded) {
@@ -214,22 +193,20 @@
         
         [self loadNextRestaurant];
     }];
-    return;
 }
 
 - (void)loadNextRestaurant {
     sleep(0.25);
     
     //this makes sure my code is in bounds
-    if ([self.queue isEmpty]) {//(self.currentIndex >= self.restaurants.count) {
+    if (self.currentIndex >= self.restaurants.count) {
         UIAlertController *alert = [self makeAlert];
-        [self presentViewController:alert animated:YES completion:^{
-        }];
+        [self presentViewController:alert animated:YES completion:nil];
         return;
     }
     
-    //YLPBusiness *restaurant = self.restaurants[self.currentIndex];
-    YLPBusiness *restaurant = [self.queue poll];
+    YLPBusiness *restaurant = self.restaurants[self.currentIndex];
+    //YLPBusiness *restaurant = [self.queue peek];
     self.currentIndex++;
     
     //restaurant image
@@ -283,8 +260,7 @@
     
     UIAlertAction *noAction = [UIAlertAction actionWithTitle:@"No"
         style:UIAlertActionStyleDefault
-        handler:^(UIAlertAction * _Nonnull action) {
-        }];
+        handler:nil];
     [alert addAction:noAction];
     
     return alert;
@@ -296,10 +272,8 @@
     //set up query
     double latitude = (double) self.curLocation.coordinate.latitude;
     double longitude = (double) self.curLocation.coordinate.longitude;
-    YLPCoordinate *coord = [[YLPCoordinate alloc] init];
-    coord = [coord initWithLatitude:latitude longitude:longitude];
-    YLPQuery *query = [[YLPQuery alloc] init];
-    query = [query initWithCoordinate:coord];
+    YLPCoordinate *coord = [[YLPCoordinate alloc] initWithLatitude:latitude longitude:longitude];
+    YLPQuery *query = [[YLPQuery alloc] initWithCoordinate:coord];
     query.limit = 50;
     query.offset = self.offset;
     query.radiusFilter = [self.user[@"maxDistance"] doubleValue] * 1609.0;
@@ -315,29 +289,34 @@
     }
     query.price = priceQuery;
     
+    
+    __weak HomeViewController *const weakSelf = self;
+    HomeViewController *const strongSelf = weakSelf;
+    __block PriorityQueue *pq = self.queue;
     //finally, the actual query
     [[AppDelegate sharedClient] searchWithQuery:query completionHandler:^(YLPSearch * _Nullable search, NSError * _Nullable error) {
         if (search != nil) {
-            self.restaurants = [[NSMutableArray alloc] init]; //reset restaurants to save space
+            strongSelf.restaurants = [[NSMutableArray alloc] init]; //reset restaurants to save space
             //TODO: reinit queue here
             NSLog(@"successfully fetched restaurants");
             
-            NSMutableDictionary *leftSwipes = [self.swipes objectForKey:@"leftSwipes"];
-            NSMutableDictionary *rightSwipes = [self.swipes objectForKey:@"rightSwipes"];
-            self.totalSwipes = ((int) leftSwipes.count) + ((int) rightSwipes.count); //keep track of total swipes
+            NSMutableDictionary *leftSwipes = [strongSelf.swipes objectForKey:@"leftSwipes"];
+            NSMutableDictionary *rightSwipes = [strongSelf.swipes objectForKey:@"rightSwipes"];
+            strongSelf.totalSwipes = ((int) leftSwipes.count) + ((int) rightSwipes.count); //keep track of total swipes
             
             for (YLPBusiness *restaurant in search.businesses) {
                 if ([rightSwipes objectForKey:restaurant.name] != nil) {
-                    [self.rightSwipes addObject:restaurant];
+                    [strongSelf.rightSwipes addObject:restaurant];
                 }
                 else if ([leftSwipes objectForKey:restaurant.name] == nil) {
                     //restuarant hasn't been seen before
-                    [self.restaurants addObject:restaurant];
-                    [self.queue add:restaurant];
+                    [strongSelf.restaurants addObject:restaurant];
+                    //[pq add:restaurant];
+                    //[strongSelf.queue add:restaurant];
                 }
             }
-            [self loadNextRestaurant];
-            [self.restaurantView setNeedsDisplay];
+            [strongSelf loadNextRestaurant];
+            [strongSelf.restaurantView setNeedsDisplay];
         }
         else {
             NSLog(@"%@", error.localizedDescription);
