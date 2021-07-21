@@ -21,6 +21,7 @@
 @property (strong, nonatomic) CLLocationManager *locationManager;
 @property (strong, nonatomic) CLLocation *curLocation;
 @property (strong, nonatomic) YLPQuery *query;
+@property (strong, nonatomic) YLPQuery *rightSwipeQuery;
 @property (strong, nonatomic) SavedViewController *secondTab;
 @property (nonatomic) bool firstTime;
 @property (nonatomic) CGPoint cardCenter;
@@ -55,8 +56,7 @@
     
     self.user = [[PFUser currentUser] fetch];
     //self.offset = [self.user[@"offset"] intValue];
-    self.offset = 0; //need to get all right swipes
-    self.limit = 50;
+    //self.offset = 0; //need to get all right swipes
     
     [self setUpLocation];
     
@@ -91,6 +91,9 @@
     NSMutableDictionary *leftSwipes = [self.swipes objectForKey:@"leftSwipes"];
     NSMutableDictionary *rightSwipes = [self.swipes objectForKey:@"rightSwipes"];
     self.totalSwipes = ((int) leftSwipes.count) + ((int) rightSwipes.count);
+    //offset & limit
+    self.offset = self.totalSwipes;
+    self.limit = 50;
     
     //keep track of swipes locally
     self.rightSwipes = [[NSMutableArray alloc] init];
@@ -272,11 +275,12 @@
     
     self.firstTime = false;
     
+    /*
     if ([self.queue size] <= 20) {
         self.offset += 50;
         self.query.offset += 50;
         [self fetchRestaurants];
-    }
+    } */
     
     if (self.offset >= 50 && self.counter == 10) {
         //after the first 50 (to train the PQ) increment by 10's
@@ -362,7 +366,6 @@
     [[AppDelegate sharedClient] searchWithQuery:self.query completionHandler:^(YLPSearch * _Nullable search, NSError * _Nullable error) {
         if (search != nil) {
             strongSelf.restaurants = [[NSMutableArray alloc] init]; //reset restaurants to save space
-            //TODO: reinit queue here
             NSLog(@"successfully fetched restaurants");
             
             NSMutableDictionary *leftSwipes = [strongSelf.swipes objectForKey:@"leftSwipes"];
@@ -389,6 +392,34 @@
     }];
 }
 
+- (void)fetchSavedRestaurants {
+    __weak HomeViewController *const weakSelf = self;
+    HomeViewController *const strongSelf = weakSelf;
+    
+    //this is just to get the right swipes separately loaded
+    [[AppDelegate sharedClient] searchWithQuery:self.rightSwipeQuery completionHandler:^(YLPSearch * _Nullable search, NSError * _Nullable error) {
+        if (search != nil) {
+            self.offset += 50;
+            NSLog(@"successfully fetched saved restaurants");
+            
+            NSMutableDictionary *rightSwipes = [strongSelf.swipes objectForKey:@"rightSwipes"];
+            
+            for (YLPBusiness *restaurant in search.businesses) {
+                if ([rightSwipes objectForKey:restaurant.name] != nil) {
+                    [strongSelf.rightSwipes addObject:restaurant];
+                }
+            }
+            
+            if (self.offset < self.totalSwipes) {
+                [self fetchSavedRestaurants];
+            }
+        }
+        else {
+            NSLog(@"%@", error.localizedDescription);
+        }
+    }];
+}
+
 //location methods start here
 - (void)setUpLocation {
     //set up location services. code borrowed from https://stackoverflow.com/questions/4152003/how-can-i-get-current-location-from-user-in-ios
@@ -408,13 +439,13 @@
     self.curLocation = [locations lastObject];
     self.secondTab.curLocation = self.curLocation;
 
-    //set up/update query and store it
+    //set up/update main query and store it
     double latitude = (double) self.curLocation.coordinate.latitude;
     double longitude = (double) self.curLocation.coordinate.longitude;
     YLPCoordinate *coord = [[YLPCoordinate alloc] initWithLatitude:latitude longitude:longitude];
     self.query = [[YLPQuery alloc] initWithCoordinate:coord];
     self.query.limit = self.limit;
-    self.query.offset = self.offset;
+    self.query.offset = self.offset; //offset change
     self.query.radiusFilter = [self.user[@"maxDistance"] doubleValue] * 1609.0;
     
     //set up price parameter
@@ -427,10 +458,16 @@
     }
     self.query.price = priceQuery;
     
+    //set up rightSwipe query
+    self.rightSwipeQuery = [[YLPQuery alloc] initWithCoordinate:coord];
+    self.rightSwipeQuery.limit = 50;
+    self.rightSwipeQuery.radiusFilter = self.query.radiusFilter;
+    self.rightSwipeQuery.price = self.query.price;
+    
     //this is so I get the location first before I call the API
     if (self.firstTime) {
-        //self.firstTime = false; //set firstTime to false later
         [self fetchRestaurants];
+        [self fetchSavedRestaurants];
     }
 }
 
