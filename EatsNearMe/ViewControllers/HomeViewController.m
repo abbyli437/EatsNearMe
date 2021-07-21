@@ -6,6 +6,7 @@
 //
 
 #import "HomeViewController.h"
+#import "ProfileViewController.h"
 #import <CoreLocation/CoreLocation.h>
 #import "Parse/Parse.h"
 #import "ParseUtil.h"
@@ -25,15 +26,12 @@
 @property (nonatomic) bool firstTime;
 @property (nonatomic) CGPoint cardCenter;
 
-@property (strong, nonatomic) NSMutableArray *restaurants;
 @property (nonatomic) int counter;
 @property (strong, nonatomic) PriorityQueue *queue;
 @property (strong, nonatomic) NSMutableDictionary *swipes;
 @property (strong, nonatomic) NSMutableArray *rightSwipes;
 @property (strong, nonatomic) NSMutableDictionary *categoryDict;
 @property (nonatomic) int totalSwipes;
-@property (nonatomic) int offset;
-@property (nonatomic) int limit;
 
 //card view props
 @property (weak, nonatomic) IBOutlet UIView *restaurantView;
@@ -88,9 +86,6 @@
     NSMutableDictionary *leftSwipes = [self.swipes objectForKey:@"leftSwipes"];
     NSMutableDictionary *rightSwipes = [self.swipes objectForKey:@"rightSwipes"];
     self.totalSwipes = ((int) leftSwipes.count) + ((int) rightSwipes.count);
-    //offset & limit
-    self.offset = self.totalSwipes;
-    self.limit = 50;
     
     //keep track of swipes locally
     self.rightSwipes = [[NSMutableArray alloc] init];
@@ -113,8 +108,6 @@
     if ([self.user[@"maxDistance"] intValue] != maxDist
         || [self.user[@"priceRangeHigh"] intValue] != priceRangeHigh
         || [self.user[@"priceRangeLow"] intValue] != priceRangeLow) {
-        self.offset = 0; //not sure if I should update this on backend too
-        
         //update query
         self.query.radiusFilter = [self.user[@"maxDistance"] doubleValue] * 1609.0;
         self.query.offset = 0;
@@ -262,6 +255,7 @@
 
 - (void)loadNextRestaurant {
     sleep(0.25);
+    NSLog([@([self.queue size]) stringValue]);
     
     //this makes sure my code is in bounds
     if ([self.queue isEmpty]) {
@@ -272,7 +266,6 @@
             [self presentViewController:alert animated:YES completion:nil];
         }
         else {
-            self.offset += 50;
             self.query.offset += 50;
             [self fetchRestaurants];
         }
@@ -281,15 +274,18 @@
     
     self.firstTime = false;
     
-    if (self.offset >= 50 && self.counter == 10) {
+    if (self.totalSwipes >= 50) {
+        self.query.offset = self.totalSwipes;
+        self.query.limit = 1;
+        [self fetchRestaurants];
+    }
+    
+    if (self.totalSwipes >= 50 && self.counter == 5) {
         //after the first 50 (to train the PQ) increment by 10's
         self.counter = 0;
         
-        self.offset = self.offset + 10;
-        [ParseUtil updateValue:@(self.offset) key:@"offset"];
-        self.query.offset = self.offset;
-        self.limit = 10;
-        self.query.limit = 10;
+        self.query.offset = self.query.offset + 5;
+        self.query.limit = 5;
         [self fetchRestaurants];
     }
 
@@ -336,11 +332,8 @@
     UIAlertAction *yesAction = [UIAlertAction actionWithTitle:@"Yes"
         style:UIAlertActionStyleDefault
         handler:^(UIAlertAction * _Nonnull action) {
-            self.offset += self.limit;
-            self.query.offset += self.limit; //probably need this bc int is not pointer
+            self.query.offset += self.query.limit;
             self.counter = 0;
-        
-            [ParseUtil updateValue:@(self.offset) key:@"offset"];
         
             [self fetchRestaurants];
         }];
@@ -354,6 +347,7 @@
     return alert;
 }
 
+//fetch code
 - (void)fetchRestaurants {
     __weak HomeViewController *const weakSelf = self;
     HomeViewController *const strongSelf = weakSelf;
@@ -368,10 +362,7 @@
             strongSelf.totalSwipes = ((int) leftSwipes.count) + ((int) rightSwipes.count); //keep track of total swipes
             
             for (YLPBusiness *restaurant in search.businesses) {
-                if ([rightSwipes objectForKey:restaurant.name] != nil) {
-                    [strongSelf.rightSwipes addObject:restaurant];
-                }
-                else if ([leftSwipes objectForKey:restaurant.name] == nil) {
+                if ([leftSwipes objectForKey:restaurant.name] == nil && [rightSwipes objectForKey:restaurant.name] == nil) {
                     //restuarant hasn't been seen before
                     [strongSelf.queue add:restaurant];
                 }
@@ -396,10 +387,9 @@
         NSString *phoneNumber = [rightSwipes valueForKey:key];
         [[AppDelegate sharedClient] businessWithPhoneNumber:phoneNumber completionHandler:^(YLPSearch * _Nullable search, NSError * _Nullable error) {
             if (search != nil) {
-                NSLog(@"successfully fetched saved restaurant");
-                
                 for (YLPBusiness *restaurant in search.businesses) {
                     [strongSelf.rightSwipes addObject:restaurant];
+                    NSLog(restaurant.name);
                 }
             }
             else {
@@ -433,8 +423,8 @@
     double longitude = (double) self.curLocation.coordinate.longitude;
     YLPCoordinate *coord = [[YLPCoordinate alloc] initWithLatitude:latitude longitude:longitude];
     self.query = [[YLPQuery alloc] initWithCoordinate:coord];
-    self.query.limit = self.limit;
-    self.query.offset = self.offset; //offset change
+    self.query.limit = 50;
+    self.query.offset = self.totalSwipes;
     self.query.radiusFilter = [self.user[@"maxDistance"] doubleValue] * 1609.0;
     
     //set up price parameter
@@ -453,6 +443,7 @@
         [self fetchSavedRestaurants];
     }
 }
+
 
 /*
 #pragma mark - Navigation
