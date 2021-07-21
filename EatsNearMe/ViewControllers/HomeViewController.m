@@ -97,7 +97,6 @@
     
     //keep track of swipes locally
     self.rightSwipes = [[NSMutableArray alloc] init];
-    self.restaurants = [[NSMutableArray alloc] init];
     self.queue = [[PriorityQueue alloc] initWithCapacity:100]; //might make bigger depending on
     self.queue.delegate = self;
     
@@ -122,6 +121,7 @@
         //update query
         self.query.radiusFilter = [self.user[@"maxDistance"] doubleValue] * 1609.0;
         self.query.offset = 0;
+        self.query.limit = 50; //because we want a fresh batch of 50 to start out with
         
         //set up price parameter
         int low = [self.user[@"priceRangeLow"] intValue];
@@ -138,29 +138,39 @@
 }
 
 - (NSComparisonResult)compare:(YLPBusiness *)obj1 obj2:(YLPBusiness *)obj2 {
+    /* TODO: comment this back in
     if (self.totalSwipes == 0) {
         return (NSComparisonResult) NSOrderedSame;
-    }
+    } */
             
+    //do I even need perecentages? feel like I could just work with the number of swipes per category
     double maxPercent1 = 0.0;
     double maxPercent2 = 0.0;
     
     //max percent for restaurant 1
     for (YLPCategory *category in obj1.categories) {
-        double numSwipes = [[self.categoryDict valueForKey:category.name] doubleValue]; //this is giving me a weird warning
+        double numSwipes = [[self.categoryDict valueForKey:category.name] doubleValue];
+        if (numSwipes > maxPercent1) {
+            maxPercent1 = numSwipes;
+        }
+        /*
         double percent = numSwipes / self.totalSwipes;
         if (percent > maxPercent1) {
             maxPercent1 = percent;
-         }
+        } */
     }
             
     //max percent for restaurant 2
     for (YLPCategory *category in obj2.categories) {
         double numSwipes = [[self.categoryDict valueForKey:category.name] doubleValue];
+        if (numSwipes > maxPercent2) {
+            maxPercent2 = numSwipes;
+        }
+        /*
         double percent = numSwipes / self.totalSwipes;
         if (percent > maxPercent2) {
             maxPercent2 = percent;
-        }
+        } */
     }
              
     if (maxPercent1 == maxPercent2) {
@@ -232,7 +242,8 @@
         }
         else {
             NSMutableDictionary *rightSwipes = [self.swipes objectForKey:@"rightSwipes"];
-            [rightSwipes setValue:restaurant.name forKey:restaurant.name];
+            //store phone so I can use it in phone query in later fetches
+            [rightSwipes setValue:restaurant.phone forKey:restaurant.name];
             [self.rightSwipes addObject:restaurant];
             
             //update category count
@@ -258,7 +269,7 @@
     sleep(0.25);
     
     //this makes sure my code is in bounds
-    if ([self.queue isEmpty]) { //(self.currentIndex >= self.restaurants.count) {
+    if ([self.queue isEmpty]) {
         self.counter = 0;
         //note: potentially make this more efficient by making alert a prop and only presenting it?
         UIAlertController *alert = [self makeAlert];
@@ -275,13 +286,6 @@
     
     self.firstTime = false;
     
-    /*
-    if ([self.queue size] <= 20) {
-        self.offset += 50;
-        self.query.offset += 50;
-        [self fetchRestaurants];
-    } */
-    
     if (self.offset >= 50 && self.counter == 10) {
         //after the first 50 (to train the PQ) increment by 10's
         self.counter = 0;
@@ -293,8 +297,7 @@
         self.query.limit = 10;
         [self fetchRestaurants];
     }
-    
-    //YLPBusiness *restaurant = self.restaurants[self.currentIndex];
+
     YLPBusiness *restaurant = [self.queue peek];
     self.counter++;
     
@@ -365,7 +368,6 @@
     //finally, the actual query
     [[AppDelegate sharedClient] searchWithQuery:self.query completionHandler:^(YLPSearch * _Nullable search, NSError * _Nullable error) {
         if (search != nil) {
-            strongSelf.restaurants = [[NSMutableArray alloc] init]; //reset restaurants to save space
             NSLog(@"successfully fetched restaurants");
             
             NSMutableDictionary *leftSwipes = [strongSelf.swipes objectForKey:@"leftSwipes"];
@@ -378,7 +380,6 @@
                 }
                 else if ([leftSwipes objectForKey:restaurant.name] == nil) {
                     //restuarant hasn't been seen before
-                    [strongSelf.restaurants addObject:restaurant];
                     [strongSelf.queue add:restaurant];
                 }
             }
@@ -396,6 +397,24 @@
     __weak HomeViewController *const weakSelf = self;
     HomeViewController *const strongSelf = weakSelf;
     
+    NSMutableDictionary *rightSwipes = [self.swipes objectForKey:@"rightSwipes"];
+    //loop through every restaurant in rightSwipes dict and fetch the corresponding YLPBusiness using the phone number
+    for (NSString *key in rightSwipes.keyEnumerator) {
+        NSString *phoneNumber = [rightSwipes valueForKey:key];
+        [[AppDelegate sharedClient] businessWithPhoneNumber:phoneNumber completionHandler:^(YLPSearch * _Nullable search, NSError * _Nullable error) {
+            if (search != nil) {
+                NSLog(@"successfully fetched saved restaurant");
+                
+                for (YLPBusiness *restaurant in search.businesses) {
+                    [strongSelf.rightSwipes addObject:restaurant];
+                }
+            }
+            else {
+                NSLog(@"%@", error.localizedDescription);
+            }
+        }];
+    }
+    /*
     //this is just to get the right swipes separately loaded
     [[AppDelegate sharedClient] searchWithQuery:self.rightSwipeQuery completionHandler:^(YLPSearch * _Nullable search, NSError * _Nullable error) {
         if (search != nil) {
@@ -418,6 +437,7 @@
             NSLog(@"%@", error.localizedDescription);
         }
     }];
+    */
 }
 
 //location methods start here
