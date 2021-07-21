@@ -54,7 +54,8 @@
     [super viewDidLoad];
     
     self.user = [[PFUser currentUser] fetch];
-    self.offset = [self.user[@"offset"] intValue];
+    //self.offset = [self.user[@"offset"] intValue];
+    self.offset = 0; //need to get all right swipes
     self.limit = 50;
     
     [self setUpLocation];
@@ -94,7 +95,7 @@
     //keep track of swipes locally
     self.rightSwipes = [[NSMutableArray alloc] init];
     self.restaurants = [[NSMutableArray alloc] init];
-    self.queue = [[PriorityQueue alloc] initWithCapacity:self.limit]; //might make bigger depending on
+    self.queue = [[PriorityQueue alloc] initWithCapacity:100]; //might make bigger depending on
     self.queue.delegate = self;
     
     //to pass right swipes to Saved Tab
@@ -256,9 +257,25 @@
     //this makes sure my code is in bounds
     if ([self.queue isEmpty]) { //(self.currentIndex >= self.restaurants.count) {
         self.counter = 0;
+        //note: potentially make this more efficient by making alert a prop and only presenting it?
         UIAlertController *alert = [self makeAlert];
-        [self presentViewController:alert animated:YES completion:nil];
+        if (!self.firstTime) {
+            [self presentViewController:alert animated:YES completion:nil];
+        }
+        else {
+            self.offset += 50;
+            self.query.offset += 50;
+            [self fetchRestaurants];
+        }
         return;
+    }
+    
+    self.firstTime = false;
+    
+    if ([self.queue size] <= 20) {
+        self.offset += 50;
+        self.query.offset += 50;
+        [self fetchRestaurants];
     }
     
     if (self.offset >= 50 && self.counter == 10) {
@@ -362,6 +379,7 @@
                     [strongSelf.queue add:restaurant];
                 }
             }
+            
             [strongSelf loadNextRestaurant];
             [strongSelf.restaurantView setNeedsDisplay];
         }
@@ -411,7 +429,7 @@
     
     //this is so I get the location first before I call the API
     if (self.firstTime) {
-        self.firstTime = false;
+        //self.firstTime = false; //set firstTime to false later
         [self fetchRestaurants];
     }
 }

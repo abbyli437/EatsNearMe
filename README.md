@@ -182,3 +182,4 @@ Network Request Outline
 
 ## Credits
 - 3rd party UI library: https://github.com/TomThorpe/TTRangeSlider
+- Priority Queue API source: https://github.com/atljeremy/PriorityQueue-ObjC
