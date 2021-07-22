@@ -44,6 +44,9 @@
 @property (weak, nonatomic) IBOutlet UILabel *distanceLabel;
 @property (weak, nonatomic) IBOutlet UILabel *priceLabel;
 
+@property (weak, nonatomic) IBOutlet UIButton *yesButton;
+@property (weak, nonatomic) IBOutlet UIButton *noButton;
+
 @end
 
 @implementation HomeViewController
@@ -56,6 +59,14 @@
     self.user = [[PFUser currentUser] fetch];
     
     [self setUpLocation];
+    
+    //set up Yes button
+    [self setUpButton:self.yesButton];
+    self.yesButton.imageView.tintColor = [UIColor greenColor];
+    
+    //set up No button
+    [self setUpButton:self.noButton];
+    self.noButton.imageView.tintColor = [UIColor redColor];
     
     self.firstTime = true;
     
@@ -172,6 +183,22 @@
     }
     //bigger percentage is "smaller" because the queue takes the smallest priority first!
     return (NSComparisonResult) NSOrderedAscending;
+}
+
+- (void)setUpButton:(UIButton *)button {
+    //set up Yes button
+    button.contentHorizontalAlignment = UIControlContentHorizontalAlignmentFill;
+    button.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
+    button.layer.cornerRadius  = self.yesButton.frame.size.width/2;
+    button.clipsToBounds = YES;
+}
+
+- (IBAction)tapYes:(id)sender {
+    [self afterSwipeAction:200 isLeft:false];
+}
+
+- (IBAction)tapNo:(id)sender {
+    [self afterSwipeAction:-200 isLeft:true];
 }
 
 - (IBAction)swipeRestaurant:(UIPanGestureRecognizer *)sender {
