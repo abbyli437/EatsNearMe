@@ -446,9 +446,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view tag="1" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="AAm-9D-6l2">
+                            <view tag="1" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="AAm-9D-6l2">
                                 <rect key="frame" x="25" y="121" width="340" height="500"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="GOv-yB-M7r">
                                         <rect key="frame" x="0.0" y="0.0" width="340" height="300"/>
@@ -491,6 +490,9 @@
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <gestureRecognizers/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="500" id="HsF-Bt-7KQ"/>
+                                </constraints>
                                 <connections>
                                     <outletCollection property="gestureRecognizers" destination="MIp-NU-lP5" appends="YES" id="sNN-Qv-sCO"/>
                                 </connections>
@@ -498,6 +500,13 @@
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="i4i-xD-L99"/>
                         <color key="backgroundColor" systemColor="systemGray4Color"/>
+                        <constraints>
+                            <constraint firstItem="AAm-9D-6l2" firstAttribute="leading" secondItem="i4i-xD-L99" secondAttribute="leading" constant="25" id="Obq-7i-zrL"/>
+                            <constraint firstItem="AAm-9D-6l2" firstAttribute="top" secondItem="i4i-xD-L99" secondAttribute="top" constant="33" id="SKJ-HH-OMS"/>
+                            <constraint firstItem="i4i-xD-L99" firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="AAm-9D-6l2" secondAttribute="bottom" constant="35" id="Wfh-Gk-M3S"/>
+                            <constraint firstItem="i4i-xD-L99" firstAttribute="trailing" secondItem="AAm-9D-6l2" secondAttribute="trailing" constant="25" id="bd2-ZH-n9B"/>
+                            <constraint firstItem="AAm-9D-6l2" firstAttribute="centerX" secondItem="i4i-xD-L99" secondAttribute="centerX" id="pqC-hI-Oqg"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Home" id="4Vo-Ek-HlN">
                         <barButtonItem key="leftBarButtonItem" style="plain" id="0vL-Yu-Gg1">
@@ -646,6 +655,9 @@
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dzP-Hk-iZg">
                                 <rect key="frame" x="122.66666666666669" y="191" width="145" height="30"/>
                                 <state key="normal" title="Choose Profile Photo"/>
+                                <connections>
+                                    <action selector="changePfp:" destination="4e5-tm-mnz" eventType="touchUpInside" id="Jlp-aC-R5V"/>
+                                </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="20" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cuO-8G-2LV">
                                 <rect key="frame" x="353.66666666666669" y="269" width="20.333333333333314" height="21"/>

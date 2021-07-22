@@ -152,7 +152,8 @@
     }
     
     //other things to compare: reviews, number of reviews
-    if (fmin(maxPercent1, maxPercent2) / fmax(maxPercent1, maxPercent2) >= 0.8) {
+    if (maxPercent1 == maxPercent2 ||
+        fmin(maxPercent1, maxPercent2) / fmax(maxPercent1, maxPercent2) >= 0.8) {
         if (obj1.rating > obj2.rating
             || (obj1.rating == obj2.rating && obj1.reviewCount > obj2.reviewCount)) {
             return (NSComparisonResult) NSOrderedAscending;
