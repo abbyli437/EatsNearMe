@@ -119,54 +119,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "45CE9C36-DD37-4FA1-9FF4-4D20C69DB8FC"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "EatsNearMe/ViewControllers/HomeViewController.m"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "434"
-            endingLineNumber = "434"
-            landmarkName = "-fetchSavedRestaurants"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "45CE9C36-DD37-4FA1-9FF4-4D20C69DB8FC - 9d8eb6ee33912cd2"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "__43-[HomeViewController fetchSavedRestaurants]_block_invoke"
-                  moduleName = "EatsNearMe"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/abbyli/Desktop/Projects/EatsNearMe/EatsNearMe/ViewControllers/HomeViewController.m"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "433"
-                  endingLineNumber = "433"
-                  offsetFromSymbolStart = "138">
-               </Location>
-               <Location
-                  uuid = "45CE9C36-DD37-4FA1-9FF4-4D20C69DB8FC - 9d8eb6ee33912cd2"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "__43-[HomeViewController fetchSavedRestaurants]_block_invoke"
-                  moduleName = "EatsNearMe"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/abbyli/Desktop/Projects/EatsNearMe/EatsNearMe/ViewControllers/HomeViewController.m"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "433"
-                  endingLineNumber = "433"
-                  offsetFromSymbolStart = "158">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "A41BCBEE-6715-404C-9B29-63B1C0DE1CC8"
             shouldBeEnabled = "No"
             ignoreCount = "0"

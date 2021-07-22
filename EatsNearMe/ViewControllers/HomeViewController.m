@@ -273,7 +273,7 @@
         else {
             NSMutableDictionary *rightSwipes = [self.swipes objectForKey:@"rightSwipes"];
             //store phone number so I can use it in phone query in later fetches
-            [rightSwipes setValue:restaurant.phone forKey:restaurant.name];
+            [rightSwipes setValue:restaurant.identifier forKey:restaurant.name];
             [self.rightSwipes addObject:restaurant];
             
             //update category count
@@ -428,13 +428,11 @@
     NSMutableDictionary *rightSwipes = [self.swipes objectForKey:@"rightSwipes"];
     //loop through every restaurant in rightSwipes dict and fetch the corresponding YLPBusiness using the phone number
     for (NSString *key in rightSwipes.keyEnumerator) {
-        NSString *phoneNumber = [rightSwipes valueForKey:key];
-        [[AppDelegate sharedClient] businessWithPhoneNumber:phoneNumber completionHandler:^(YLPSearch * _Nullable search, NSError * _Nullable error) {
-            if (search != nil) {
-                for (YLPBusiness *restaurant in search.businesses) {
-                    [strongSelf.rightSwipes addObject:restaurant];
-                    NSLog(restaurant.name);
-                }
+        NSString *businessID = [rightSwipes valueForKey:key];
+        [[AppDelegate sharedClient] businessWithId:businessID completionHandler:^(YLPBusiness * _Nullable business, NSError * _Nullable error) {
+            if (business != nil) {
+                [strongSelf.rightSwipes addObject:business];
+                NSLog(business.name);
             }
             else {
                 NSLog(@"%@", error.localizedDescription);
