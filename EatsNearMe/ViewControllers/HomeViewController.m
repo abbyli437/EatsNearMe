@@ -24,7 +24,9 @@
 @property (strong, nonatomic) YLPQuery *query;
 @property (strong, nonatomic) SavedViewController *secondTab;
 @property (nonatomic) bool firstTime;
+@property (nonatomic) bool isFetching;
 @property (nonatomic) CGPoint cardCenter;
+@property (strong, nonatomic) UIAlertController *alert;
 
 @property (nonatomic) int counter;
 @property (strong, nonatomic) PriorityQueue *queue;
@@ -64,6 +66,8 @@
     self.cardCenter = self.restaurantView.center;
     
     self.counter = 0;
+    
+    self.alert = [self makeAlert];
     
     //might use swipes to only store restaurant names because Parse can't store YLPBusiness objects
     if (self.user[@"swipes"] != nil) {
@@ -128,12 +132,12 @@
 }
 
 - (NSComparisonResult)compare:(YLPBusiness *)obj1 obj2:(YLPBusiness *)obj2 {
-    /* TODO: comment this back in
+    //change this?
+    /*
     if (self.totalSwipes == 0) {
         return (NSComparisonResult) NSOrderedSame;
     } */
-            
-    //do I even need perecentages? feel like I could just work with the number of swipes per category
+
     double maxPercent1 = 0.0;
     double maxPercent2 = 0.0;
     
@@ -143,11 +147,6 @@
         if (numSwipes > maxPercent1) {
             maxPercent1 = numSwipes;
         }
-        /*
-        double percent = numSwipes / self.totalSwipes;
-        if (percent > maxPercent1) {
-            maxPercent1 = percent;
-        } */
     }
             
     //max percent for restaurant 2
@@ -156,16 +155,23 @@
         if (numSwipes > maxPercent2) {
             maxPercent2 = numSwipes;
         }
-        /*
-        double percent = numSwipes / self.totalSwipes;
-        if (percent > maxPercent2) {
-            maxPercent2 = percent;
-        } */
     }
-             
+    
+    //other things to compare: reviews, number of reviews
+    if (fabs(maxPercent1 - maxPercent2) <= 3) {
+        if (obj1.rating > obj2.rating
+            || (obj1.rating == obj2.rating && obj1.reviewCount > obj2.reviewCount)) {
+            return (NSComparisonResult) NSOrderedAscending;
+        }
+        else if (obj1.rating == obj2.rating && obj1.reviewCount == obj2.reviewCount) {
+            return (NSComparisonResult) NSOrderedSame;
+        }
+        return (NSComparisonResult) NSOrderedDescending;
+    }
+    /*
     if (maxPercent1 == maxPercent2) {
         return (NSComparisonResult) NSOrderedSame;
-    }
+    } */
     else if (maxPercent1 < maxPercent2) {
         return (NSComparisonResult) NSOrderedDescending;
     }
@@ -230,7 +236,7 @@
         }
         else {
             NSMutableDictionary *rightSwipes = [self.swipes objectForKey:@"rightSwipes"];
-            //store phone so I can use it in phone query in later fetches
+            //store phone number so I can use it in phone query in later fetches
             [rightSwipes setValue:restaurant.phone forKey:restaurant.name];
             [self.rightSwipes addObject:restaurant];
             
@@ -260,10 +266,8 @@
     //this makes sure my code is in bounds
     if ([self.queue isEmpty]) {
         self.counter = 0;
-        //note: potentially make this more efficient by making alert a prop and only presenting it?
-        UIAlertController *alert = [self makeAlert];
-        if (!self.firstTime) {
-            [self presentViewController:alert animated:YES completion:nil];
+        if (!self.firstTime && !self.isFetching) {
+            [self presentViewController:self.alert animated:YES completion:nil];
         }
         else {
             self.query.offset += 50;
@@ -272,15 +276,9 @@
         return;
     }
     
-    self.firstTime = false;
+    self.isFetching = false;
     
-    if (self.totalSwipes >= 50) {
-        self.query.offset = self.totalSwipes;
-        self.query.limit = 1;
-        [self fetchRestaurants];
-    }
-    
-    if (self.totalSwipes >= 50 && self.counter == 5) {
+    if (self.totalSwipes >= 20 && self.counter == 5) {
         //after the first 50 (to train the PQ) increment by 10's
         self.counter = 0;
         
@@ -319,6 +317,7 @@
     self.restaurantView.center = self.cardCenter;
     self.restaurantView.alpha = 1;
     self.checkMarkImage.alpha = 0;
+    
     [UIView animateWithDuration:0.3 animations:^{
         self.restaurantView.alpha = 1;
     }];
@@ -349,6 +348,7 @@
 
 //fetch code
 - (void)fetchRestaurants {
+    self.isFetching = true;
     __weak HomeViewController *const weakSelf = self;
     HomeViewController *const strongSelf = weakSelf;
     
@@ -439,6 +439,7 @@
     
     //this is so I get the location first before I call the API
     if (self.firstTime) {
+        self.firstTime = false;
         [self fetchRestaurants];
         [self fetchSavedRestaurants];
     }
