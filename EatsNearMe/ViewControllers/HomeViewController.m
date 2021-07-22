@@ -132,12 +132,6 @@
 }
 
 - (NSComparisonResult)compare:(YLPBusiness *)obj1 obj2:(YLPBusiness *)obj2 {
-    //change this?
-    /*
-    if (self.totalSwipes == 0) {
-        return (NSComparisonResult) NSOrderedSame;
-    } */
-
     double maxPercent1 = 0.0;
     double maxPercent2 = 0.0;
     
@@ -158,7 +152,7 @@
     }
     
     //other things to compare: reviews, number of reviews
-    if (fabs(maxPercent1 - maxPercent2) <= 3) {
+    if (fmin(maxPercent1, maxPercent2) / fmax(maxPercent1, maxPercent2) >= 0.8) {
         if (obj1.rating > obj2.rating
             || (obj1.rating == obj2.rating && obj1.reviewCount > obj2.reviewCount)) {
             return (NSComparisonResult) NSOrderedAscending;
@@ -332,6 +326,7 @@
         style:UIAlertActionStyleDefault
         handler:^(UIAlertAction * _Nonnull action) {
             self.query.offset += self.query.limit;
+            self.query.limit = 50;
             self.counter = 0;
         
             [self fetchRestaurants];
