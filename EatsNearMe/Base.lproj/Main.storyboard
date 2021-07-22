@@ -491,52 +491,20 @@
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <gestureRecognizers/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="500" id="HsF-Bt-7KQ"/>
+                                    <constraint firstAttribute="height" priority="999" constant="500" id="HsF-Bt-7KQ"/>
                                 </constraints>
                                 <connections>
                                     <outletCollection property="gestureRecognizers" destination="MIp-NU-lP5" appends="YES" id="sNN-Qv-sCO"/>
                                 </connections>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jPQ-CV-j0p">
-                                <rect key="frame" x="75" y="657" width="65" height="65"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="65" id="1C6-rR-9Uv"/>
-                                    <constraint firstAttribute="width" constant="65" id="lLQ-MH-3tL"/>
-                                </constraints>
-                                <state key="normal">
-                                    <imageReference key="image" image="xmark.circle.fill" catalog="system" symbolScale="large" renderingMode="template"/>
-                                </state>
-                                <connections>
-                                    <action selector="tapNo:" destination="LHv-F8-U7X" eventType="touchUpInside" id="gu9-4c-6Ns"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleAspectFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3Wu-bh-hdf">
-                                <rect key="frame" x="250" y="657" width="65" height="65"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="65" id="4SI-ay-SQp"/>
-                                    <constraint firstAttribute="height" constant="65" id="NE6-S4-7iF"/>
-                                </constraints>
-                                <state key="normal">
-                                    <imageReference key="image" image="checkmark.circle.fill" catalog="system" symbolScale="large" renderingMode="template"/>
-                                </state>
-                                <connections>
-                                    <action selector="tapYes:" destination="LHv-F8-U7X" eventType="touchUpInside" id="sQ8-Cx-TEU"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="i4i-xD-L99"/>
                         <color key="backgroundColor" systemColor="systemGray4Color"/>
                         <constraints>
-                            <constraint firstItem="3Wu-bh-hdf" firstAttribute="top" secondItem="jPQ-CV-j0p" secondAttribute="top" id="8r3-gP-D2a"/>
-                            <constraint firstItem="i4i-xD-L99" firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="3Wu-bh-hdf" secondAttribute="bottom" constant="24" id="EXO-Zy-Bsk"/>
+                            <constraint firstItem="i4i-xD-L99" firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="AAm-9D-6l2" secondAttribute="bottom" constant="75" id="2ic-vj-qmg"/>
                             <constraint firstItem="AAm-9D-6l2" firstAttribute="leading" secondItem="i4i-xD-L99" secondAttribute="leading" constant="25" id="Obq-7i-zrL"/>
-                            <constraint firstItem="i4i-xD-L99" firstAttribute="trailing" secondItem="3Wu-bh-hdf" secondAttribute="trailing" constant="75" id="PdR-fr-rcR"/>
                             <constraint firstItem="AAm-9D-6l2" firstAttribute="top" secondItem="i4i-xD-L99" secondAttribute="top" constant="33" id="SKJ-HH-OMS"/>
-                            <constraint firstItem="3Wu-bh-hdf" firstAttribute="top" secondItem="AAm-9D-6l2" secondAttribute="bottom" constant="36" id="Wfh-Gk-M3S"/>
                             <constraint firstItem="i4i-xD-L99" firstAttribute="trailing" secondItem="AAm-9D-6l2" secondAttribute="trailing" constant="25" id="bd2-ZH-n9B"/>
-                            <constraint firstItem="jPQ-CV-j0p" firstAttribute="leading" secondItem="i4i-xD-L99" secondAttribute="leading" constant="75" id="mcV-Sd-Gxk"/>
                             <constraint firstItem="AAm-9D-6l2" firstAttribute="centerX" secondItem="i4i-xD-L99" secondAttribute="centerX" id="pqC-hI-Oqg"/>
                         </constraints>
                     </view>
@@ -572,11 +540,9 @@
                         <outlet property="descriptionLabel" destination="RgO-hP-oNc" id="for-zD-9zi"/>
                         <outlet property="distanceLabel" destination="ggr-Yp-xsl" id="nzO-nx-gq8"/>
                         <outlet property="nameLabel" destination="gEQ-Zx-s0j" id="8SW-Ki-YfX"/>
-                        <outlet property="noButton" destination="jPQ-CV-j0p" id="8GV-tZ-MEv"/>
                         <outlet property="priceLabel" destination="pNE-g8-emS" id="yEW-66-255"/>
                         <outlet property="restaurantImage" destination="GOv-yB-M7r" id="7yo-xO-PYA"/>
                         <outlet property="restaurantView" destination="AAm-9D-6l2" id="wsr-pt-moY"/>
-                        <outlet property="yesButton" destination="3Wu-bh-hdf" id="XMf-62-86q"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ehe-QL-bfe" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -790,7 +756,6 @@
         <image name="person.circle" catalog="system" width="128" height="121"/>
         <image name="person.fill" catalog="system" width="128" height="120"/>
         <image name="rectangle" catalog="system" width="128" height="93"/>
-        <image name="xmark.circle.fill" catalog="system" width="128" height="121"/>
         <systemColor name="labelColor">
             <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

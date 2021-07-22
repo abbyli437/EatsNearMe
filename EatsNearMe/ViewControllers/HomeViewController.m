@@ -44,8 +44,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *distanceLabel;
 @property (weak, nonatomic) IBOutlet UILabel *priceLabel;
 
-@property (weak, nonatomic) IBOutlet UIButton *yesButton;
-@property (weak, nonatomic) IBOutlet UIButton *noButton;
+@property (strong, nonatomic) UIButton *yesButton;
+@property (strong, nonatomic) UIButton *noButton;
 
 @end
 
@@ -61,10 +61,25 @@
     [self setUpLocation];
     
     //set up Yes button
+    CGFloat buttonY = self.view.frame.size.height - 175;
+    
+    self.yesButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.yesButton addTarget:self
+                       action:@selector(tapYes:)
+     forControlEvents:UIControlEventTouchUpInside];
+    self.yesButton.frame = CGRectMake(self.view.frame.origin.x + self.view.frame.size.width - 140.0, buttonY, 65, 65);
+    [self.yesButton setImage:[UIImage systemImageNamed:@"checkmark.circle.fill"] forState:UIControlStateNormal];
     [self setUpButton:self.yesButton];
     self.yesButton.imageView.tintColor = [UIColor greenColor];
+    //[self.view addSubview:self.yesButton];
     
     //set up No button
+    self.noButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.noButton addTarget:self
+                       action:@selector(tapNo:)
+     forControlEvents:UIControlEventTouchUpInside];
+    self.noButton.frame = CGRectMake(75, buttonY, 65, 65);
+    [self.noButton setImage:[UIImage systemImageNamed:@"xmark.circle.fill"] forState:UIControlStateNormal];
     [self setUpButton:self.noButton];
     self.noButton.imageView.tintColor = [UIColor redColor];
     
@@ -174,10 +189,6 @@
         }
         return (NSComparisonResult) NSOrderedDescending;
     }
-    /*
-    if (maxPercent1 == maxPercent2) {
-        return (NSComparisonResult) NSOrderedSame;
-    } */
     else if (maxPercent1 < maxPercent2) {
         return (NSComparisonResult) NSOrderedDescending;
     }
@@ -191,13 +202,16 @@
     button.contentVerticalAlignment = UIControlContentVerticalAlignmentFill;
     button.layer.cornerRadius  = self.yesButton.frame.size.width/2;
     button.clipsToBounds = YES;
+    button.alpha = 1;
+    button.backgroundColor = [UIColor whiteColor];
+    [self.view addSubview:button];
 }
 
-- (IBAction)tapYes:(id)sender {
+- (void)tapYes:(id)sender {
     [self afterSwipeAction:200 isLeft:false];
 }
 
-- (IBAction)tapNo:(id)sender {
+- (void)tapNo:(id)sender {
     [self afterSwipeAction:-200 isLeft:true];
 }
 
@@ -300,7 +314,7 @@
     
     self.isFetching = false;
     
-    if (self.totalSwipes >= 20 && self.counter == 5) {
+    if (self.totalSwipes >= 50 && self.counter == 5) {
         //after the first 50 (to train the PQ) increment by 10's
         self.counter = 0;
         
@@ -390,6 +404,13 @@
                     [strongSelf.queue add:restaurant];
                 }
             }
+            
+            /*offset might not work because PQ reorders things
+            ideas: fix: start out with offset of 0, fetch until I get at least 50. But this screws up runtime after many swipes
+             idea: make offset max?
+             idea: if user swiped index 1 and 50 then fetch 2-49
+             basic heuristic?
+             */
             
             [strongSelf loadNextRestaurant];
             [strongSelf.restaurantView setNeedsDisplay];
