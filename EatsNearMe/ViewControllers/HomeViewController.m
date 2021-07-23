@@ -18,6 +18,7 @@
 @interface HomeViewController ()  <CLLocationManagerDelegate, PriorityQueueDelegate>
 
 @property (strong, nonatomic) PFUser *user;
+@property (strong, nonatomic) NSUserDefaults *defaults;
 
 @property (strong, nonatomic) CLLocationManager *locationManager;
 @property (strong, nonatomic) CLLocation *curLocation;
@@ -32,6 +33,7 @@
 @property (strong, nonatomic) PriorityQueue *queue;
 @property (strong, nonatomic) NSMutableDictionary *swipes;
 @property (strong, nonatomic) NSMutableArray *rightSwipes;
+@property (strong, nonatomic) NSMutableArray *rightSwipesDict;
 @property (strong, nonatomic) NSMutableDictionary *categoryDict;
 @property (nonatomic) int totalSwipes;
 
@@ -57,6 +59,8 @@
     [super viewDidLoad];
     
     self.user = [[PFUser currentUser] fetch];
+    
+    self.defaults = [NSUserDefaults standardUserDefaults];
     
     [self setUpLocation];
     
@@ -122,12 +126,10 @@
     self.queue.delegate = self;
     
     //to pass right swipes to Saved Tab
-    /*
     UINavigationController *secondController = self.tabBarController.viewControllers[1];
     self.secondTab = secondController.viewControllers.firstObject;
-    self.secondTab.restaurantDict = rightSwipes;
-    self.secondTab.restaurants = self.rightSwipes;
-     */
+    /* self.secondTab.restaurantDict = rightSwipes;
+    self.secondTab.restaurants = self.rightSwipes; */
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -276,7 +278,14 @@
             NSMutableDictionary *rightSwipes = [self.swipes objectForKey:@"rightSwipes"];
             //store phone number so I can use it in phone query in later fetches
             [rightSwipes setValue:restaurant.identifier forKey:restaurant.name];
+            
+            //update local storage in rightSwipes array- this uses YLPBusinesses
             [self.rightSwipes addObject:restaurant];
+            //can't insert custom object- turn restaurant to dictionary?
+            NSMutableDictionary *restaurantDictForm = [self restaurantToDict:restaurant];
+            [self.rightSwipesDict addObject:restaurantDictForm];
+            [self.defaults setObject:self.rightSwipesDict forKey:self.user.username];
+            [self.defaults synchronize];
             
             //update category count
             for (YLPCategory *category in restaurant.categories) {
@@ -295,6 +304,43 @@
         
         [self loadNextRestaurant];
     }];
+}
+
+- (NSMutableDictionary *)restaurantToDict:(YLPBusiness *)restaurant {
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+    
+    //set all the props
+    [dict setValue:@([restaurant isClosed]) forKey:@"isClosed"];
+    [dict setValue:restaurant.URL forKey:@"URL"];
+    [dict setValue:@(restaurant.rating) forKey:@"rating"];
+    [dict setValue:@(restaurant.reviewCount) forKey:@"reviewCount"];
+    [dict setValue:restaurant.name forKey:@"name"];
+    [dict setValue:restaurant.price forKey:@"price"];
+    [dict setValue:restaurant.phone forKey:@"phone"];
+    [dict setValue:restaurant.identifier forKey:@"identifier"];
+    
+    //set up category in string form
+    NSMutableArray *cats = [[NSMutableArray alloc] init];
+    for (YLPCategory *category in restaurant.categories) {
+        [cats addObject:category.name];
+    }
+    [dict setObject:cats forKey:@"categories"];
+    
+    //set up address
+    NSMutableString *address = [restaurant.location.address[0] mutableCopy];
+    [address appendString:@", "];
+    [address appendString:restaurant.location.city];
+    [address appendString:@", "];
+    [address appendString:restaurant.location.stateCode];
+    [address appendString:@", "];
+    [address appendString:restaurant.location.postalCode];
+    [dict setObject:address forKey:@"address"];
+    
+    //latitude & longitude
+    [dict setObject:@(restaurant.location.coordinate.latitude) forKey:@"latitude"];
+    [dict setObject:@(restaurant.location.coordinate.longitude) forKey:@"longitude"];
+    
+    return dict;
 }
 
 - (void)loadNextRestaurant {

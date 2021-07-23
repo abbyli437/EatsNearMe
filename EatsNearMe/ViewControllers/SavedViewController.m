@@ -15,8 +15,7 @@
 @interface SavedViewController () <UITableViewDelegate, UITableViewDataSource>
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
-@property (strong, nonatomic) NSMutableArray *idArr;
-//@property (strong, nonatomic) NSMutableArray *restaurants;
+@property (strong, nonatomic) NSUserDefaults *defaults;
 
 @end
 
@@ -32,6 +31,8 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
+    self.defaults = [NSUserDefaults standardUserDefaults];
+    
     PFUser *user = [PFUser currentUser];
     NSMutableDictionary *swipes = user[@"swipes"];
     self.restaurantDict = swipes[@"rightSwipes"];
@@ -39,11 +40,18 @@
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     
-    self.restaurants = [[NSMutableArray alloc] init];
-    self.idArr = [[NSMutableArray alloc] init];
+    self.restaurants = [self.defaults objectForKey:user.username];
     
+    if (self.restaurants == nil) {
+        [self fetchRestaurants];
+    }
+    
+    [self.tableView reloadData];
+}
+
+- (void)fetchRestaurants {
+    self.restaurants = [[NSMutableArray alloc] init];
     for (NSString *key in [self.restaurantDict keyEnumerator]) {
-        [self.idArr addObject:self.restaurantDict[key]];
         //query here to save runtime
         NSString *businessID = self.restaurantDict[key];
         [[AppDelegate sharedClient] businessWithId:businessID completionHandler:^(YLPBusiness * _Nullable business, NSError * _Nullable error) {
@@ -59,9 +67,8 @@
             }
         }];
     }
-    
-    //[self.tableView reloadData];
 }
+
 //table view methods
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return self.restaurants.count;
