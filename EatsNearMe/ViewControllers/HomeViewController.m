@@ -122,9 +122,12 @@
     self.queue.delegate = self;
     
     //to pass right swipes to Saved Tab
+    /*
     UINavigationController *secondController = self.tabBarController.viewControllers[1];
     self.secondTab = secondController.viewControllers.firstObject;
     self.secondTab.restaurantDict = rightSwipes;
+    self.secondTab.restaurants = self.rightSwipes;
+     */
 }
 
 - (void)viewDidAppear:(BOOL)animated {

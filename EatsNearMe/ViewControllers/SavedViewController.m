@@ -9,13 +9,14 @@
 #import "RestaurantCell.h"
 #import "DetailsViewController.h"
 #import "AppDelegate.h"
+#import "Parse/Parse.h"
 @import YelpAPI;
 
 @interface SavedViewController () <UITableViewDelegate, UITableViewDataSource>
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (strong, nonatomic) NSMutableArray *idArr;
-@property (strong, nonatomic) NSMutableArray *restaurants;
+//@property (strong, nonatomic) NSMutableArray *restaurants;
 
 @end
 
@@ -31,8 +32,15 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
+    PFUser *user = [PFUser currentUser];
+    NSMutableDictionary *swipes = user[@"swipes"];
+    self.restaurantDict = swipes[@"rightSwipes"];
+    
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
+    
+    self.restaurants = [[NSMutableArray alloc] init];
+    self.idArr = [[NSMutableArray alloc] init];
     
     for (NSString *key in [self.restaurantDict keyEnumerator]) {
         [self.idArr addObject:self.restaurantDict[key]];
@@ -42,7 +50,9 @@
             if (business != nil) {
                 [self.restaurants addObject:business];
                 NSLog(business.name);
-                [self.tableView reloadData];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.tableView reloadData];
+                });
             }
             else {
                 NSLog(@"%@", error.localizedDescription);
@@ -50,7 +60,7 @@
         }];
     }
     
-    [self.tableView reloadData];
+    //[self.tableView reloadData];
 }
 //table view methods
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -59,24 +69,9 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     RestaurantCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"RestaurantCell" forIndexPath:indexPath];
-    
     YLPBusiness *restaurant = [self.restaurants objectAtIndex:indexPath.row];
     cell.curLocation = self.curLocation;
     cell.restaurant = restaurant;
-    NSString *businessID = [self.idArr objectAtIndex:indexPath.row];
-    
-    /*
-    [[AppDelegate sharedClient] businessWithId:businessID completionHandler:^(YLPBusiness * _Nullable business, NSError * _Nullable error) {
-        if (business != nil) {
-            [self.restaurants addObject:business];
-            NSLog(business.name);
-        }
-        else {
-            NSLog(@"%@", error.localizedDescription);
-        }
-    }]; */
-    
-    //this is problematic because the cell is probably nil at this point since the call is async- but I can't put return in completion block because that's bad :(
     return cell;
 }
 
