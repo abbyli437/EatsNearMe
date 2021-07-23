@@ -8,10 +8,14 @@
 #import "SavedViewController.h"
 #import "RestaurantCell.h"
 #import "DetailsViewController.h"
+#import "AppDelegate.h"
+@import YelpAPI;
 
 @interface SavedViewController () <UITableViewDelegate, UITableViewDataSource>
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
+@property (strong, nonatomic) NSMutableArray *idArr;
+@property (strong, nonatomic) NSMutableArray *restaurants;
 
 @end
 
@@ -29,6 +33,23 @@
     
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
+    
+    for (NSString *key in [self.restaurantDict keyEnumerator]) {
+        [self.idArr addObject:self.restaurantDict[key]];
+        //query here to save runtime
+        NSString *businessID = self.restaurantDict[key];
+        [[AppDelegate sharedClient] businessWithId:businessID completionHandler:^(YLPBusiness * _Nullable business, NSError * _Nullable error) {
+            if (business != nil) {
+                [self.restaurants addObject:business];
+                NSLog(business.name);
+                [self.tableView reloadData];
+            }
+            else {
+                NSLog(@"%@", error.localizedDescription);
+            }
+        }];
+    }
+    
     [self.tableView reloadData];
 }
 //table view methods
@@ -42,7 +63,20 @@
     YLPBusiness *restaurant = [self.restaurants objectAtIndex:indexPath.row];
     cell.curLocation = self.curLocation;
     cell.restaurant = restaurant;
+    NSString *businessID = [self.idArr objectAtIndex:indexPath.row];
     
+    /*
+    [[AppDelegate sharedClient] businessWithId:businessID completionHandler:^(YLPBusiness * _Nullable business, NSError * _Nullable error) {
+        if (business != nil) {
+            [self.restaurants addObject:business];
+            NSLog(business.name);
+        }
+        else {
+            NSLog(@"%@", error.localizedDescription);
+        }
+    }]; */
+    
+    //this is problematic because the cell is probably nil at this point since the call is async- but I can't put return in completion block because that's bad :(
     return cell;
 }
 

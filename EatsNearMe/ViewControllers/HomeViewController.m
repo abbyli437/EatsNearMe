@@ -71,7 +71,6 @@
     [self.yesButton setImage:[UIImage systemImageNamed:@"checkmark.circle.fill"] forState:UIControlStateNormal];
     [self setUpButton:self.yesButton];
     self.yesButton.imageView.tintColor = [UIColor greenColor];
-    //[self.view addSubview:self.yesButton];
     
     //set up No button
     self.noButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -125,7 +124,7 @@
     //to pass right swipes to Saved Tab
     UINavigationController *secondController = self.tabBarController.viewControllers[1];
     self.secondTab = secondController.viewControllers.firstObject;
-    self.secondTab.restaurants = self.rightSwipes;
+    self.secondTab.restaurantDict = rightSwipes;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -405,12 +404,10 @@
                 }
             }
             
-            /*offset might not work because PQ reorders things
-            ideas: fix: start out with offset of 0, fetch until I get at least 50. But this screws up runtime after many swipes
-             idea: make offset max?
-             idea: if user swiped index 1 and 50 then fetch 2-49
-             basic heuristic?
-             */
+            if ([strongSelf.queue size] <= 25) {
+                self.query.offset += self.query.limit;
+                [self fetchRestaurants];
+            }
             
             [strongSelf loadNextRestaurant];
             [strongSelf.restaurantView setNeedsDisplay];
@@ -466,7 +463,7 @@
     YLPCoordinate *coord = [[YLPCoordinate alloc] initWithLatitude:latitude longitude:longitude];
     self.query = [[YLPQuery alloc] initWithCoordinate:coord];
     self.query.limit = 50;
-    self.query.offset = self.totalSwipes;
+    self.query.offset = (self.totalSwipes / self.query.limit) * self.query.limit;
     self.query.radiusFilter = [self.user[@"maxDistance"] doubleValue] * 1609.0;
     
     //set up price parameter

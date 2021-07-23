@@ -12,7 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface SavedViewController : UIViewController
 
-@property (strong, nonatomic) NSMutableArray *restaurants;
+@property (strong, nonatomic) NSMutableDictionary *restaurantDict;
 @property (strong, nonatomic) CLLocation *curLocation;
 
 @end
