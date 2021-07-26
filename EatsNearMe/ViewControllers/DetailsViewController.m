@@ -15,7 +15,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *descriptionLabel;
 @property (weak, nonatomic) IBOutlet UILabel *openLabel;
-@property (weak, nonatomic) IBOutlet UILabel *websiteLabel;
+@property (weak, nonatomic) IBOutlet UITextView *websiteText;
 @property (weak, nonatomic) IBOutlet UILabel *priceLabel;
 @property (weak, nonatomic) IBOutlet UILabel *distanceLabel;
 @property (weak, nonatomic) IBOutlet UILabel *phoneLabel;
@@ -73,7 +73,8 @@
         self.openLabel.textColor = [UIColor greenColor];
     }
     
-    self.websiteLabel.text = self.restaurant.URL.absoluteString;
+    self.websiteText.textContainer.maximumNumberOfLines = 2;
+    self.websiteText.text = self.restaurant.URL.absoluteString;
     self.phoneLabel.text = self.restaurant.phone;
     
     //address setup
@@ -119,7 +120,7 @@
         self.openLabel.textColor = [UIColor greenColor];
     }
     
-    self.websiteLabel.text = self.restaurantDict[@"URL"];
+    self.websiteText.text = self.restaurantDict[@"URL"];
     self.phoneLabel.text = self.restaurantDict[@"phone"];
     self.addressLabel.text = self.restaurantDict[@"address"];
 }
