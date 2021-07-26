@@ -13,6 +13,8 @@ NS_ASSUME_NONNULL_BEGIN
 @interface DetailsViewController : UIViewController
 
 @property (strong, nonatomic) YLPBusiness *restaurant;
+@property (strong, nonatomic) NSDictionary *restaurantDict;
+@property (strong, nonatomic) NSString *businessID;
 @property (strong, nonatomic) NSString *distString;
 
 @end

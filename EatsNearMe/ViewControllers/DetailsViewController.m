@@ -6,6 +6,8 @@
 //
 
 #import "DetailsViewController.h"
+#import "AppDelegate.h"
+@import YelpAPI;
 
 @interface DetailsViewController ()
 
@@ -26,7 +28,26 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
+    if (self.restaurant != nil) {
+        [self setUpWithRestaurant];
+    }
+    else {
+        [[AppDelegate sharedClient] businessWithId:self.businessID completionHandler:^(YLPBusiness * _Nullable business, NSError * _Nullable error) {
+            if (business != nil) {
+                NSLog(business.name);
+                self.restaurant = business;
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self setUpWithRestaurant];
+                });
+            }
+            else {
+                NSLog(@"%@", error.localizedDescription);
+            }
+        }];
+    }
+}
+
+- (void)setUpWithRestaurant {
     //restaurant image
     if (self.restaurant.imageURL != nil) {
         NSData *data = [[NSData alloc] initWithContentsOfURL:self.restaurant.imageURL];
@@ -65,6 +86,42 @@
     [address appendString:self.restaurant.location.postalCode];
     
     self.addressLabel.text = address;
+}
+
+//might not need this
+- (void)setUpWithDict {
+    //restaurant image
+    if (self.restaurantDict[@"imageURL"] != nil) {
+        NSURL *imageURL = [NSURL URLWithString:self.restaurantDict[@"imageURL"]];
+        NSData *data = [[NSData alloc] initWithContentsOfURL:imageURL];
+        UIImage *imageData = [[UIImage alloc] initWithData:data];
+        self.restaurantImage.image = imageData;
+    }
+    else {
+        self.restaurantImage.image = [UIImage imageNamed:@"comingSoon.png"];
+    }
+    
+    self.nameLabel.text = self.restaurantDict[@"name"];
+    
+    NSArray *cats = self.restaurantDict[@"categories"];
+    self.descriptionLabel.text = cats[0];
+    
+    self.priceLabel.text = self.restaurantDict[@"price"];
+    self.distanceLabel.text = self.distString;
+    
+    //open or closed setup
+    if (self.restaurantDict[@"isClosed"] == YES) {
+        self.openLabel.text = @"Closed";
+        self.openLabel.textColor = [UIColor redColor];
+    }
+    else {
+        self.openLabel.text = @"Open";
+        self.openLabel.textColor = [UIColor greenColor];
+    }
+    
+    self.websiteLabel.text = self.restaurantDict[@"URL"];
+    self.phoneLabel.text = self.restaurantDict[@"phone"];
+    self.addressLabel.text = self.restaurantDict[@"address"];
 }
 
 /*

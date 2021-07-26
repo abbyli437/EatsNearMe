@@ -286,16 +286,10 @@
             //store phone number so I can use it in phone query in later fetches
             [rightSwipes setValue:restaurant.identifier forKey:restaurant.name];
             
-            //update local storage in rightSwipes array- this uses YLPBusinesses
+            //update local storage in rightSwipes array- this uses YLPBusinesses. Might delete this later.
             [self.rightSwipes addObject:restaurant];
             
             //store restuarant in user defaults
-            /*
-            NSData *restaurantData = [NSKeyedArchiver archivedDataWithRootObject:restaurant requiringSecureCoding:true error:nil];
-            [self.rightSwipesDict addObject:restaurantData];
-            [[NSUserDefaults standardUserDefaults] setObject:restaurantData forKey:@"hello"];
-             */
-            //note: this code works, it would just be cleaner to use the archives becasue then I don't have to convert a dictionary back to a restaurant-ish object
             NSMutableDictionary *restaurantDictForm = [self restaurantToDict:restaurant];
             [self.rightSwipesDict addObject:restaurantDictForm];
             

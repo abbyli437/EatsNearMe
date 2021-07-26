@@ -15,7 +15,7 @@
 @interface SavedViewController () <UITableViewDelegate, UITableViewDataSource>
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
-@property (strong, nonatomic) NSUserDefaults *defaults;
+@property (strong, nonatomic) NSMutableArray *restaurantDicts;
 
 @end
 
@@ -31,18 +31,15 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    self.defaults = [NSUserDefaults standardUserDefaults];
-    
     PFUser *user = [PFUser currentUser];
     NSMutableDictionary *swipes = user[@"swipes"];
-    self.restaurantDict = swipes[@"rightSwipes"];
+    self.restaurantIds = swipes[@"rightSwipes"];
     
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     
-    self.restaurants = [self.defaults objectForKey:user.username]; //if this is an array of dictionaries then I need to change my table cell code- make array of dicts? Or convert back to restaurant?
-    
-    if (self.restaurants == nil) {
+    self.restaurantDicts = [[NSUserDefaults standardUserDefaults] objectForKey:user.username];
+    if (self.restaurantDicts == nil) {
         [self fetchRestaurants];
     }
     
@@ -51,9 +48,9 @@
 
 - (void)fetchRestaurants {
     self.restaurants = [[NSMutableArray alloc] init];
-    for (NSString *key in [self.restaurantDict keyEnumerator]) {
+    for (NSString *key in [self.restaurantIds keyEnumerator]) {
         //query here to save runtime
-        NSString *businessID = self.restaurantDict[key];
+        NSString *businessID = self.restaurantIds[key];
         [[AppDelegate sharedClient] businessWithId:businessID completionHandler:^(YLPBusiness * _Nullable business, NSError * _Nullable error) {
             if (business != nil) {
                 [self.restaurants addObject:business];
@@ -71,14 +68,24 @@
 
 //table view methods
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    if (self.restaurantDicts != nil) {
+        return self.restaurantDicts.count;
+    }
     return self.restaurants.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     RestaurantCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"RestaurantCell" forIndexPath:indexPath];
-    YLPBusiness *restaurant = [self.restaurants objectAtIndex:indexPath.row];
     cell.curLocation = self.curLocation;
-    cell.restaurant = restaurant;
+    
+    if (self.restaurantDicts == nil) {
+        YLPBusiness *restaurant = [self.restaurants objectAtIndex:indexPath.row];
+        cell.restaurant = restaurant;
+    }
+    else {
+        NSDictionary *restaurantDict = [self.restaurantDicts objectAtIndex:indexPath.row];
+        cell.restaurantDict = restaurantDict;
+    }
     return cell;
 }
 
@@ -86,17 +93,25 @@
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+    // TODO: also have a dictinary with Details method in Details view
     if ([[segue identifier] isEqualToString:@"detailsSegue"]) {
         UITableViewCell *tappedCell = sender;
         NSIndexPath *indexPath = [self.tableView indexPathForCell:tappedCell]; //this is nil?
-        YLPBusiness *restaurant = self.restaurants[indexPath.row];
         
         DetailsViewController *detailsViewController = [segue destinationViewController];
         RestaurantCell *restaurantCell = sender;
         detailsViewController.distString = restaurantCell.distanceLabel.text;
-        detailsViewController.restaurant = restaurant;
+        
+        if (self.restaurantDicts == nil) {
+            YLPBusiness *restaurant = self.restaurants[indexPath.row];
+            detailsViewController.restaurant = restaurant;
+        }
+        else {
+            NSString *businessID = self.restaurantDicts[indexPath.row][@"identifier"];
+            detailsViewController.businessID = businessID;
+            //NSDictionary *dict = self.restaurantDicts[indexPath.row];
+            //detailsViewController.restaurantDict = dict;
+        }
     }
 }
 

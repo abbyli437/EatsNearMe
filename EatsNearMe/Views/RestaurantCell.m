@@ -38,13 +38,47 @@
     self.restaurantImage.clipsToBounds = YES;
     
     self.nameLabel.text = restaurant.name;
-    //maybe add description label here?
-    //self.descriptionLabel.text = restaurant.categories[0].name;
-    //self.priceLabel.text = restaurant.price;
     
     //distance label
     CLLocation *restaurantLoc = [[CLLocation alloc] initWithLatitude:restaurant.location.coordinate.latitude longitude:restaurant.location.coordinate.longitude];
     //this is in meters
+    CLLocationDistance dist = [self.curLocation distanceFromLocation:restaurantLoc];
+    //convert meters to miles
+    double distMiles = dist / 1609.0;
+    NSString *distStr = [NSString stringWithFormat:@"%.2f", distMiles];
+    distStr = [distStr stringByAppendingString:@" miles away"];
+    self.distanceLabel.text = distStr;
+}
+
+- (void)setRestaurantDict:(NSDictionary *)restaurantDict {
+    _restaurantDict = restaurantDict;
+    
+    //restaurant image
+    if (restaurantDict[@"imageURL"] != nil) {
+        NSURL *imageURL = [NSURL URLWithString:restaurantDict[@"imageURL"]];
+        NSData *data = [[NSData alloc] initWithContentsOfURL:imageURL];
+        UIImage *imageData = [[UIImage alloc] initWithData:data];
+        self.restaurantImage.image = imageData;
+    }
+    else {
+        self.restaurantImage.image = [UIImage imageNamed:@"comingSoon.png"];
+    }
+    
+    self.nameLabel.text = restaurantDict[@"name"];
+    
+    //distance label
+    double latitude = [restaurantDict[@"latitude"] doubleValue];
+    double longitude = [restaurantDict[@"longitude"] doubleValue];
+    CLLocation *restaurantLoc = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
+    
+    [self commonSetUp:restaurantLoc];
+}
+
+- (void)commonSetUp:(CLLocation *)restaurantLoc {
+    self.restaurantImage.layer.cornerRadius = 10;
+    self.restaurantImage.clipsToBounds = YES;
+    
+    //this is in meters (COMMON SETUP)
     CLLocationDistance dist = [self.curLocation distanceFromLocation:restaurantLoc];
     //convert meters to miles
     double distMiles = dist / 1609.0;
