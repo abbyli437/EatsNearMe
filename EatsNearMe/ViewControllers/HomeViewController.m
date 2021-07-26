@@ -18,7 +18,6 @@
 @interface HomeViewController ()  <CLLocationManagerDelegate, PriorityQueueDelegate>
 
 @property (strong, nonatomic) PFUser *user;
-@property (strong, nonatomic) NSUserDefaults *defaults;
 
 @property (strong, nonatomic) CLLocationManager *locationManager;
 @property (strong, nonatomic) CLLocation *curLocation;
@@ -60,8 +59,6 @@
     
     self.user = [[PFUser currentUser] fetch];
     
-    self.defaults = [NSUserDefaults standardUserDefaults];
-    
     [self setUpLocation];
     
     //set up Yes button
@@ -86,6 +83,7 @@
     [self setUpButton:self.noButton];
     self.noButton.imageView.tintColor = [UIColor redColor];
     
+    //other setup
     self.firstTime = true;
     
     self.restaurantView.layer.cornerRadius = 10;
@@ -122,12 +120,21 @@
     
     //keep track of swipes locally
     self.rightSwipes = [[NSMutableArray alloc] init];
+    
+    //array of right swipe dictionaries
+    self.rightSwipesDict = [[NSUserDefaults standardUserDefaults] objectForKey:self.user.username];
+    if (self.rightSwipesDict == nil) {
+        self.rightSwipesDict = [[NSMutableArray alloc] init];
+    }
+    
+    //PQ
     self.queue = [[PriorityQueue alloc] initWithCapacity:100]; //might make bigger depending on
     self.queue.delegate = self;
     
     //to pass right swipes to Saved Tab
     UINavigationController *secondController = self.tabBarController.viewControllers[1];
     self.secondTab = secondController.viewControllers.firstObject;
+    //if I don't add the right swipes then the restaurants user just swiped right on will have hard time loading. but if I add it then I have to check for repeats which is hard for array
     /* self.secondTab.restaurantDict = rightSwipes;
     self.secondTab.restaurants = self.rightSwipes; */
 }
@@ -281,11 +288,19 @@
             
             //update local storage in rightSwipes array- this uses YLPBusinesses
             [self.rightSwipes addObject:restaurant];
-            //can't insert custom object- turn restaurant to dictionary?
+            
+            //store restuarant in user defaults
+            /*
+            NSData *restaurantData = [NSKeyedArchiver archivedDataWithRootObject:restaurant requiringSecureCoding:true error:nil];
+            [self.rightSwipesDict addObject:restaurantData];
+            [[NSUserDefaults standardUserDefaults] setObject:restaurantData forKey:@"hello"];
+             */
+            //note: this code works, it would just be cleaner to use the archives becasue then I don't have to convert a dictionary back to a restaurant-ish object
             NSMutableDictionary *restaurantDictForm = [self restaurantToDict:restaurant];
             [self.rightSwipesDict addObject:restaurantDictForm];
-            [self.defaults setObject:self.rightSwipesDict forKey:self.user.username];
-            [self.defaults synchronize];
+            
+            [[NSUserDefaults standardUserDefaults] setObject:self.rightSwipesDict forKey:self.user.username];
+            [[NSUserDefaults standardUserDefaults] synchronize];
             
             //update category count
             for (YLPCategory *category in restaurant.categories) {
@@ -311,7 +326,8 @@
     
     //set all the props
     [dict setValue:@([restaurant isClosed]) forKey:@"isClosed"];
-    [dict setValue:restaurant.URL forKey:@"URL"];
+    [dict setValue:restaurant.URL.absoluteString forKey:@"URL"];
+    [dict setValue:restaurant.imageURL.absoluteString forKey:@"imageURL"];
     [dict setValue:@(restaurant.rating) forKey:@"rating"];
     [dict setValue:@(restaurant.reviewCount) forKey:@"reviewCount"];
     [dict setValue:restaurant.name forKey:@"name"];
@@ -453,7 +469,7 @@
                 }
             }
             
-            if ([strongSelf.queue size] <= 25) {
+            if ([strongSelf.queue size] <= 10) {
                 self.query.offset += self.query.limit;
                 [self fetchRestaurants];
             }

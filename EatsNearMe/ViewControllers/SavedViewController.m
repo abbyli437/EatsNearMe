@@ -40,7 +40,7 @@
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     
-    self.restaurants = [self.defaults objectForKey:user.username];
+    self.restaurants = [self.defaults objectForKey:user.username]; //if this is an array of dictionaries then I need to change my table cell code- make array of dicts? Or convert back to restaurant?
     
     if (self.restaurants == nil) {
         [self fetchRestaurants];
