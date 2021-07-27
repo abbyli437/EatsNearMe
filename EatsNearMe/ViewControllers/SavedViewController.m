@@ -17,13 +17,14 @@
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *visitedSegment;
 
+@property (strong, nonatomic) NSString *username;
 @property (strong, nonatomic) NSMutableArray *restaurantDicts;
 
 @property (strong, nonatomic) NSMutableDictionary *unvisitedDict;
-@property (strong, nonatomic) NSMutableArray *unvisitedKeys;
+@property (strong, nonatomic) NSMutableArray *unvisitedVals;
 
 @property (strong, nonatomic) NSMutableDictionary *visitedDict;
-@property (strong, nonatomic) NSMutableArray *visitedKeys;
+@property (strong, nonatomic) NSMutableArray *visitedVals;
 
 @end
 
@@ -40,13 +41,20 @@
     [super viewWillAppear:animated];
     
     PFUser *user = [PFUser currentUser];
+    self.username = user.username;
     NSMutableDictionary *swipes = user[@"swipes"];
     self.restaurantIds = swipes[@"rightSwipes"];
     
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     
+    //set up user default data
     self.restaurantDicts = [[NSUserDefaults standardUserDefaults] objectForKey:user.username];
+    self.unvisitedDict = self.restaurantDicts[0];
+    self.unvisitedVals = [[self.unvisitedDict allValues] mutableCopy];
+    
+    self.visitedDict = self.restaurantDicts[1];
+    self.visitedVals = [[self.visitedDict allValues] mutableCopy];
     
     //if user defaults returns nil
     if (self.restaurantDicts == nil) {
@@ -69,13 +77,17 @@
 }
 
 - (void)fetchRestaurants {
-    self.restaurants = [[NSMutableArray alloc] init];
     for (NSString *key in [self.restaurantIds keyEnumerator]) {
         //query here to save runtime
         NSString *businessID = self.restaurantIds[key];
         [[AppDelegate sharedClient] businessWithId:businessID completionHandler:^(YLPBusiness * _Nullable business, NSError * _Nullable error) {
             if (business != nil) {
-                [self.restaurants addObject:business];
+                //update defaults
+                NSMutableDictionary *restaurantDictForm = [YLPBusiness restaurantToDict:business];
+                [self.unvisitedDict setObject:restaurantDictForm forKey:business.name];
+                [[NSUserDefaults standardUserDefaults] setObject:self.restaurantDicts forKey:self.username];
+                self.unvisitedVals = [[self.unvisitedDict allValues] mutableCopy];
+                
                 NSLog(business.name);
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self.tableView reloadData];
@@ -88,25 +100,25 @@
     }
 }
 
-//table view methods
+//table view methods TODO: update these to reflect the 2 arrays
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (self.restaurantDicts != nil) {
-        return self.restaurantDicts.count;
+    if (self.visitedSegment.selectedSegmentIndex == 0) {
+        return self.unvisitedDict.count;
     }
-    return self.restaurants.count;
+    return self.visitedDict.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     RestaurantCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"RestaurantCell" forIndexPath:indexPath];
     cell.curLocation = self.curLocation;
     
-    if (self.restaurantDicts == nil) {
-        YLPBusiness *restaurant = [self.restaurants objectAtIndex:indexPath.row];
-        cell.restaurant = restaurant;
+    if (self.visitedSegment.selectedSegmentIndex == 0) {
+        NSDictionary *restaurantDict = self.unvisitedVals[indexPath.row];
+        cell.restaurantDict = [restaurantDict mutableCopy];
     }
     else {
-        NSDictionary *restaurantDict = [self.restaurantDicts objectAtIndex:indexPath.row];
-        cell.restaurantDict = restaurantDict;
+        NSDictionary *restaurantDict = self.visitedVals[indexPath.row];
+        cell.restaurantDict = [restaurantDict mutableCopy];
     }
     return cell;
 }
@@ -115,7 +127,6 @@
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // TODO: also have a dictinary with Details method in Details view
     if ([[segue identifier] isEqualToString:@"detailsSegue"]) {
         UITableViewCell *tappedCell = sender;
         NSIndexPath *indexPath = [self.tableView indexPathForCell:tappedCell];
@@ -124,12 +135,12 @@
         RestaurantCell *restaurantCell = sender;
         detailsViewController.distString = restaurantCell.distanceLabel.text;
         
-        if (self.restaurantDicts == nil) {
-            YLPBusiness *restaurant = self.restaurants[indexPath.row];
-            detailsViewController.restaurant = restaurant;
+        if (self.visitedSegment.selectedSegmentIndex == 0) {
+            NSString *businessID = self.unvisitedVals[indexPath.row][@"identifier"];
+            detailsViewController.businessID = businessID;
         }
         else {
-            NSString *businessID = self.restaurantDicts[indexPath.row][@"identifier"];
+            NSString *businessID = self.visitedVals[indexPath.row][@"identifier"];
             detailsViewController.businessID = businessID;
         }
     }
