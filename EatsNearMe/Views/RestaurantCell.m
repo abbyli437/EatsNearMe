@@ -34,24 +34,19 @@
     else {
         self.restaurantImage.image = [UIImage imageNamed:@"comingSoon.png"];
     }
-    self.restaurantImage.layer.cornerRadius = 10;
-    self.restaurantImage.clipsToBounds = YES;
     
     self.nameLabel.text = restaurant.name;
     
     //distance label
     CLLocation *restaurantLoc = [[CLLocation alloc] initWithLatitude:restaurant.location.coordinate.latitude longitude:restaurant.location.coordinate.longitude];
-    //this is in meters
-    CLLocationDistance dist = [self.curLocation distanceFromLocation:restaurantLoc];
-    //convert meters to miles
-    double distMiles = dist / 1609.0;
-    NSString *distStr = [NSString stringWithFormat:@"%.2f", distMiles];
-    distStr = [distStr stringByAppendingString:@" miles away"];
-    self.distanceLabel.text = distStr;
+    [self commonSetUp:restaurantLoc];
 }
 
-- (void)setRestaurantDict:(NSDictionary *)restaurantDict {
+- (void)setRestaurantDict:(NSMutableDictionary *)restaurantDict {
     _restaurantDict = restaurantDict;
+    
+    //selected
+    self.hasVisitedButton.selected = [restaurantDict[@"hasVisited"] boolValue];
     
     //restaurant image
     if (restaurantDict[@"imageURL"] != nil) {
@@ -70,7 +65,6 @@
     double latitude = [restaurantDict[@"latitude"] doubleValue];
     double longitude = [restaurantDict[@"longitude"] doubleValue];
     CLLocation *restaurantLoc = [[CLLocation alloc] initWithLatitude:latitude longitude:longitude];
-    
     [self commonSetUp:restaurantLoc];
 }
 
@@ -89,6 +83,8 @@
 
 - (IBAction)tapSave:(id)sender {
     self.hasVisitedButton.selected = !self.hasVisitedButton.selected;
+    
+    self.restaurantDict[@"hasVisited"] = @(self.hasVisitedButton.selected);
 }
 
 

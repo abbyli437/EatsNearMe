@@ -111,7 +111,7 @@
     self.distanceLabel.text = self.distString;
     
     //open or closed setup
-    if (self.restaurantDict[@"isClosed"] == YES) {
+    if ([self.restaurantDict[@"isClosed"] boolValue] == true) {
         self.openLabel.text = @"Closed";
         self.openLabel.textColor = [UIColor redColor];
     }

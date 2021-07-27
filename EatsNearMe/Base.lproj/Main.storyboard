@@ -166,14 +166,14 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="icE-rQ-ZRV">
-                                <rect key="frame" x="0.0" y="88" width="390" height="673"/>
+                                <rect key="frame" x="0.0" y="88" width="390" height="610"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="RestaurantCell" id="RWj-RX-xIl" customClass="RestaurantCell">
-                                        <rect key="frame" x="0.0" y="24.333333969116211" width="390" height="107.33333587646484"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="RestaurantCell" rowHeight="117" id="RWj-RX-xIl" customClass="RestaurantCell">
+                                        <rect key="frame" x="0.0" y="24.333333969116211" width="390" height="117"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="RWj-RX-xIl" id="osn-IU-Jtf">
-                                            <rect key="frame" x="0.0" y="0.0" width="390" height="107.33333587646484"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="390" height="117"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="rhe-44-YUb">
@@ -237,19 +237,29 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="fUP-Ba-N6i">
+                                <rect key="frame" x="117.66666666666669" y="714" width="155" height="32"/>
+                                <segments>
+                                    <segment title="Univsited"/>
+                                    <segment title="Visited"/>
+                                </segments>
+                            </segmentedControl>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="NKp-fD-qxy"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="icE-rQ-ZRV" firstAttribute="leading" secondItem="NKp-fD-qxy" secondAttribute="leading" id="1pp-oj-Nky"/>
+                            <constraint firstItem="NKp-fD-qxy" firstAttribute="bottom" secondItem="fUP-Ba-N6i" secondAttribute="bottom" constant="16" id="Wyu-Oy-EBC"/>
+                            <constraint firstItem="fUP-Ba-N6i" firstAttribute="top" secondItem="icE-rQ-ZRV" secondAttribute="bottom" constant="16" id="YaK-9d-8GP"/>
+                            <constraint firstItem="fUP-Ba-N6i" firstAttribute="centerX" secondItem="icE-rQ-ZRV" secondAttribute="centerX" id="Zh3-Ru-mw1"/>
                             <constraint firstItem="NKp-fD-qxy" firstAttribute="trailing" secondItem="icE-rQ-ZRV" secondAttribute="trailing" id="eMp-eK-bz7"/>
-                            <constraint firstItem="NKp-fD-qxy" firstAttribute="bottom" secondItem="icE-rQ-ZRV" secondAttribute="bottom" id="oB6-AN-a8a"/>
                             <constraint firstItem="icE-rQ-ZRV" firstAttribute="top" secondItem="NKp-fD-qxy" secondAttribute="top" id="qoq-g3-dPF"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Saved Restaurants" id="pWn-CU-Amf"/>
                     <connections>
                         <outlet property="tableView" destination="icE-rQ-ZRV" id="p0E-p4-o5O"/>
+                        <outlet property="visitedSegment" destination="fUP-Ba-N6i" id="32h-NR-Fqr"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6dK-Vs-Gkr" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
