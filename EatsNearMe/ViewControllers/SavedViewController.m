@@ -12,7 +12,7 @@
 #import "Parse/Parse.h"
 @import YelpAPI;
 
-@interface SavedViewController () <UITableViewDelegate, UITableViewDataSource>
+@interface SavedViewController () <UITableViewDelegate, UITableViewDataSource, RestaurantCellDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *visitedSegment;
@@ -21,10 +21,10 @@
 @property (strong, nonatomic) NSMutableArray *restaurantDicts;
 
 @property (strong, nonatomic) NSMutableDictionary *unvisitedDict;
-@property (strong, nonatomic) NSMutableArray *unvisitedVals;
+@property (strong, nonatomic) NSArray *unvisitedVals;
 
 @property (strong, nonatomic) NSMutableDictionary *visitedDict;
-@property (strong, nonatomic) NSMutableArray *visitedVals;
+@property (strong, nonatomic) NSArray *visitedVals;
 
 @end
 
@@ -49,12 +49,12 @@
     self.tableView.dataSource = self;
     
     //set up user default data
-    self.restaurantDicts = [[NSUserDefaults standardUserDefaults] objectForKey:user.username];
-    self.unvisitedDict = self.restaurantDicts[0];
-    self.unvisitedVals = [[self.unvisitedDict allValues] mutableCopy];
+    self.restaurantDicts = [[[NSUserDefaults standardUserDefaults] objectForKey:user.username] mutableCopy];
+    self.unvisitedDict = [self.restaurantDicts[0] mutableCopy];
+    self.unvisitedVals = [self.unvisitedDict allValues];
     
-    self.visitedDict = self.restaurantDicts[1];
-    self.visitedVals = [[self.visitedDict allValues] mutableCopy];
+    self.visitedDict = [self.restaurantDicts[1] mutableCopy];
+    self.visitedVals = [self.visitedDict allValues];
     
     //if user defaults returns nil
     if (self.restaurantDicts == nil) {
@@ -100,7 +100,35 @@
     }
 }
 
-//table view methods TODO: update these to reflect the 2 arrays
+//TODO: update user defaults accordingly
+- (void)updateVisit:(NSMutableDictionary *)restaurantDict hasVisited:(bool)hasVisited {
+    NSString *name = restaurantDict[@"name"];
+    
+    if (hasVisited) {
+        NSMutableDictionary *res = self.unvisitedDict[name];
+        [self.unvisitedDict removeObjectForKey:name];
+        [self.visitedDict setObject:res forKey:name];
+    }
+    else {
+        NSMutableDictionary *res = self.visitedDict[name];
+        [self.visitedDict removeObjectForKey:name];
+        [self.unvisitedDict setObject:res forKey:name];
+    }
+    
+    self.unvisitedVals = [self.unvisitedDict allValues];
+    self.visitedVals = [self.visitedDict allValues];
+    
+    self.restaurantDicts[0] = self.unvisitedDict;
+    self.restaurantDicts[1] = self.visitedDict;
+    
+    [[NSUserDefaults standardUserDefaults] setObject:self.restaurantDicts forKey:self.username];
+}
+
+- (IBAction)toggleVisit:(id)sender {
+    [self.tableView reloadData];
+}
+
+//table view methods
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     if (self.visitedSegment.selectedSegmentIndex == 0) {
         return self.unvisitedDict.count;
@@ -110,6 +138,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     RestaurantCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"RestaurantCell" forIndexPath:indexPath];
+    cell.delegate = self;
     cell.curLocation = self.curLocation;
     
     if (self.visitedSegment.selectedSegmentIndex == 0) {
@@ -119,6 +148,7 @@
     else {
         NSDictionary *restaurantDict = self.visitedVals[indexPath.row];
         cell.restaurantDict = [restaurantDict mutableCopy];
+        cell.hasVisitedButton.selected = true;
     }
     return cell;
 }

@@ -11,7 +11,15 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@protocol RestaurantCellDelegate <NSObject>
+
+- (void)updateVisit:(NSMutableDictionary *)restaurantDict hasVisited:(bool)hasVisited;
+
+@end
+
 @interface RestaurantCell : UITableViewCell
+
+@property id <RestaurantCellDelegate> delegate;
 
 @property (weak, nonatomic) IBOutlet UIImageView *restaurantImage;
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;

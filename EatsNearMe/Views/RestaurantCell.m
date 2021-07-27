@@ -81,6 +81,8 @@
 
 - (IBAction)tapSave:(id)sender {
     self.hasVisitedButton.selected = !self.hasVisitedButton.selected;
+    
+    [self.delegate updateVisit:self.restaurantDict hasVisited:self.hasVisitedButton.selected];
 }
 
 

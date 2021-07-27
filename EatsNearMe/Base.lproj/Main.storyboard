@@ -243,6 +243,9 @@
                                     <segment title="Univsited"/>
                                     <segment title="Visited"/>
                                 </segments>
+                                <connections>
+                                    <action selector="toggleVisit:" destination="1Qy-Es-uC5" eventType="valueChanged" id="HYW-AD-8Lb"/>
+                                </connections>
                             </segmentedControl>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="NKp-fD-qxy"/>
