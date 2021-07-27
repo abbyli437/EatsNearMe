@@ -18,8 +18,6 @@
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
-
-    // Configure the view for the selected state
 }
 
 - (void)setRestaurant:(YLPBusiness *)restaurant {
@@ -83,8 +81,6 @@
 
 - (IBAction)tapSave:(id)sender {
     self.hasVisitedButton.selected = !self.hasVisitedButton.selected;
-    
-    self.restaurantDict[@"hasVisited"] = @(self.hasVisitedButton.selected);
 }
 
 

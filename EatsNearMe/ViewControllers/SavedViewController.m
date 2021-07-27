@@ -15,7 +15,15 @@
 @interface SavedViewController () <UITableViewDelegate, UITableViewDataSource>
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
+@property (weak, nonatomic) IBOutlet UISegmentedControl *visitedSegment;
+
 @property (strong, nonatomic) NSMutableArray *restaurantDicts;
+
+@property (strong, nonatomic) NSMutableDictionary *unvisitedDict;
+@property (strong, nonatomic) NSMutableArray *unvisitedKeys;
+
+@property (strong, nonatomic) NSMutableDictionary *visitedDict;
+@property (strong, nonatomic) NSMutableArray *visitedKeys;
 
 @end
 
@@ -39,7 +47,21 @@
     self.tableView.dataSource = self;
     
     self.restaurantDicts = [[NSUserDefaults standardUserDefaults] objectForKey:user.username];
+    
+    //if user defaults returns nil
     if (self.restaurantDicts == nil) {
+        self.restaurantDicts = [[NSMutableArray alloc] init];
+        self.unvisitedDict = [[NSMutableDictionary alloc] init];
+        self.visitedDict = [[NSMutableDictionary alloc] init];
+        [self.restaurantDicts addObject:self.unvisitedDict];
+        [self.restaurantDicts addObject:self.visitedDict];
+        
+        [self fetchRestaurants];
+    }
+    //if user defaults return empty dictionaries when Parse is not empty
+    else if (self.unvisitedDict.count == 0
+             && self.visitedDict.count == 0
+             && self.restaurantIds.count != 0) {
         [self fetchRestaurants];
     }
     
@@ -96,7 +118,7 @@
     // TODO: also have a dictinary with Details method in Details view
     if ([[segue identifier] isEqualToString:@"detailsSegue"]) {
         UITableViewCell *tappedCell = sender;
-        NSIndexPath *indexPath = [self.tableView indexPathForCell:tappedCell]; //this is nil?
+        NSIndexPath *indexPath = [self.tableView indexPathForCell:tappedCell];
         
         DetailsViewController *detailsViewController = [segue destinationViewController];
         RestaurantCell *restaurantCell = sender;
@@ -109,8 +131,6 @@
         else {
             NSString *businessID = self.restaurantDicts[indexPath.row][@"identifier"];
             detailsViewController.businessID = businessID;
-            //NSDictionary *dict = self.restaurantDicts[indexPath.row];
-            //detailsViewController.restaurantDict = dict;
         }
     }
 }

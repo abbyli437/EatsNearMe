@@ -259,7 +259,7 @@
                     <navigationItem key="navigationItem" title="Saved Restaurants" id="pWn-CU-Amf"/>
                     <connections>
                         <outlet property="tableView" destination="icE-rQ-ZRV" id="p0E-p4-o5O"/>
-                        <outlet property="visitedSegment" destination="fUP-Ba-N6i" id="32h-NR-Fqr"/>
+                        <outlet property="visitedSegment" destination="fUP-Ba-N6i" id="fMw-Hy-OCZ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6dK-Vs-Gkr" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

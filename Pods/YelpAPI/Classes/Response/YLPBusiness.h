@@ -32,6 +32,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, readonly) YLPLocation *location;
 
++ (NSMutableDictionary *)restaurantToDict:(YLPBusiness *)restaurant;
+
 @end
 
 NS_ASSUME_NONNULL_END

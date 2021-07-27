@@ -32,7 +32,7 @@
 @property (strong, nonatomic) PriorityQueue *queue;
 @property (strong, nonatomic) NSMutableDictionary *swipes;
 @property (strong, nonatomic) NSMutableArray *rightSwipes;
-@property (strong, nonatomic) NSMutableArray *rightSwipesDict;
+@property (strong, nonatomic) NSMutableArray *rightSwipeDicts;
 @property (strong, nonatomic) NSMutableDictionary *categoryDict;
 @property (nonatomic) int totalSwipes;
 
@@ -122,9 +122,13 @@
     self.rightSwipes = [[NSMutableArray alloc] init];
     
     //array of right swipe dictionaries
-    self.rightSwipesDict = [[NSUserDefaults standardUserDefaults] objectForKey:self.user.username];
-    if (self.rightSwipesDict == nil) {
-        self.rightSwipesDict = [[NSMutableArray alloc] init];
+    self.rightSwipeDicts = [[NSUserDefaults standardUserDefaults] objectForKey:self.user.username];
+    if (self.rightSwipeDicts == nil) {
+        self.rightSwipeDicts = [[NSMutableArray alloc] init];
+        NSMutableDictionary *unvisited = [[NSMutableDictionary alloc] init];
+        NSMutableDictionary *visited = [[NSMutableDictionary alloc] init];
+        [self.rightSwipeDicts addObject:unvisited];
+        [self.rightSwipeDicts addObject:visited];
     }
     
     //PQ
@@ -134,9 +138,6 @@
     //to pass right swipes to Saved Tab
     UINavigationController *secondController = self.tabBarController.viewControllers[1];
     self.secondTab = secondController.viewControllers.firstObject;
-    //if I don't add the right swipes then the restaurants user just swiped right on will have hard time loading. but if I add it then I have to check for repeats which is hard for array
-    /* self.secondTab.restaurantDict = rightSwipes;
-    self.secondTab.restaurants = self.rightSwipes; */
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -290,10 +291,12 @@
             [self.rightSwipes addObject:restaurant];
             
             //store restuarant in user defaults
-            NSMutableDictionary *restaurantDictForm = [self restaurantToDict:restaurant];
-            [self.rightSwipesDict addObject:restaurantDictForm];
+            NSMutableDictionary *restaurantDictForm = [YLPBusiness restaurantToDict:restaurant];
+            //add to unvisited array
+            [self.rightSwipeDicts[0] addObject:restaurantDictForm];
+            //[self.rightSwipeDicts addObject:restaurantDictForm];
             
-            [[NSUserDefaults standardUserDefaults] setObject:self.rightSwipesDict forKey:self.user.username];
+            [[NSUserDefaults standardUserDefaults] setObject:self.rightSwipeDicts forKey:self.user.username];
             [[NSUserDefaults standardUserDefaults] synchronize];
             
             //update category count

@@ -57,4 +57,42 @@
     }
 }
 
++ (NSMutableDictionary *)restaurantToDict:(YLPBusiness *)restaurant {
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+    
+    //set all the props
+    [dict setValue:@([restaurant isClosed]) forKey:@"isClosed"];
+    [dict setValue:restaurant.URL.absoluteString forKey:@"URL"];
+    [dict setValue:restaurant.imageURL.absoluteString forKey:@"imageURL"];
+    [dict setValue:@(restaurant.rating) forKey:@"rating"];
+    [dict setValue:@(restaurant.reviewCount) forKey:@"reviewCount"];
+    [dict setValue:restaurant.name forKey:@"name"];
+    [dict setValue:restaurant.price forKey:@"price"];
+    [dict setValue:restaurant.phone forKey:@"phone"];
+    [dict setValue:restaurant.identifier forKey:@"identifier"];
+    
+    //set up category in string form
+    NSMutableArray *cats = [[NSMutableArray alloc] init];
+    for (YLPCategory *category in restaurant.categories) {
+        [cats addObject:category.name];
+    }
+    [dict setObject:cats forKey:@"categories"];
+    
+    //set up address
+    NSMutableString *address = [restaurant.location.address[0] mutableCopy];
+    [address appendString:@", "];
+    [address appendString:restaurant.location.city];
+    [address appendString:@", "];
+    [address appendString:restaurant.location.stateCode];
+    [address appendString:@", "];
+    [address appendString:restaurant.location.postalCode];
+    [dict setObject:address forKey:@"address"];
+    
+    //latitude & longitude
+    [dict setObject:@(restaurant.location.coordinate.latitude) forKey:@"latitude"];
+    [dict setObject:@(restaurant.location.coordinate.longitude) forKey:@"longitude"];
+    
+    return dict;
+}
+
 @end
