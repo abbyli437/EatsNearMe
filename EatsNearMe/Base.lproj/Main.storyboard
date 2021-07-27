@@ -712,6 +712,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="nameLabel" destination="bmQ-ya-SAq" id="7Qn-5i-n8s"/>
+                        <outlet property="numVisitedLabel" destination="cuO-8G-2LV" id="kIX-PL-WzV"/>
                         <outlet property="pfpImage" destination="kFC-ZL-6mc" id="5oz-jl-ALa"/>
                     </connections>
                 </viewController>

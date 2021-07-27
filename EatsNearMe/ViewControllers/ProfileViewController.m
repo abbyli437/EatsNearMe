@@ -16,6 +16,7 @@
 
 @property (weak, nonatomic) IBOutlet PFImageView *pfpImage;
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
+@property (weak, nonatomic) IBOutlet UILabel *numVisitedLabel;
 @property (strong, nonatomic) UIImagePickerController *imagePickerVC;
 
 @end
@@ -33,6 +34,9 @@
     //sets up image picker
     self.imagePickerVC = [ImageUtil makeImagePicker];
     self.imagePickerVC.delegate = self;
+    
+    NSMutableDictionary *visitedDict = [[NSUserDefaults standardUserDefaults] objectForKey:user.username][1];
+    self.numVisitedLabel.text = [@(visitedDict.count) stringValue];
 }
 
 - (IBAction)logoutTap:(id)sender {
