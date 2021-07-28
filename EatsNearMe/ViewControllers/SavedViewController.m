@@ -10,6 +10,7 @@
 #import "DetailsViewController.h"
 #import "AppDelegate.h"
 #import "Parse/Parse.h"
+#import "ParseUtil.h"
 @import YelpAPI;
 
 @interface SavedViewController () <UITableViewDelegate, UITableViewDataSource, RestaurantCellDelegate>
@@ -122,6 +123,59 @@
     self.restaurantDicts[1] = self.visitedDict;
     
     [[NSUserDefaults standardUserDefaults] setObject:self.restaurantDicts forKey:self.username];
+}
+
+- (void)presentAlert:(NSMutableDictionary *)restaurantDict {
+    NSMutableString *alertTitle = [@"Delete " mutableCopy];
+    [alertTitle appendString:restaurantDict[@"name"]];
+    [alertTitle appendString:@"?"];
+    
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
+        message:nil
+        preferredStyle:(UIAlertControllerStyleAlert)];
+    
+    UIAlertAction *yesAction = [UIAlertAction actionWithTitle:@"Yes"
+        style:UIAlertActionStyleDefault
+        handler:^(UIAlertAction * _Nonnull action) {
+        [self deleteRestaurant:restaurantDict];
+        }];
+    [alert addAction:yesAction];
+    
+    UIAlertAction *noAction = [UIAlertAction actionWithTitle:@"No"
+        style:UIAlertActionStyleDefault
+        handler:nil];
+    [alert addAction:noAction];
+    
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+- (void)deleteRestaurant:(NSMutableDictionary *)restaurantDict {
+    //first update parse
+    PFUser *user = [PFUser currentUser];
+    NSMutableDictionary *swipes = user[@"swipes"];
+    NSMutableDictionary *leftSwipes = swipes[@"leftSwipes"];
+    NSMutableDictionary *rightSwipes = swipes[@"rightSwipes"];
+    
+    NSString *name = restaurantDict[@"name"];
+    [leftSwipes setValue:name forKey:name];
+    [rightSwipes removeObjectForKey:name];
+    
+    [ParseUtil updateValue:swipes key:@"swipes"];
+    
+    //update user defaults
+    if (self.visitedSegment.selectedSegmentIndex == 0) {
+        [self.unvisitedDict removeObjectForKey:name];
+        self.unvisitedVals = [self.unvisitedDict allValues];
+        self.restaurantDicts[0] = self.unvisitedDict;
+    }
+    else {
+        [self.visitedDict removeObjectForKey:name];
+        self.visitedVals = [self.visitedDict allValues];
+        self.restaurantDicts[1] = self.visitedDict;
+    }
+    [[NSUserDefaults standardUserDefaults] setObject:self.restaurantDicts forKey:self.username];
+    [self.tableView reloadData];
+    
 }
 
 - (IBAction)toggleVisit:(id)sender {

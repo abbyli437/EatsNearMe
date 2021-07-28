@@ -190,7 +190,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yPX-iM-BeR">
-                                                    <rect key="frame" x="323" y="27" width="35" height="30"/>
+                                                    <rect key="frame" x="343" y="27" width="35" height="30"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="30" id="QLw-uO-flG"/>
                                                         <constraint firstAttribute="width" constant="35" id="qOf-Nc-xpx"/>
@@ -211,19 +211,30 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cvi-vM-Ccp">
+                                                    <rect key="frame" x="351" y="76" width="19" height="22"/>
+                                                    <state key="normal">
+                                                        <imageReference key="image" image="trash.fill" catalog="system" symbolScale="medium"/>
+                                                    </state>
+                                                    <connections>
+                                                        <action selector="tapDelete:" destination="RWj-RX-xIl" eventType="touchUpInside" id="4Te-QD-53m"/>
+                                                    </connections>
+                                                </button>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="Ave-fl-LtA" firstAttribute="leading" secondItem="rhe-44-YUb" secondAttribute="trailing" constant="8" id="1uQ-QY-fMD"/>
                                                 <constraint firstItem="yPX-iM-BeR" firstAttribute="top" secondItem="osn-IU-Jtf" secondAttribute="topMargin" constant="16" id="Akb-HW-egp"/>
-                                                <constraint firstAttribute="trailingMargin" secondItem="yPX-iM-BeR" secondAttribute="trailing" constant="12" id="HbU-Wv-tiZ"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="yPX-iM-BeR" secondAttribute="trailing" constant="-8" id="HbU-Wv-tiZ"/>
                                                 <constraint firstItem="IPL-AW-hVz" firstAttribute="leading" secondItem="Ave-fl-LtA" secondAttribute="leading" id="HwI-0h-DTs"/>
                                                 <constraint firstItem="Ave-fl-LtA" firstAttribute="top" secondItem="rhe-44-YUb" secondAttribute="top" id="Rn7-3v-Hsf"/>
                                                 <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="rhe-44-YUb" secondAttribute="bottom" constant="16" id="SsS-Qm-fUS"/>
-                                                <constraint firstItem="yPX-iM-BeR" firstAttribute="leading" secondItem="IPL-AW-hVz" secondAttribute="trailing" constant="8" id="WDa-hq-L0f"/>
+                                                <constraint firstItem="yPX-iM-BeR" firstAttribute="leading" secondItem="IPL-AW-hVz" secondAttribute="trailing" constant="28" id="WDa-hq-L0f"/>
                                                 <constraint firstAttribute="bottomMargin" relation="greaterThanOrEqual" secondItem="IPL-AW-hVz" secondAttribute="bottom" constant="8" id="abi-mN-IXy"/>
-                                                <constraint firstItem="yPX-iM-BeR" firstAttribute="leading" secondItem="Ave-fl-LtA" secondAttribute="trailing" constant="8" id="fvy-ZA-ITB"/>
+                                                <constraint firstItem="yPX-iM-BeR" firstAttribute="leading" secondItem="Ave-fl-LtA" secondAttribute="trailing" constant="28" id="fvy-ZA-ITB"/>
                                                 <constraint firstItem="IPL-AW-hVz" firstAttribute="top" secondItem="Ave-fl-LtA" secondAttribute="bottom" constant="8" id="lzq-cY-Tdz"/>
+                                                <constraint firstItem="cvi-vM-Ccp" firstAttribute="bottom" secondItem="osn-IU-Jtf" secondAttribute="bottomMargin" constant="-8" id="n6J-at-v9y"/>
                                                 <constraint firstItem="rhe-44-YUb" firstAttribute="top" secondItem="osn-IU-Jtf" secondAttribute="top" constant="16" id="uS2-gF-nJM"/>
+                                                <constraint firstItem="cvi-vM-Ccp" firstAttribute="centerX" secondItem="yPX-iM-BeR" secondAttribute="centerX" id="wmq-ey-N7y"/>
                                                 <constraint firstItem="rhe-44-YUb" firstAttribute="leading" secondItem="osn-IU-Jtf" secondAttribute="leading" constant="16" id="zGy-ft-D68"/>
                                             </constraints>
                                         </tableViewCellContentView>
@@ -777,6 +788,7 @@
         <image name="person.circle" catalog="system" width="128" height="121"/>
         <image name="person.fill" catalog="system" width="128" height="120"/>
         <image name="rectangle" catalog="system" width="128" height="93"/>
+        <image name="trash.fill" catalog="system" width="121" height="128"/>
         <systemColor name="labelColor">
             <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

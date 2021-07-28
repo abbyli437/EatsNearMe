@@ -85,5 +85,8 @@
     [self.delegate updateVisit:self.restaurantDict hasVisited:self.hasVisitedButton.selected];
 }
 
+- (IBAction)tapDelete:(id)sender {
+    [self.delegate presentAlert:self.restaurantDict];
+}
 
 @end
