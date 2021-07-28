@@ -31,7 +31,6 @@
 @property (nonatomic) int counter;
 @property (strong, nonatomic) PriorityQueue *queue;
 @property (strong, nonatomic) NSMutableDictionary *swipes;
-@property (strong, nonatomic) NSMutableArray *rightSwipes;
 @property (strong, nonatomic) NSMutableArray *rightSwipeDicts;
 @property (strong, nonatomic) NSMutableDictionary *categoryDict;
 @property (nonatomic) int totalSwipes;
@@ -96,7 +95,7 @@
     
     self.alert = [self makeAlert];
     
-    //might use swipes to only store restaurant names because Parse can't store YLPBusiness objects
+    //user's previous swipes
     if (self.user[@"swipes"] != nil) {
         self.swipes = self.user[@"swipes"];
     }
@@ -118,11 +117,8 @@
     NSMutableDictionary *rightSwipes = [self.swipes objectForKey:@"rightSwipes"];
     self.totalSwipes = ((int) leftSwipes.count) + ((int) rightSwipes.count);
     
-    //keep track of swipes locally
-    self.rightSwipes = [[NSMutableArray alloc] init];
-    
     //array of right swipe dictionaries
-    self.rightSwipeDicts = [[NSUserDefaults standardUserDefaults] objectForKey:self.user.username];
+    self.rightSwipeDicts = [[[NSUserDefaults standardUserDefaults] objectForKey:self.user.username] mutableCopy];
     if (self.rightSwipeDicts == nil) {
         self.rightSwipeDicts = [[NSMutableArray alloc] init];
         NSMutableDictionary *unvisited = [[NSMutableDictionary alloc] init];
@@ -287,14 +283,13 @@
             //store phone number so I can use it in phone query in later fetches
             [rightSwipes setValue:restaurant.identifier forKey:restaurant.name];
             
-            //update local storage in rightSwipes array- this uses YLPBusinesses. Might delete this later.
-            [self.rightSwipes addObject:restaurant];
-            
             //store restuarant in user defaults
             NSMutableDictionary *restaurantDictForm = [YLPBusiness restaurantToDict:restaurant];
             //add to unvisited array
-            [self.rightSwipeDicts[0] setObject:restaurantDictForm forKey:restaurant.name];
-            //[self.rightSwipeDicts addObject:restaurantDictForm];
+            //have to do mutable copy or else things get weird
+            NSMutableDictionary *unvisited = [self.rightSwipeDicts[0] mutableCopy];
+            [unvisited setObject:restaurantDictForm forKey:restaurant.name];
+            self.rightSwipeDicts[0] = unvisited;
             
             [[NSUserDefaults standardUserDefaults] setObject:self.rightSwipeDicts forKey:self.user.username];
             [[NSUserDefaults standardUserDefaults] synchronize];
@@ -429,6 +424,7 @@
             }
             
             if ([strongSelf.queue size] <= 10) {
+                self.query.limit = 50;
                 self.query.offset += self.query.limit;
                 [self fetchRestaurants];
             }
@@ -440,26 +436,6 @@
             NSLog(@"%@", error.localizedDescription);
         }
     }];
-}
-
-- (void)fetchSavedRestaurants {
-    __weak HomeViewController *const weakSelf = self;
-    HomeViewController *const strongSelf = weakSelf;
-    
-    NSMutableDictionary *rightSwipes = [self.swipes objectForKey:@"rightSwipes"];
-    //loop through every restaurant in rightSwipes dict and fetch the corresponding YLPBusiness using the phone number
-    for (NSString *key in rightSwipes.keyEnumerator) {
-        NSString *businessID = [rightSwipes valueForKey:key];
-        [[AppDelegate sharedClient] businessWithId:businessID completionHandler:^(YLPBusiness * _Nullable business, NSError * _Nullable error) {
-            if (business != nil) {
-                [strongSelf.rightSwipes addObject:business];
-                NSLog(business.name);
-            }
-            else {
-                NSLog(@"%@", error.localizedDescription);
-            }
-        }];
-    }
 }
 
 //location methods start here
@@ -504,7 +480,6 @@
     if (self.firstTime) {
         self.firstTime = false;
         [self fetchRestaurants];
-        [self fetchSavedRestaurants];
     }
 }
 
