@@ -30,8 +30,8 @@
             filePath = "EatsNearMe/ViewControllers/HomeViewController.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "333"
-            endingLineNumber = "333"
+            startingLineNumber = "337"
+            endingLineNumber = "337"
             landmarkName = "-loadNextRestaurant"
             landmarkType = "7">
          </BreakpointContent>
@@ -46,8 +46,8 @@
             filePath = "EatsNearMe/ViewControllers/HomeViewController.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "411"
-            endingLineNumber = "411"
+            startingLineNumber = "415"
+            endingLineNumber = "415"
             landmarkName = "-makeAlert"
             landmarkType = "7">
          </BreakpointContent>
@@ -62,24 +62,8 @@
             filePath = "EatsNearMe/ViewControllers/HomeViewController.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "453"
-            endingLineNumber = "453"
-            landmarkName = "-fetchRestaurants"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "54FDE097-0D9C-40B0-BBC1-D266FC760A22"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "EatsNearMe/ViewControllers/HomeViewController.m"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "432"
-            endingLineNumber = "432"
+            startingLineNumber = "467"
+            endingLineNumber = "467"
             landmarkName = "-fetchRestaurants"
             landmarkType = "7">
          </BreakpointContent>
@@ -94,8 +78,8 @@
             filePath = "EatsNearMe/ViewControllers/HomeViewController.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "238"
-            endingLineNumber = "238"
+            startingLineNumber = "242"
+            endingLineNumber = "242"
             landmarkName = "-swipeRestaurant:"
             landmarkType = "7">
          </BreakpointContent>
@@ -110,8 +94,8 @@
             filePath = "EatsNearMe/ViewControllers/HomeViewController.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "258"
-            endingLineNumber = "258"
+            startingLineNumber = "262"
+            endingLineNumber = "262"
             landmarkName = "-swipeRestaurant:"
             landmarkType = "7">
          </BreakpointContent>
@@ -174,8 +158,8 @@
             filePath = "EatsNearMe/ViewControllers/HomeViewController.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "304"
-            endingLineNumber = "304"
+            startingLineNumber = "308"
+            endingLineNumber = "308"
             landmarkName = "-afterSwipeAction:isLeft:"
             landmarkType = "7">
          </BreakpointContent>
@@ -222,8 +206,8 @@
             filePath = "EatsNearMe/ViewControllers/HomeViewController.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "300"
-            endingLineNumber = "300"
+            startingLineNumber = "304"
+            endingLineNumber = "304"
             landmarkName = "-afterSwipeAction:isLeft:"
             landmarkType = "7">
          </BreakpointContent>
@@ -238,41 +222,9 @@
             filePath = "EatsNearMe/ViewControllers/HomeViewController.m"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "343"
-            endingLineNumber = "343"
+            startingLineNumber = "347"
+            endingLineNumber = "347"
             landmarkName = "-loadNextRestaurant"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "A1A26CDB-DFCA-4932-BC22-FBE10CAE9127"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "EatsNearMe/ViewControllers/HomeViewController.m"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "435"
-            endingLineNumber = "435"
-            landmarkName = "-fetchRestaurants"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "B1908A5D-7748-4BEF-9E4A-C9BD669D1850"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "EatsNearMe/ViewControllers/HomeViewController.m"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "444"
-            endingLineNumber = "444"
-            landmarkName = "-fetchRestaurants"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

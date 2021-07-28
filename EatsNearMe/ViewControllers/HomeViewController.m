@@ -10,6 +10,7 @@
 #import <CoreLocation/CoreLocation.h>
 #import "Parse/Parse.h"
 #import "ParseUtil.h"
+#import "AlertUtil.h"
 #import "AppDelegate.h"
 #import "SavedViewController.h"
 #import "PriorityQueue.h"
@@ -166,6 +167,9 @@
         }
         self.query.price = priceQuery;
         
+        //do I want these graphics here?
+        self.restaurantView.alpha = 0;
+        [self.loadingIcon startAnimating];
         [self fetchRestaurants];
     }
 }
@@ -425,29 +429,39 @@
     //finally, the actual query
     [[AppDelegate sharedClient] searchWithQuery:self.query completionHandler:^(YLPSearch * _Nullable search, NSError * _Nullable error) {
         if (search != nil) {
-            NSLog(@"successfully fetched restaurants");
-            
-            NSMutableDictionary *leftSwipes = [strongSelf.swipes objectForKey:@"leftSwipes"];
-            NSMutableDictionary *rightSwipes = [strongSelf.swipes objectForKey:@"rightSwipes"];
-            strongSelf.totalSwipes = ((int) leftSwipes.count) + ((int) rightSwipes.count); //keep track of total swipes
-            
-            for (YLPBusiness *restaurant in search.businesses) {
-                if ([leftSwipes objectForKey:restaurant.name] == nil
-                    && [rightSwipes objectForKey:restaurant.name] == nil
-                    && [strongSelf.restaurantsInQueue objectForKey:restaurant.name] == nil) {
-                    //restuarant hasn't been seen before
-                    [strongSelf.queue add:restaurant];
-                    [strongSelf.restaurantsInQueue setObject:restaurant.name forKey:restaurant.name];
+            if (search.businesses == nil || search.businesses.count == 0) {
+                UIAlertController *alert = [AlertUtil makeAlert:@"Couldn't find any restaurants" withMessage:@"try adjusting your search parameters in Settings"];
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.loadingIcon stopAnimating];
+                    [self presentViewController:alert animated:YES completion:nil];
+                });
+            }
+            else {
+                NSLog(@"successfully fetched restaurants");
+                
+                NSMutableDictionary *leftSwipes = [strongSelf.swipes objectForKey:@"leftSwipes"];
+                NSMutableDictionary *rightSwipes = [strongSelf.swipes objectForKey:@"rightSwipes"];
+                strongSelf.totalSwipes = ((int) leftSwipes.count) + ((int) rightSwipes.count); //keep track of total swipes
+                
+                for (YLPBusiness *restaurant in search.businesses) {
+                    if ([leftSwipes objectForKey:restaurant.name] == nil
+                        && [rightSwipes objectForKey:restaurant.name] == nil
+                        && [strongSelf.restaurantsInQueue objectForKey:restaurant.name] == nil) {
+                        //restuarant hasn't been seen before
+                        [strongSelf.queue add:restaurant];
+                        [strongSelf.restaurantsInQueue setObject:restaurant.name forKey:restaurant.name];
+                    }
                 }
+                
+                if ([strongSelf.queue size] <= 10) {
+                    self.query.limit = 50;
+                    self.query.offset += self.query.limit;
+                    [self fetchRestaurants];
+                }
+                
+                [strongSelf loadNextRestaurant];
             }
-            
-            if ([strongSelf.queue size] <= 10) {
-                self.query.limit = 50;
-                self.query.offset += self.query.limit;
-                [self fetchRestaurants];
-            }
-            
-            [strongSelf loadNextRestaurant];
         }
         else {
             NSLog(@"%@", error.localizedDescription);
