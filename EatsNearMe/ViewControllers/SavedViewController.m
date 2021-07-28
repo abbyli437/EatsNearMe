@@ -155,43 +155,42 @@
 
 - (UISwipeActionsConfiguration *)tableView:(UITableView *)tableView trailingSwipeActionsConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath {
     UIContextualAction *delete = [UIContextualAction contextualActionWithStyle:UIContextualActionStyleDestructive title:@"Delete" handler:^(UIContextualAction * _Nonnull action, __kindof UIView * _Nonnull sourceView, void (^ _Nonnull completionHandler)(BOOL)) {
-        //write stuff here
+        NSMutableString *alertTitle = [@"Delete " mutableCopy];
+        
+        NSMutableDictionary *restaurantDict = [[NSMutableDictionary alloc] init];
         if (self.visitedSegment.selectedSegmentIndex == 0) {
-            UIAlertController *alert = [self presentAlert:self.unvisitedVals[indexPath.row]];
-            [self presentViewController:alert animated:YES completion:nil];
+            restaurantDict = self.unvisitedVals[indexPath.row];
         }
         else {
-            UIAlertController *alert = [self presentAlert:self.visitedVals[indexPath.row]];
-            [self presentViewController:alert animated:YES completion:nil];
+            restaurantDict = self.visitedVals[indexPath.row];
         }
+        
+        [alertTitle appendString:restaurantDict[@"name"]];
+        [alertTitle appendString:@"?"];
+        
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
+            message:nil
+            preferredStyle:(UIAlertControllerStyleAlert)];
+        
+        UIAlertAction *yesAction = [UIAlertAction actionWithTitle:@"Yes"
+            style:UIAlertActionStyleDefault
+            handler:^(UIAlertAction * _Nonnull action) {
+            [self deleteRestaurant:restaurantDict];
+            completionHandler(true);
+            }];
+        [alert addAction:yesAction];
+        
+        UIAlertAction *noAction = [UIAlertAction actionWithTitle:@"No" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+            completionHandler(false);
+        }];
+        [alert addAction:noAction];
+        
+        [self presentViewController:alert animated:YES completion:nil];
     }];
+    
     delete.image = [UIImage systemImageNamed:@"trash.fill"];
     
     return [UISwipeActionsConfiguration configurationWithActions:@[delete]];
-}
-
-- (UIAlertController *)presentAlert:(NSMutableDictionary *)restaurantDict {
-    NSMutableString *alertTitle = [@"Delete " mutableCopy];
-    [alertTitle appendString:restaurantDict[@"name"]];
-    [alertTitle appendString:@"?"];
-    
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:alertTitle
-        message:nil
-        preferredStyle:(UIAlertControllerStyleAlert)];
-    
-    UIAlertAction *yesAction = [UIAlertAction actionWithTitle:@"Yes"
-        style:UIAlertActionStyleDefault
-        handler:^(UIAlertAction * _Nonnull action) {
-        [self deleteRestaurant:restaurantDict];
-        }];
-    [alert addAction:yesAction];
-    
-    UIAlertAction *noAction = [UIAlertAction actionWithTitle:@"No"
-        style:UIAlertActionStyleDefault
-        handler:nil];
-    [alert addAction:noAction];
-    
-    return alert;
 }
 
 - (void)deleteRestaurant:(NSMutableDictionary *)restaurantDict {
