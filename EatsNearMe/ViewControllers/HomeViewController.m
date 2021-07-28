@@ -355,15 +355,13 @@
     if (restaurant.imageURL != nil) {
         NSData *data = [[NSData alloc] initWithContentsOfURL:restaurant.imageURL];
         UIImage *imageData = [[UIImage alloc] initWithData:data];
-        self.restaurantImage.image = imageData;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.restaurantImage.image = imageData;
+        });
     }
     else {
         self.restaurantImage.image = [UIImage imageNamed:@"comingSoon.png"];
     }
-    
-    self.nameLabel.text = restaurant.name;
-    self.descriptionLabel.text = restaurant.categories[0].name;
-    self.priceLabel.text = restaurant.price;
     
     //distance label
     CLLocation *restaurantLoc = [[CLLocation alloc] initWithLatitude:restaurant.location.coordinate.latitude longitude:restaurant.location.coordinate.longitude];
@@ -373,15 +371,21 @@
     double distMiles = dist / 1609.0;
     NSString *distStr = [NSString stringWithFormat:@"%.2f", distMiles];
     distStr = [distStr stringByAppendingString:@" miles away"];
-    self.distanceLabel.text = distStr;
     
-    self.restaurantView.center = self.cardCenter;
-    self.restaurantView.alpha = 1;
-    self.checkMarkImage.alpha = 0;
-    
-    [UIView animateWithDuration:0.3 animations:^{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        self.nameLabel.text = restaurant.name;
+        self.descriptionLabel.text = restaurant.categories[0].name;
+        self.priceLabel.text = restaurant.price;
+        self.distanceLabel.text = distStr;
+        
+        self.restaurantView.center = self.cardCenter;
         self.restaurantView.alpha = 1;
-    }];
+        self.checkMarkImage.alpha = 0;
+        
+        [UIView animateWithDuration:0.3 animations:^{
+            self.restaurantView.alpha = 1;
+        }];
+    });
 }
 
 - (UIAlertController *)makeAlert {
