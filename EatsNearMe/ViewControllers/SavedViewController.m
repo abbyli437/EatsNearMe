@@ -101,7 +101,6 @@
     }
 }
 
-//TODO: update user defaults accordingly
 - (void)updateVisit:(NSMutableDictionary *)restaurantDict hasVisited:(bool)hasVisited {
     NSString *name = restaurantDict[@"name"];
     
@@ -123,6 +122,52 @@
     self.restaurantDicts[1] = self.visitedDict;
     
     [[NSUserDefaults standardUserDefaults] setObject:self.restaurantDicts forKey:self.username];
+}
+
+- (IBAction)toggleVisit:(id)sender {
+    [self.tableView reloadData];
+}
+
+//table view methods
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    if (self.visitedSegment.selectedSegmentIndex == 0) {
+        return self.unvisitedDict.count;
+    }
+    return self.visitedDict.count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    RestaurantCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"RestaurantCell" forIndexPath:indexPath];
+    cell.delegate = self;
+    cell.curLocation = self.curLocation;
+    
+    if (self.visitedSegment.selectedSegmentIndex == 0) {
+        NSDictionary *restaurantDict = self.unvisitedVals[indexPath.row];
+        cell.restaurantDict = [restaurantDict mutableCopy];
+    }
+    else {
+        NSDictionary *restaurantDict = self.visitedVals[indexPath.row];
+        cell.restaurantDict = [restaurantDict mutableCopy];
+        cell.hasVisitedButton.selected = true;
+    }
+    return cell;
+}
+
+- (UISwipeActionsConfiguration *)tableView:(UITableView *)tableView trailingSwipeActionsConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath {
+    UIContextualAction *delete = [UIContextualAction contextualActionWithStyle:UIContextualActionStyleDestructive title:@"Delete" handler:^(UIContextualAction * _Nonnull action, __kindof UIView * _Nonnull sourceView, void (^ _Nonnull completionHandler)(BOOL)) {
+        //write stuff here
+        if (self.visitedSegment.selectedSegmentIndex == 0) {
+            UIAlertController *alert = [self presentAlert:self.unvisitedVals[indexPath.row]];
+            [self presentViewController:alert animated:YES completion:nil];
+        }
+        else {
+            UIAlertController *alert = [self presentAlert:self.visitedVals[indexPath.row]];
+            [self presentViewController:alert animated:YES completion:nil];
+        }
+    }];
+    delete.image = [UIImage systemImageNamed:@"trash.fill"];
+    
+    return [UISwipeActionsConfiguration configurationWithActions:@[delete]];
 }
 
 - (UIAlertController *)presentAlert:(NSMutableDictionary *)restaurantDict {
@@ -178,51 +223,6 @@
     
 }
 
-- (IBAction)toggleVisit:(id)sender {
-    [self.tableView reloadData];
-}
-
-//table view methods
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if (self.visitedSegment.selectedSegmentIndex == 0) {
-        return self.unvisitedDict.count;
-    }
-    return self.visitedDict.count;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    RestaurantCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"RestaurantCell" forIndexPath:indexPath];
-    cell.delegate = self;
-    cell.curLocation = self.curLocation;
-    
-    if (self.visitedSegment.selectedSegmentIndex == 0) {
-        NSDictionary *restaurantDict = self.unvisitedVals[indexPath.row];
-        cell.restaurantDict = [restaurantDict mutableCopy];
-    }
-    else {
-        NSDictionary *restaurantDict = self.visitedVals[indexPath.row];
-        cell.restaurantDict = [restaurantDict mutableCopy];
-        cell.hasVisitedButton.selected = true;
-    }
-    return cell;
-}
-
-- (UISwipeActionsConfiguration *)tableView:(UITableView *)tableView trailingSwipeActionsConfigurationForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UIContextualAction *delete = [UIContextualAction contextualActionWithStyle:UIContextualActionStyleDestructive title:@"Delete" handler:^(UIContextualAction * _Nonnull action, __kindof UIView * _Nonnull sourceView, void (^ _Nonnull completionHandler)(BOOL)) {
-        //write stuff here
-        if (self.visitedSegment.selectedSegmentIndex == 0) {
-            UIAlertController *alert = [self presentAlert:self.unvisitedVals[indexPath.row]];
-            [self presentViewController:alert animated:YES completion:nil];
-        }
-        else {
-            UIAlertController *alert = [self presentAlert:self.visitedVals[indexPath.row]];
-            [self presentViewController:alert animated:YES completion:nil];
-        }
-    }];
-    delete.image = [UIImage systemImageNamed:@"trash.fill"];
-    
-    return [UISwipeActionsConfiguration configurationWithActions:@[delete]];
-}
 
 #pragma mark - Navigation
 
