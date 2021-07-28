@@ -30,6 +30,7 @@
 
 @property (nonatomic) int counter;
 @property (strong, nonatomic) PriorityQueue *queue;
+@property (strong, nonatomic) NSMutableDictionary *restaurantsInQueue;
 @property (strong, nonatomic) NSMutableDictionary *swipes;
 @property (strong, nonatomic) NSMutableArray *rightSwipeDicts;
 @property (strong, nonatomic) NSMutableDictionary *categoryDict;
@@ -100,6 +101,8 @@
         self.swipes = self.user[@"swipes"];
     }
     else {
+        //this first line is for debugging- if I clean out backend then I also want to wipe user defaults
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:self.user.username];
         self.swipes = [[NSMutableDictionary alloc] initWithCapacity:10];
         [self.swipes setObject:[[NSMutableDictionary alloc] init] forKey:@"leftSwipes"];
         [self.swipes setObject:[[NSMutableDictionary alloc] init] forKey:@"rightSwipes"];
@@ -130,6 +133,7 @@
     //PQ
     self.queue = [[PriorityQueue alloc] initWithCapacity:100]; //might make bigger depending on
     self.queue.delegate = self;
+    self.restaurantsInQueue = [[NSMutableDictionary alloc] initWithCapacity:100];
     
     //to pass right swipes to Saved Tab
     UINavigationController *secondController = self.tabBarController.viewControllers[1];
@@ -274,6 +278,9 @@
         self.restaurantView.center = CGPointMake(self.restaurantView.center.x + swipeDir, self.restaurantView.center.y);
     } completion:^(BOOL finished) {
         YLPBusiness *restaurant = [self.queue poll];
+        //remove restaurant from list of names in queue
+        [self.restaurantsInQueue removeObjectForKey:restaurant.name];
+        
         if (isLeft) {
             NSMutableDictionary *leftSwipes = [self.swipes objectForKey:@"leftSwipes"];
             [leftSwipes setValue:restaurant.name forKey:restaurant.name];
@@ -286,7 +293,7 @@
             //store restuarant in user defaults
             NSMutableDictionary *restaurantDictForm = [YLPBusiness restaurantToDict:restaurant];
             //add to unvisited array
-            //have to do mutable copy or else things get weird
+            //have to do mutable copy bc the dict could be immutable
             NSMutableDictionary *unvisited = [self.rightSwipeDicts[0] mutableCopy];
             [unvisited setObject:restaurantDictForm forKey:restaurant.name];
             self.rightSwipeDicts[0] = unvisited;
@@ -417,9 +424,12 @@
             strongSelf.totalSwipes = ((int) leftSwipes.count) + ((int) rightSwipes.count); //keep track of total swipes
             
             for (YLPBusiness *restaurant in search.businesses) {
-                if ([leftSwipes objectForKey:restaurant.name] == nil && [rightSwipes objectForKey:restaurant.name] == nil) {
+                if ([leftSwipes objectForKey:restaurant.name] == nil
+                    && [rightSwipes objectForKey:restaurant.name] == nil
+                    && [strongSelf.restaurantsInQueue objectForKey:restaurant.name] == nil) {
                     //restuarant hasn't been seen before
                     [strongSelf.queue add:restaurant];
+                    [strongSelf.restaurantsInQueue setObject:restaurant.name forKey:restaurant.name];
                 }
             }
             
