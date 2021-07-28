@@ -15,7 +15,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)updateVisit:(NSMutableDictionary *)restaurantDict hasVisited:(bool)hasVisited;
 
-- (void)presentAlert:(NSMutableDictionary *)restaurantDict;
 @end
 
 @interface RestaurantCell : UITableViewCell
