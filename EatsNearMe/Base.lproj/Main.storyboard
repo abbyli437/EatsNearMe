@@ -511,6 +511,11 @@
                                     <outletCollection property="gestureRecognizers" destination="MIp-NU-lP5" appends="YES" id="sNN-Qv-sCO"/>
                                 </connections>
                             </view>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="T4f-fn-LSq">
+                                <rect key="frame" x="180" y="356" width="30" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="color" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="i4i-xD-L99"/>
                         <color key="backgroundColor" systemColor="systemGray4Color"/>
@@ -553,6 +558,7 @@
                         <outlet property="checkMarkImage" destination="9h5-Ra-Ng4" id="eGk-PY-tus"/>
                         <outlet property="descriptionLabel" destination="RgO-hP-oNc" id="for-zD-9zi"/>
                         <outlet property="distanceLabel" destination="ggr-Yp-xsl" id="nzO-nx-gq8"/>
+                        <outlet property="loadingIcon" destination="T4f-fn-LSq" id="poK-eO-30u"/>
                         <outlet property="nameLabel" destination="gEQ-Zx-s0j" id="8SW-Ki-YfX"/>
                         <outlet property="priceLabel" destination="pNE-g8-emS" id="yEW-66-255"/>
                         <outlet property="restaurantImage" destination="GOv-yB-M7r" id="7yo-xO-PYA"/>

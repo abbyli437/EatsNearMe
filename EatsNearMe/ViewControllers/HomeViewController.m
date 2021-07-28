@@ -45,6 +45,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *distanceLabel;
 @property (weak, nonatomic) IBOutlet UILabel *priceLabel;
 
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *loadingIcon;
 @property (strong, nonatomic) UIButton *yesButton;
 @property (strong, nonatomic) UIButton *noButton;
 
@@ -88,7 +89,7 @@
     
     self.restaurantView.layer.cornerRadius = 10;
     self.restaurantView.layer.masksToBounds = true;
-    //self.restaurantView.alpha = 0;
+    self.restaurantView.alpha = 0;
     
     self.cardCenter = self.restaurantView.center;
     
@@ -382,6 +383,8 @@
         self.restaurantView.alpha = 1;
         self.checkMarkImage.alpha = 0;
         
+        [self.loadingIcon stopAnimating];
+        
         [UIView animateWithDuration:0.3 animations:^{
             self.restaurantView.alpha = 1;
         }];
@@ -399,6 +402,7 @@
             self.query.offset += self.query.limit;
             self.query.limit = 50;
             self.counter = 0;
+            [self.loadingIcon startAnimating];
         
             [self fetchRestaurants];
         }];
@@ -444,7 +448,6 @@
             }
             
             [strongSelf loadNextRestaurant];
-            [strongSelf.restaurantView setNeedsDisplay];
         }
         else {
             NSLog(@"%@", error.localizedDescription);
@@ -493,6 +496,7 @@
     //this is so I get the location first before I call the API
     if (self.firstTime) {
         self.firstTime = false;
+        [self.loadingIcon startAnimating];
         [self fetchRestaurants];
     }
 }
