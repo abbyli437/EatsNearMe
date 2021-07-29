@@ -229,13 +229,21 @@
         CGAffineTransform transform = self.view.transform;
         self.restaurantView.transform = CGAffineTransformRotate(transform, 0.5);
         self.restaurantView.center = CGPointMake(self.restaurantView.center.x + 200, self.restaurantView.center.y);
+        self.restaurantView.alpha = 0;
     } completion:^(BOOL finished) {
-        [self afterSwipeAction:200 isLeft:false];
+        [self afterSwipeAction:false];
     }];
 }
 
 - (void)tapNo:(id)sender {
-    [self afterSwipeAction:-200 isLeft:true];
+    [UIView animateWithDuration:0.3 animations:^{
+        CGAffineTransform transform = self.view.transform;
+        self.restaurantView.transform = CGAffineTransformRotate(transform, -0.5);
+        self.restaurantView.center = CGPointMake(self.restaurantView.center.x - 200, self.restaurantView.center.y);
+        self.restaurantView.alpha = 0;
+    } completion:^(BOOL finished) {
+        [self afterSwipeAction:true];
+    }];
 }
 
 - (IBAction)swipeRestaurant:(UIPanGestureRecognizer *)sender {
@@ -270,12 +278,20 @@
     if (sender.state == UIGestureRecognizerStateEnded) {
         if (restaurantCard.center.x < 75) {
             //move card off to the left
-            [self afterSwipeAction:-200 isLeft:true];
+            [UIView animateWithDuration:0.3 animations:^{
+                self.restaurantView.center = CGPointMake(self.restaurantView.center.x - 200, self.restaurantView.center.y);
+            } completion:^(BOOL finished) {
+                [self afterSwipeAction:true];
+            }];
             return;
         }
         else if (restaurantCard.center.x > self.view.frame.size.width - 75) {
             //move card off to the right
-            [self afterSwipeAction:200 isLeft:false];
+            [UIView animateWithDuration:0.3 animations:^{
+                self.restaurantView.center = CGPointMake(self.restaurantView.center.x + 200, self.restaurantView.center.y);
+            } completion:^(BOOL finished) {
+                [self afterSwipeAction:false];
+            }];
             return;
         }
         [UIView animateWithDuration:0.2 animations:^{
@@ -286,55 +302,50 @@
     }
 }
 
-- (void)afterSwipeAction:(int)swipeDir isLeft:(bool)isLeft {
+- (void)afterSwipeAction:(bool)isLeft {
     //increment total swipes
     self.totalSwipes = self.totalSwipes + 1;
     
-    //move card off to the correct direction
-    [UIView animateWithDuration:0.3 animations:^{
-        self.restaurantView.center = CGPointMake(self.restaurantView.center.x + swipeDir, self.restaurantView.center.y);
-    } completion:^(BOOL finished) {
-        YLPBusiness *restaurant = [self.queue poll];
-        //remove restaurant from list of names in queue
-        [self.restaurantsInQueue removeObjectForKey:restaurant.name];
+    YLPBusiness *restaurant = [self.queue poll];
+    //remove restaurant from list of names in queue
+    [self.restaurantsInQueue removeObjectForKey:restaurant.name];
+    
+    if (isLeft) {
+        NSMutableDictionary *leftSwipes = [self.swipes objectForKey:@"leftSwipes"];
+        [leftSwipes setValue:restaurant.name forKey:restaurant.name];
+    }
+    else {
+        NSMutableDictionary *rightSwipes = [self.swipes objectForKey:@"rightSwipes"];
+        //store phone number so I can use it in phone query in later fetches
+        [rightSwipes setValue:restaurant.identifier forKey:restaurant.name];
         
-        if (isLeft) {
-            NSMutableDictionary *leftSwipes = [self.swipes objectForKey:@"leftSwipes"];
-            [leftSwipes setValue:restaurant.name forKey:restaurant.name];
-        }
-        else {
-            NSMutableDictionary *rightSwipes = [self.swipes objectForKey:@"rightSwipes"];
-            //store phone number so I can use it in phone query in later fetches
-            [rightSwipes setValue:restaurant.identifier forKey:restaurant.name];
-            
-            //store restuarant in user defaults
-            NSMutableDictionary *restaurantDictForm = [YLPBusiness restaurantToDict:restaurant];
-            //add to unvisited array
-            //have to do mutable copy bc the dict could be immutable
-            NSMutableDictionary *unvisited = [self.rightSwipeDicts[0] mutableCopy];
-            [unvisited setObject:restaurantDictForm forKey:restaurant.name];
-            self.rightSwipeDicts[0] = unvisited;
-            
-            [[NSUserDefaults standardUserDefaults] setObject:self.rightSwipeDicts forKey:self.user.username];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-            
-            //update category count
-            for (YLPCategory *category in restaurant.categories) {
-                if ([self.categoryDict objectForKey:category.name] == nil) {
-                    [self.categoryDict setValue:@(1) forKey:category.name];
-                }
-                else {
-                    int catCount = [[self.categoryDict valueForKey:category.name] intValue] + 1;
-                    [self.categoryDict setValue:@(catCount) forKey:category.name];
-                }
+        //store restuarant in user defaults
+        NSMutableDictionary *restaurantDictForm = [YLPBusiness restaurantToDict:restaurant];
+        //add to unvisited array
+        //have to do mutable copy bc the dict could be immutable
+        NSMutableDictionary *unvisited = [self.rightSwipeDicts[0] mutableCopy];
+        [unvisited setObject:restaurantDictForm forKey:restaurant.name];
+        self.rightSwipeDicts[0] = unvisited;
+        
+        [[NSUserDefaults standardUserDefaults] setObject:self.rightSwipeDicts forKey:self.user.username];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+        //update category count
+        for (YLPCategory *category in restaurant.categories) {
+            if ([self.categoryDict objectForKey:category.name] == nil) {
+                [self.categoryDict setValue:@(1) forKey:category.name];
             }
-            [ParseUtil updateValue:self.categoryDict key:@"categoryDict"];
+            else {
+                int catCount = [[self.categoryDict valueForKey:category.name] intValue] + 1;
+                [self.categoryDict setValue:@(catCount) forKey:category.name];
+            }
         }
-   
-        [ParseUtil updateValue:self.swipes key:@"swipes"];
-        
-        [self loadNextRestaurant];
-    }];
+        [ParseUtil updateValue:self.categoryDict key:@"categoryDict"];
+    }
+
+    [ParseUtil updateValue:self.swipes key:@"swipes"];
+    
+    [self loadNextRestaurant];
 }
 
 - (void)loadNextRestaurant {
