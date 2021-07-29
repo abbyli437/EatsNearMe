@@ -225,7 +225,13 @@
 }
 
 - (void)tapYes:(id)sender {
-    [self afterSwipeAction:200 isLeft:false];
+    [UIView animateWithDuration:0.3 animations:^{
+        CGAffineTransform transform = self.view.transform;
+        self.restaurantView.transform = CGAffineTransformRotate(transform, 0.5);
+        self.restaurantView.center = CGPointMake(self.restaurantView.center.x + 200, self.restaurantView.center.y);
+    } completion:^(BOOL finished) {
+        [self afterSwipeAction:200 isLeft:false];
+    }];
 }
 
 - (void)tapNo:(id)sender {
@@ -242,6 +248,11 @@
     float centerX = self.view.center.x;
     restaurantCard.center = CGPointMake(centerX + point.x, self.view.center.y + point.y);
     float xFromCenter = restaurantCard.center.x - centerX;
+    CGFloat rotationDivisor = (CGFloat)((self.view.frame.size.width / 2) / 0.5); //0.5 is in radians
+    
+    CGAffineTransform transform = self.view.transform;
+    transform = CGAffineTransformRotate(transform, xFromCenter / rotationDivisor);
+    restaurantCard.transform = transform;
     
     //sets up image for swipe left/right
     if (xFromCenter < 0) {
@@ -269,6 +280,7 @@
         }
         [UIView animateWithDuration:0.2 animations:^{
             restaurantCard.center = self.cardCenter;
+            restaurantCard.transform = self.view.transform;
             self.checkMarkImage.alpha = 0;
         }];
     }
@@ -391,6 +403,8 @@
         
         [UIView animateWithDuration:0.3 animations:^{
             self.restaurantView.alpha = 1;
+        } completion:^(BOOL finished) {
+            self.restaurantView.transform = self.view.transform;
         }];
     });
 }
