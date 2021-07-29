@@ -34,6 +34,8 @@
 		88B242FD268E272500089A35 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 88B242FC268E272500089A35 /* main.m */; };
 		88B24307268E272500089A35 /* EatsNearMeTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 88B24306268E272500089A35 /* EatsNearMeTests.m */; };
 		88B24312268E272500089A35 /* EatsNearMeUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 88B24311268E272500089A35 /* EatsNearMeUITests.m */; };
+		88E9BF7F26B355C4004145DE /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88E9BF7E26B355C4004145DE /* MapKit.framework */; };
+		88E9BF8226B35ADD004145DE /* RouteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 88E9BF8126B35ADD004145DE /* RouteViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -107,6 +109,9 @@
 		88B24311268E272500089A35 /* EatsNearMeUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EatsNearMeUITests.m; sourceTree = "<group>"; };
 		88B24313268E272500089A35 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		88B2431F268E273A00089A35 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		88E9BF7E26B355C4004145DE /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		88E9BF8026B35ADD004145DE /* RouteViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RouteViewController.h; sourceTree = "<group>"; };
+		88E9BF8126B35ADD004145DE /* RouteViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RouteViewController.m; sourceTree = "<group>"; };
 		9EEC0B512A94CCD6434B5491 /* Pods-EatsNearMeTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EatsNearMeTests.release.xcconfig"; path = "Target Support Files/Pods-EatsNearMeTests/Pods-EatsNearMeTests.release.xcconfig"; sourceTree = "<group>"; };
 		A1E43C86AA652CEB86D6A8BD /* Pods_EatsNearMe.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_EatsNearMe.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD3F3D5EAC950B819957C6AA /* Pods_EatsNearMe_EatsNearMeUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_EatsNearMe_EatsNearMeUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -118,6 +123,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				88E9BF7F26B355C4004145DE /* MapKit.framework in Frameworks */,
 				2F828806E6493BE1FE8F28BE /* Pods_EatsNearMe.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -157,6 +163,7 @@
 		0D1BAA2AEA07DA8F1AE699F3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				88E9BF7E26B355C4004145DE /* MapKit.framework */,
 				A1E43C86AA652CEB86D6A8BD /* Pods_EatsNearMe.framework */,
 				DD3F3D5EAC950B819957C6AA /* Pods_EatsNearMe_EatsNearMeUITests.framework */,
 				3F66B435D747ADDAE09D229C /* Pods_EatsNearMeTests.framework */,
@@ -181,6 +188,8 @@
 				88774A3B269DF186002A854A /* SavedViewController.m */,
 				88774A3D269DF1A8002A854A /* DetailsViewController.h */,
 				88774A3E269DF1A8002A854A /* DetailsViewController.m */,
+				88E9BF8026B35ADD004145DE /* RouteViewController.h */,
+				88E9BF8126B35ADD004145DE /* RouteViewController.m */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -534,6 +543,7 @@
 				88B242EC268E272300089A35 /* AppDelegate.m in Sources */,
 				88774A4E269F3772002A854A /* Restaurant.m in Sources */,
 				88774A2C269CE1BE002A854A /* AlertUtil.m in Sources */,
+				88E9BF8226B35ADD004145DE /* RouteViewController.m in Sources */,
 				88B242FD268E272500089A35 /* main.m in Sources */,
 				88B242EF268E272300089A35 /* SceneDelegate.m in Sources */,
 				88774A6326A08A8D002A854A /* RestaurantCardView.m in Sources */,

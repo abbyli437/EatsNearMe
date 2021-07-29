@@ -2,16 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Need library access to upload pictures</string>
-	<key>NSCameraUsageDescription</key>
-	<string>Need camera access to take pictures</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Your location is required to search for restaurants near you</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Your location is required to search for restaurants near you</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Your location is required to search for restaurants near you</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
@@ -30,6 +20,16 @@
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Need camera access to take pictures</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Your location is required to search for restaurants near you</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Your location is required to search for restaurants near you</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Your location is required to search for restaurants near you</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Need library access to upload pictures</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

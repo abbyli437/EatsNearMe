@@ -377,6 +377,14 @@
                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                         <dataDetectorType key="dataDetectorTypes" link="YES"/>
                                     </textView>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7fs-4D-Slp">
+                                        <rect key="frame" x="150" y="619" width="98" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" title="Get Directions"/>
+                                        <connections>
+                                            <segue destination="k5N-E4-Ggb" kind="show" identifier="routeSegue" id="jDU-4H-RES"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <constraints>
                                     <constraint firstItem="cjU-Nl-yYA" firstAttribute="trailing" secondItem="7gX-qd-uaH" secondAttribute="trailing" constant="8" id="1OQ-aK-yRH"/>
@@ -451,6 +459,36 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Jw9-Kd-Ufn" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="810.76923076923072" y="2390.7582938388623"/>
+        </scene>
+        <!--Route View Controller-->
+        <scene sceneID="2vc-PM-OOF">
+            <objects>
+                <viewController id="k5N-E4-Ggb" customClass="RouteViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="rEf-dC-02W">
+                        <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="w4j-9f-KyH">
+                                <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
+                            </mapView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="DR0-Of-vao"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="w4j-9f-KyH" secondAttribute="bottom" id="Qhh-dK-jwp"/>
+                            <constraint firstItem="w4j-9f-KyH" firstAttribute="trailing" secondItem="DR0-Of-vao" secondAttribute="trailing" id="lH6-Fr-3Jk"/>
+                            <constraint firstItem="w4j-9f-KyH" firstAttribute="leading" secondItem="DR0-Of-vao" secondAttribute="leading" id="nKY-og-QAR"/>
+                            <constraint firstItem="w4j-9f-KyH" firstAttribute="top" secondItem="rEf-dC-02W" secondAttribute="top" id="vXD-oK-l02"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="CHK-01-fZ8"/>
+                    <connections>
+                        <outlet property="mapView" destination="w4j-9f-KyH" id="rXh-gM-NC5"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="gKZ-fc-sC8" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="811" y="3107"/>
         </scene>
         <!--Home-->
         <scene sceneID="zty-YA-cj9">

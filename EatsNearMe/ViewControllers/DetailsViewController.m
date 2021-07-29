@@ -6,7 +6,9 @@
 //
 
 #import "DetailsViewController.h"
+#import "RouteViewController.h"
 #import "AppDelegate.h"
+#import <MapKit/MapKit.h>
 @import YelpAPI;
 
 @interface DetailsViewController ()
@@ -89,14 +91,19 @@
     self.addressLabel.text = address;
 }
 
-/*
+
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+    if ([[segue identifier] isEqualToString:@"routeSegue"]) {
+        RouteViewController *routeViewController = [segue destinationViewController];
+
+        CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(self.restaurant.location.coordinate.latitude, self.restaurant.location.coordinate.longitude);
+        MKPlacemark *placemark = [[MKPlacemark alloc] initWithCoordinate:coord];
+        routeViewController.destination = [[MKMapItem alloc] initWithPlacemark:placemark];
+    }
 }
-*/
+
 
 @end
