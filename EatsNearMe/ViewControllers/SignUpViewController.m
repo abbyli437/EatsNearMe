@@ -32,8 +32,7 @@
     UIAlertController *alert = [AlertUtil makeAlert:@"Invalid Sign Up" withMessage:@"Username or Password field is blank"];
     
     if ([self.usernameField.text isEqual:@""] || [self.passwordField.text isEqual:@""]) {
-        [self presentViewController:alert animated:YES completion:^{
-        }];
+        [self presentViewController:alert animated:YES completion:nil];
     }
     else {
         // initialize a user object
@@ -65,6 +64,8 @@
         [newUser signUpInBackgroundWithBlock:^(BOOL succeeded, NSError * error) {
             if (error != nil) {
                 NSLog(@"Error: %@", error.localizedDescription);
+                UIAlertController *alert2 = [AlertUtil makeAlert:@"Error" withMessage:error.localizedDescription];
+                [self presentViewController:alert2 animated:YES completion:nil];
             }
             else {
                 NSLog(@"User registered successfully");
