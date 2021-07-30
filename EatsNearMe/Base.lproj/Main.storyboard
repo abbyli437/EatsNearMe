@@ -468,12 +468,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="w4j-9f-KyH">
-                                <rect key="frame" x="0.0" y="0.0" width="390" height="555"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="555" id="yOU-up-N7u"/>
-                                </constraints>
-                            </mapView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="4Yr-3h-x21">
                                 <rect key="frame" x="0.0" y="555" width="390" height="289"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -500,6 +494,12 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="w4j-9f-KyH">
+                                <rect key="frame" x="0.0" y="0.0" width="390" height="555"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="555" id="yOU-up-N7u"/>
+                                </constraints>
+                            </mapView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="DR0-Of-vao"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>

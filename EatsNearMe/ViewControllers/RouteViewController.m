@@ -27,6 +27,7 @@
     self.steps = [[NSMutableArray alloc] init];
     
     //map view set up
+    self.mapView.delegate = self;
     self.mapView.showsUserLocation = YES;
     [self.mapView addAnnotation:self.destination.placemark];
     
@@ -35,7 +36,7 @@
     MKCoordinateRegionMakeWithDistance(userLocation.location.coordinate,
              5000, 5000);
     [self.mapView setRegion:region animated:NO];
-    self.mapView.delegate = self;
+    
     [self getDirections];
 }
 
@@ -45,7 +46,7 @@
            [[MKDirectionsRequest alloc] init];
 
     request.source = [MKMapItem mapItemForCurrentLocation];
-
+    
     request.destination = self.destination;
     request.requestsAlternateRoutes = NO;
         MKDirections *directions =
@@ -55,6 +56,7 @@
      ^(MKDirectionsResponse *response, NSError *error) {
          if (error) {
              NSLog(error.localizedDescription);
+             //make alert here? Do I want to add an ok action and do nothing or that and a "fetch again" action?
          } else {
              [self showRoute:response];
          }
@@ -78,6 +80,7 @@
     [self.tableView reloadData];
 }
 
+//map view methods
 - (MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id < MKOverlay >)overlay
 {
     if ([overlay isKindOfClass:[MKPolyline class]]) {
@@ -87,6 +90,11 @@
         return renderer;
     }
     return nil;
+}
+
+- (void)mapView:(MKMapView *)mapView didUpdateUserLocation:(MKUserLocation *)userLocation
+{
+    self.mapView.centerCoordinate = userLocation.location.coordinate;
 }
 
 //table view methods
