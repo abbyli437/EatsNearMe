@@ -25,7 +25,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
 @property (weak, nonatomic) IBOutlet UIButton *hasVisitedButton;
 @property (weak, nonatomic) IBOutlet UILabel *distanceLabel;
-@property (strong, nonatomic) YLPBusiness *restaurant;
 @property (strong, nonatomic) NSMutableDictionary *restaurantDict;
 @property (strong, nonatomic) CLLocation *curLocation;
 

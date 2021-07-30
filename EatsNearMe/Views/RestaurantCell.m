@@ -20,26 +20,6 @@
     [super setSelected:selected animated:animated];
 }
 
-- (void)setRestaurant:(YLPBusiness *)restaurant {
-    _restaurant = restaurant;
-    
-    //restaurant image
-    if (restaurant.imageURL != nil) {
-        NSData *data = [[NSData alloc] initWithContentsOfURL:restaurant.imageURL];
-        UIImage *imageData = [[UIImage alloc] initWithData:data];
-        self.restaurantImage.image = imageData;
-    }
-    else {
-        self.restaurantImage.image = [UIImage imageNamed:@"comingSoon.png"];
-    }
-    
-    self.nameLabel.text = restaurant.name;
-    
-    //distance label
-    CLLocation *restaurantLoc = [[CLLocation alloc] initWithLatitude:restaurant.location.coordinate.latitude longitude:restaurant.location.coordinate.longitude];
-    [self commonSetUp:restaurantLoc];
-}
-
 - (void)setRestaurantDict:(NSMutableDictionary *)restaurantDict {
     _restaurantDict = restaurantDict;
     
