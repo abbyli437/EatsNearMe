@@ -14,6 +14,7 @@
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (strong, nonatomic) NSMutableArray *steps;
+@property (strong, nonatomic) UIAlertController *alert;
 
 @end
 
@@ -25,6 +26,24 @@
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     self.steps = [[NSMutableArray alloc] init];
+    
+    //alert set up
+    self.alert = [UIAlertController alertControllerWithTitle:@"Error Getting"
+        message:@"Try again?"
+        preferredStyle:(UIAlertControllerStyleAlert)];
+    
+    UIAlertAction *yesAction = [UIAlertAction actionWithTitle:@"Yes"
+        style:UIAlertActionStyleDefault
+        handler:^(UIAlertAction * _Nonnull action) {
+            [self getDirections];
+        }];
+    [self.alert addAction:yesAction];
+    
+    UIAlertAction *noAction = [UIAlertAction actionWithTitle:@"No"
+        style:UIAlertActionStyleDefault
+        handler:nil];
+    [self.alert addAction:noAction];
+    
     
     //map view set up
     self.mapView.delegate = self;
@@ -56,7 +75,7 @@
      ^(MKDirectionsResponse *response, NSError *error) {
          if (error) {
              NSLog(error.localizedDescription);
-             //make alert here? Do I want to add an ok action and do nothing or that and a "fetch again" action?
+             [self presentViewController:self.alert animated:YES completion:nil];
          } else {
              [self showRoute:response];
          }

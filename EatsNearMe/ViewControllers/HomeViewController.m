@@ -490,6 +490,28 @@
         }
         else {
             NSLog(@"%@", error.localizedDescription);
+            
+            //present alert
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Error loading restaurants"
+                message:@"Try again?"
+                preferredStyle:(UIAlertControllerStyleAlert)];
+            
+            UIAlertAction *yesAction = [UIAlertAction actionWithTitle:@"Yes"
+                style:UIAlertActionStyleDefault
+                handler:^(UIAlertAction * _Nonnull action) {
+                    [self fetchRestaurants];
+                }];
+            [alert addAction:yesAction];
+            
+            UIAlertAction *noAction = [UIAlertAction actionWithTitle:@"No"
+                style:UIAlertActionStyleDefault
+                handler:nil];
+            [alert addAction:noAction];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.loadingIcon stopAnimating];
+                [self presentViewController:alert animated:YES completion:nil];
+            });
         }
     }];
 }
