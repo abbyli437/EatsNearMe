@@ -36,6 +36,7 @@
 		88B24312268E272500089A35 /* EatsNearMeUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 88B24311268E272500089A35 /* EatsNearMeUITests.m */; };
 		88E9BF7F26B355C4004145DE /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88E9BF7E26B355C4004145DE /* MapKit.framework */; };
 		88E9BF8226B35ADD004145DE /* RouteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 88E9BF8126B35ADD004145DE /* RouteViewController.m */; };
+		88E9BF8526B4506E004145DE /* DirectionsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 88E9BF8426B4506E004145DE /* DirectionsCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -112,6 +113,8 @@
 		88E9BF7E26B355C4004145DE /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		88E9BF8026B35ADD004145DE /* RouteViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RouteViewController.h; sourceTree = "<group>"; };
 		88E9BF8126B35ADD004145DE /* RouteViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RouteViewController.m; sourceTree = "<group>"; };
+		88E9BF8326B4506E004145DE /* DirectionsCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DirectionsCell.h; sourceTree = "<group>"; };
+		88E9BF8426B4506E004145DE /* DirectionsCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DirectionsCell.m; sourceTree = "<group>"; };
 		9EEC0B512A94CCD6434B5491 /* Pods-EatsNearMeTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EatsNearMeTests.release.xcconfig"; path = "Target Support Files/Pods-EatsNearMeTests/Pods-EatsNearMeTests.release.xcconfig"; sourceTree = "<group>"; };
 		A1E43C86AA652CEB86D6A8BD /* Pods_EatsNearMe.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_EatsNearMe.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DD3F3D5EAC950B819957C6AA /* Pods_EatsNearMe_EatsNearMeUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_EatsNearMe_EatsNearMeUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -212,6 +215,8 @@
 				88774A38269D0693002A854A /* RestaurantCell.m */,
 				88774A6126A08A8D002A854A /* RestaurantCardView.h */,
 				88774A6226A08A8D002A854A /* RestaurantCardView.m */,
+				88E9BF8326B4506E004145DE /* DirectionsCell.h */,
+				88E9BF8426B4506E004145DE /* DirectionsCell.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -550,6 +555,7 @@
 				88774A29269CD852002A854A /* HomeViewController.m in Sources */,
 				88774A6626A5D6EE002A854A /* ImageUtil.m in Sources */,
 				88774A42269DFF0D002A854A /* ParseUtil.m in Sources */,
+				88E9BF8526B4506E004145DE /* DirectionsCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

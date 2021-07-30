@@ -7,10 +7,13 @@
 
 #import "RouteViewController.h"
 #import <MapKit/MapKit.h>
+#import "DirectionsCell.h"
 
-@interface RouteViewController () <MKMapViewDelegate>
+@interface RouteViewController () <MKMapViewDelegate, UITableViewDelegate, UITableViewDataSource>
 
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
+@property (strong, nonatomic) NSMutableArray *steps;
 
 @end
 
@@ -18,7 +21,12 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view;
+    //table view set up
+    self.tableView.delegate = self;
+    self.tableView.dataSource = self;
+    self.steps = [[NSMutableArray alloc] init];
+    
+    //map view set up
     self.mapView.showsUserLocation = YES;
     [self.mapView addAnnotation:self.destination.placemark];
     
@@ -58,12 +66,16 @@
     for (MKRoute *route in response.routes) {
         [self.mapView
            addOverlay:route.polyline level:MKOverlayLevelAboveRoads];
-
+        
         for (MKRouteStep *step in route.steps) {
             NSLog(@"%@", step.instructions);
+            if (step.instructions != nil) {
+                [self.steps addObject:step];
+            }
         }
     }
     [self.mapView reloadInputViews];
+    [self.tableView reloadData];
 }
 
 - (MKOverlayRenderer *)mapView:(MKMapView *)mapView rendererForOverlay:(id < MKOverlay >)overlay
@@ -75,6 +87,18 @@
         return renderer;
     }
     return nil;
+}
+
+//table view methods
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return self.steps.count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    DirectionsCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"DirectionsCell" forIndexPath:indexPath];
+    MKRouteStep *step = self.steps[indexPath.row];
+    cell.directionsLabel.text = step.instructions;
+    return cell;
 }
 
 /*

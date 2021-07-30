@@ -469,26 +469,59 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="w4j-9f-KyH">
-                                <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
+                                <rect key="frame" x="0.0" y="0.0" width="390" height="555"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="555" id="yOU-up-N7u"/>
+                                </constraints>
                             </mapView>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="4Yr-3h-x21">
+                                <rect key="frame" x="0.0" y="555" width="390" height="289"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="DirectionsCell" rowHeight="85" id="2lq-mW-s8p" customClass="DirectionsCell">
+                                        <rect key="frame" x="0.0" y="24.333333969116211" width="390" height="85"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="2lq-mW-s8p" id="cfb-1I-0O5">
+                                            <rect key="frame" x="0.0" y="0.0" width="390" height="85"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kXn-Pf-Cfz">
+                                                    <rect key="frame" x="20" y="11" width="350" height="21"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="directionsLabel" destination="kXn-Pf-Cfz" id="5e8-cU-hta"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="DR0-Of-vao"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstAttribute="bottom" secondItem="w4j-9f-KyH" secondAttribute="bottom" id="Qhh-dK-jwp"/>
+                            <constraint firstItem="4Yr-3h-x21" firstAttribute="top" secondItem="w4j-9f-KyH" secondAttribute="bottom" id="FKg-5Y-qhQ"/>
+                            <constraint firstItem="4Yr-3h-x21" firstAttribute="leading" secondItem="DR0-Of-vao" secondAttribute="leading" id="JgF-Hu-d1Y"/>
+                            <constraint firstItem="4Yr-3h-x21" firstAttribute="trailing" secondItem="DR0-Of-vao" secondAttribute="trailing" id="U6u-ro-dMZ"/>
                             <constraint firstItem="w4j-9f-KyH" firstAttribute="trailing" secondItem="DR0-Of-vao" secondAttribute="trailing" id="lH6-Fr-3Jk"/>
                             <constraint firstItem="w4j-9f-KyH" firstAttribute="leading" secondItem="DR0-Of-vao" secondAttribute="leading" id="nKY-og-QAR"/>
                             <constraint firstItem="w4j-9f-KyH" firstAttribute="top" secondItem="rEf-dC-02W" secondAttribute="top" id="vXD-oK-l02"/>
+                            <constraint firstAttribute="bottom" secondItem="4Yr-3h-x21" secondAttribute="bottom" id="wUH-78-p0f"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="CHK-01-fZ8"/>
                     <connections>
                         <outlet property="mapView" destination="w4j-9f-KyH" id="rXh-gM-NC5"/>
+                        <outlet property="tableView" destination="4Yr-3h-x21" id="R86-lr-alY"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gKZ-fc-sC8" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="811" y="3107"/>
+            <point key="canvasLocation" x="810.76923076923072" y="3106.6350710900474"/>
         </scene>
         <!--Home-->
         <scene sceneID="zty-YA-cj9">
