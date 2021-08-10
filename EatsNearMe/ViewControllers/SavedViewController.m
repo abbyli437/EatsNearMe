@@ -12,7 +12,6 @@
 #import "Parse/Parse.h"
 #import "ParseUtil.h"
 @import YelpAPI;
-@import CoreData;
 
 @interface SavedViewController () <UITableViewDelegate, UITableViewDataSource, RestaurantCellDelegate>
 
@@ -22,11 +21,9 @@
 @property (strong, nonatomic) NSString *username;
 @property (strong, nonatomic) NSMutableArray *restaurantDicts;
 
-@property (strong, nonatomic) NSManagedObject *unvisitedModel;
 @property (strong, nonatomic) NSMutableDictionary *unvisitedDict;
 @property (strong, nonatomic) NSArray *unvisitedVals;
 
-@property (strong, nonatomic) NSManagedObject *visitedModel;
 @property (strong, nonatomic) NSMutableDictionary *visitedDict;
 @property (strong, nonatomic) NSArray *visitedVals;
 
@@ -52,54 +49,6 @@
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     
-    //set up core data
-    NSManagedObjectContext *context = [self managedObjectContext];
-    NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"Unvisited"];
-    NSArray *unvisitedRes = [context executeFetchRequest:request error:nil];
-    if (unvisitedRes.count == 0) {
-        self.unvisitedDict = [[NSMutableDictionary alloc] init];
-        NSManagedObject *newUnvisited = [NSEntityDescription insertNewObjectForEntityForName:@"Unvisited" inManagedObjectContext:context];
-        [newUnvisited setValue:self.unvisitedDict forKey:@"restaurants"];
-        NSError *error = nil;
-        if (![context save:&error]) {
-            NSLog(@"Can't Save! %@ %@", error, [error localizedDescription]);
-        }
-        
-        self.unvisitedVals = [[NSMutableArray alloc] init];
-    }
-    else {
-        self.unvisitedModel = unvisitedRes[0];
-        self.unvisitedDict = [self.unvisitedModel valueForKey:@"restaurants"];
-        self.unvisitedVals = [self.unvisitedDict allValues];
-    }
-    
-    request = [[NSFetchRequest alloc] initWithEntityName:@"Visited"];
-    NSArray *visitedRes = [context executeFetchRequest:request error:nil];
-    if (visitedRes.count == 0) {
-        self.visitedDict = [[NSMutableDictionary alloc] init];
-        NSManagedObject *newVisited = [NSEntityDescription insertNewObjectForEntityForName:@"Visited" inManagedObjectContext:context];
-        [newVisited setValue:self.visitedDict forKey:@"restaurants"];
-        NSError *error = nil;
-        if (![context save:&error]) {
-            NSLog(@"Can't Save! %@ %@", error, [error localizedDescription]);
-        }
-        
-        self.visitedVals = [[NSMutableArray alloc] init];
-    }
-    else {
-        self.visitedModel = visitedRes[0];
-        self.visitedDict = [self.visitedModel valueForKey:@"restaurants"];
-        self.visitedVals = [self.visitedDict allValues];
-    }
-    
-    //go to Parse backup
-    if (self.unvisitedDict.count == 0
-             && self.visitedDict.count == 0
-             && self.restaurantIds.count != 0) {
-        [self fetchRestaurants];
-    }
-    
-    /*
     //set up user default data
     self.restaurantDicts = [[[NSUserDefaults standardUserDefaults] objectForKey:user.username] mutableCopy];
     self.unvisitedDict = [self.restaurantDicts[0] mutableCopy];
@@ -123,18 +72,9 @@
              && self.visitedDict.count == 0
              && self.restaurantIds.count != 0) {
         [self fetchRestaurants];
-    } */
+    }
     
     [self.tableView reloadData];
-}
-
-- (NSManagedObjectContext *)managedObjectContext {
-    NSManagedObjectContext *context = nil;
-    id delegate = [[UIApplication sharedApplication] delegate];
-    if ([delegate performSelector:@selector(managedObjectContext)]) {
-        context = [delegate managedObjectContext];
-    }
-    return context;
 }
 
 - (void)fetchRestaurants {
@@ -182,15 +122,6 @@
     self.restaurantDicts[1] = self.visitedDict;
     
     [[NSUserDefaults standardUserDefaults] setObject:self.restaurantDicts forKey:self.username];
-    
-    //also update core data
-    NSManagedObjectContext *context = [self managedObjectContext];
-
-    id delegate = [[UIApplication sharedApplication] delegate];
-    
-    [self.unvisitedModel setValue:self.unvisitedDict forKey:@"restaurants"];
-    [self.visitedModel setValue:self.visitedDict forKey:@"restaurants"];
-    [delegate enqueueCoreDataBlock:nil];
 }
 
 - (IBAction)toggleVisit:(id)sender {

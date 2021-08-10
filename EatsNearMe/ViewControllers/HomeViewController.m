@@ -15,7 +15,6 @@
 #import "SavedViewController.h"
 #import "PriorityQueue.h"
 @import YelpAPI;
-@import CoreData;
 
 @interface HomeViewController ()  <CLLocationManagerDelegate, PriorityQueueDelegate>
 
@@ -33,12 +32,8 @@
 @property (nonatomic) int counter;
 @property (strong, nonatomic) PriorityQueue *queue;
 @property (strong, nonatomic) NSMutableDictionary *restaurantsInQueue;
-
 @property (strong, nonatomic) NSMutableDictionary *swipes;
 @property (strong, nonatomic) NSMutableArray *rightSwipeDicts;
-@property (strong, nonatomic) NSMutableDictionary *unvisitedDict; //this is basically the same thing as rightSwipe dicts LOL. Refactor later
-@property (strong, nonatomic) NSManagedObject *unvisited;
-
 @property (strong, nonatomic) NSMutableDictionary *categoryDict;
 @property (nonatomic) int totalSwipes;
 
@@ -114,18 +109,6 @@
         [self.swipes setObject:[[NSMutableDictionary alloc] init] forKey:@"leftSwipes"];
         [self.swipes setObject:[[NSMutableDictionary alloc] init] forKey:@"rightSwipes"];
         self.categoryDict = [[NSMutableDictionary alloc] initWithCapacity:10];
-        
-        //also reset core data
-        NSManagedObjectContext *context = [self managedObjectContext];
-        NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"Unvisited"];
-        NSArray *unvisitedModel = [context executeFetchRequest:request error:nil];
-        [context deleteObject:unvisitedModel[0]];
-               
-        NSError *error = nil;
-        if (![context save:&error]) {
-            NSLog(@"Can't Delete! %@ %@", error, [error localizedDescription]);
-            return;
-        }
     }
     
     if (self.user[@"categoryDict"] != nil) {
@@ -139,7 +122,7 @@
     NSMutableDictionary *rightSwipes = [self.swipes objectForKey:@"rightSwipes"];
     self.totalSwipes = ((int) leftSwipes.count) + ((int) rightSwipes.count);
     
-    //array of right swipe dictionaries from user defaults
+    //array of right swipe dictionaries
     self.rightSwipeDicts = [[[NSUserDefaults standardUserDefaults] objectForKey:self.user.username] mutableCopy];
     if (self.rightSwipeDicts == nil) {
         self.rightSwipeDicts = [[NSMutableArray alloc] init];
@@ -147,25 +130,6 @@
         NSMutableDictionary *visited = [[NSMutableDictionary alloc] init];
         [self.rightSwipeDicts addObject:unvisited];
         [self.rightSwipeDicts addObject:visited];
-    }
-    
-    //the above, but with core data
-    NSManagedObjectContext *context = [self managedObjectContext];
-    NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"Unvisited"];
-    NSArray *unvisitedModel = [context executeFetchRequest:request error:nil];
-    
-    if (unvisitedModel.count == 0) {
-        self.unvisitedDict = [[NSMutableDictionary alloc] init];
-        NSManagedObject *newUnvisited = [NSEntityDescription insertNewObjectForEntityForName:@"Unvisited" inManagedObjectContext:context];
-        [newUnvisited setValue:self.unvisitedDict forKey:@"restaurants"]; //see if I can debug this later
-        NSError *error = nil;
-        if (![context save:&error]) {
-            NSLog(@"Can't Save! %@ %@", error, [error localizedDescription]);
-        }
-    }
-    else {
-        self.unvisited = unvisitedModel[0];
-        self.unvisitedDict = [unvisitedModel[0] valueForKey:@"restaurants"];
     }
     
     //PQ
@@ -208,15 +172,6 @@
         [self.loadingIcon startAnimating];
         [self fetchRestaurants];
     }
-}
-
-- (NSManagedObjectContext *)managedObjectContext {
-    NSManagedObjectContext *context = nil;
-    id delegate = [[UIApplication sharedApplication] delegate];
-    if ([delegate performSelector:@selector(managedObjectContext)]) {
-        context = [delegate managedObjectContext];
-    }
-    return context;
 }
 
 - (NSComparisonResult)compare:(YLPBusiness *)obj1 obj2:(YLPBusiness *)obj2 {
@@ -375,9 +330,6 @@
         [[NSUserDefaults standardUserDefaults] setObject:self.rightSwipeDicts forKey:self.user.username];
         [[NSUserDefaults standardUserDefaults] synchronize];
         
-        //core data version
-        [self updateRightSwipes:restaurantDictForm];
-        
         //update category count
         for (YLPCategory *category in restaurant.categories) {
             if ([self.categoryDict objectForKey:category.name] == nil) {
@@ -394,16 +346,6 @@
     [ParseUtil updateValue:self.swipes key:@"swipes"];
     
     [self loadNextRestaurant];
-}
-
-- (void)updateRightSwipes:(NSDictionary *)restaurantDict {
-    NSManagedObjectContext *context = [self managedObjectContext];
-
-    [self.unvisitedDict setObject:restaurantDict forKey:restaurantDict[@"name"]];
-    [self.unvisited setValue:self.unvisitedDict forKey:@"restaurants"];
-    
-    id delegate = [[UIApplication sharedApplication] delegate];
-    [delegate enqueueCoreDataBlock:nil];
 }
 
 - (void)loadNextRestaurant {

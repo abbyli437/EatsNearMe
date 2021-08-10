@@ -2,30 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:EatsNearMe/Models/Visited+CoreDataProperties.h">
-   </FileRef>
-   <FileRef
-      location = "group:EatsNearMe/Models/Visited+CoreDataClass.h">
-   </FileRef>
-   <FileRef
-      location = "group:EatsNearMe/Models/Visited+CoreDataClass.m">
-   </FileRef>
-   <FileRef
-      location = "group:EatsNearMe/Models/Visited+CoreDataProperties.m">
-   </FileRef>
-   <FileRef
-      location = "group:EatsNearMe/Models/Unvisited+CoreDataProperties.h">
-   </FileRef>
-   <FileRef
-      location = "group:EatsNearMe/Models/Unvisited+CoreDataClass.h">
-   </FileRef>
-   <FileRef
-      location = "group:EatsNearMe/Models/Unvisited+CoreDataClass.m">
-   </FileRef>
-   <FileRef
-      location = "group:EatsNearMe/Models/Unvisited+CoreDataProperties.m">
-   </FileRef>
-   <FileRef
       location = "group:EatsNearMe.xcodeproj">
    </FileRef>
    <FileRef

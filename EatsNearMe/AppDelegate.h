@@ -11,13 +11,7 @@
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
-@property (nonatomic, retain, readonly) NSManagedObjectModel *managedObjectModel;
- @property (nonatomic, retain, readonly) NSManagedObjectContext *managedObjectContext;
- @property (nonatomic, retain, readonly) NSPersistentStoreCoordinator *persistentStoreCoordinator;
-
 + (YLPClient *)sharedClient;
-- (NSURL *)applicationDocumentsDirectory;
-- (void)enqueueCoreDataBlock:(void (^)(NSManagedObjectContext* context))block;
 
 @end
 
